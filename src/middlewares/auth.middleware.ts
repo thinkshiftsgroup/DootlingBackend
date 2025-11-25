@@ -1,22 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
 
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "YOUR_UNSAFE_DEFAULT_SECRET";
 
-interface CustomRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    username: string | null;
-    isVerified: boolean;
-    userType: string;
-  };
-}
+
 
 const handleTokenVerification = async (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
   userType?: "admin" | "superadmin"
@@ -29,10 +20,10 @@ const handleTokenVerification = async (
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
 
       const user = await prisma.user.findUnique({
-        where: { id: decoded.id },
+        where: { id: Number(decoded.id) },
         select: {
           id: true,
           email: true,
@@ -76,7 +67,7 @@ const handleTokenVerification = async (
 };
 
 export const protect = (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -84,7 +75,7 @@ export const protect = (
 };
 
 export const adminProtect = (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -92,7 +83,7 @@ export const adminProtect = (
 };
 
 export const superadminProtect = (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -100,7 +91,7 @@ export const superadminProtect = (
 };
 
 export const optionalProtect = async (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -112,9 +103,9 @@ export const optionalProtect = async (
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
       const user = await prisma.user.findUnique({
-        where: { id: decoded.id },
+        where: { id: Number(decoded.id) },
         select: {
           id: true,
           email: true,
