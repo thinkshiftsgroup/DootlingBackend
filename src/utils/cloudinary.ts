@@ -1,6 +1,11 @@
 import axios from "axios";
 import FormData from "form-data";
-import { MulterFile } from "@controllers/project.milestone.controller";
+
+interface MulterFile {
+  buffer: Buffer;
+  originalname: string;
+  mimetype: string;
+}
 
 export type CloudinaryResourceTypes = "image" | "video" | "raw" | "auto";
 

@@ -20,7 +20,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.19.0",
     "@sendgrid/mail": "^8.1.6",
     "@types/cors": "^2.8.19",
     "@types/helmet": "^0.0.48",
