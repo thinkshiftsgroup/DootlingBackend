@@ -29,7 +29,7 @@ const generateRefreshToken = (userId: number): string => {
   return jwt.sign({ id: userId }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY } as jwt.SignOptions);
 };
 
-export const register = async (email: string, firstname: string, lastname: string, phone?: string, howDidYouFindUs?: string) => {
+export const register = async (email: string, firstname: string, lastname: string, password: string, phone?: string, howDidYouFindUs?: string) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new Error("Email already registered");
 
@@ -39,11 +39,12 @@ export const register = async (email: string, firstname: string, lastname: strin
   const username = generateUniqueUsername(fullName);
   const verificationCode = generateSixDigitCode();
   const verificationCodeExpires = getExpiry(15);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
     data: {
       email,
-      password: "", // Empty password, will be set later
+      password: hashedPassword,
       fullName,
       firstname,
       lastname,
@@ -177,9 +178,6 @@ export const setPassword = async (userId: number, password: string) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Check if password is already set (password is not empty)
-  if (user.password) throw new Error("Password already set for this user");
-
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.user.update({
@@ -187,5 +185,5 @@ export const setPassword = async (userId: number, password: string) => {
     data: { password: hashedPassword },
   });
 
-  return { message: "Password set successfully" };
+  return { message: "Password changed successfully" };
 };
