@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { errorHandler } from "@middlewares/error.middleware";
 
 import { authRouter } from "@routes/auth.routes";
+import { storeRouter } from "@routes/store.routes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRouter);
+app.use("/api/store", storeRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });

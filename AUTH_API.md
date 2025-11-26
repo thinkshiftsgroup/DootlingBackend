@@ -13,7 +13,7 @@ Complete JWT authentication system with access/refresh tokens and OTP verificati
 ### 1. Register
 **POST** `/register`
 
-Register a new user and send OTP verification code to email. No password is required during registration. Full name is automatically generated from firstname and lastname.
+Register a new user with password and send OTP verification code to email. Full name is automatically generated from firstname and lastname.
 
 **Request Body:**
 ```json
@@ -21,6 +21,7 @@ Register a new user and send OTP verification code to email. No password is requ
   "email": "user@example.com",
   "firstname": "John",
   "lastname": "Doe",
+  "password": "SecurePass123!",
   "phone": "+1234567890",
   "howDidYouFindUs": "Google Ads"
 }
@@ -39,7 +40,7 @@ Register a new user and send OTP verification code to email. No password is requ
 ### 2. Verify Email
 **POST** `/verify-email`
 
-Verify email with OTP code and receive access/refresh tokens.
+Verify email with OTP code and receive access/refresh tokens. User can then login with their credentials.
 
 **Request Body:**
 ```json
@@ -65,10 +66,10 @@ Verify email with OTP code and receive access/refresh tokens.
 
 ---
 
-### 3. Set Password
+### 3. Change Password
 **POST** `/set-password`
 
-Set password for newly registered user after email verification. Requires access token obtained from verify-email endpoint.
+Change password for authenticated user. Requires access token.
 
 **Headers:**
 ```
@@ -78,14 +79,14 @@ Authorization: Bearer <accessToken>
 **Request Body:**
 ```json
 {
-  "password": "SecurePass123!"
+  "password": "NewSecurePass123!"
 }
 ```
 
 **Response (200):**
 ```json
 {
-  "message": "Password set successfully"
+  "message": "Password changed successfully"
 }
 ```
 
@@ -277,12 +278,11 @@ All endpoints return errors in this format:
 ## Authentication Flow
 
 ### Registration Flow:
-1. User submits registration form (without password) → `POST /register`
+1. User submits registration form with password → `POST /register`
 2. System sends OTP to email
 3. User enters OTP → `POST /verify-email`
 4. System returns access + refresh tokens
-5. User sets password using access token → `POST /set-password`
-6. User is fully authenticated and ready to use the app
+5. User is fully authenticated and ready to use the app
 
 ### Login Flow:
 1. User submits credentials → `POST /login`
