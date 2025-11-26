@@ -1,0 +1,630 @@
+openapi: 3.0.3
+info:
+  title: Dootling API
+  description: |
+    Complete JWT authentication system with store management for Dootling platform.
+    
+    ## Authentication
+    Most endpoints require authentication. Include the access token in the Authorization header:
+    ```
+    Authorization: Bearer <accessToken>
+    ```
+    
+    ## Base URLs
+    - Authentication: `/api/auth`
+    - Store: `/api/store`
+    
+    ## Documentation
+    - **Swagger UI**: [http://localhost:8000/api-docs](http://localhost:8000/api-docs)
+    - **ReDoc**: [http://localhost:8000/api-redoc](http://localhost:8000/api-redoc)
+  version: 1.0.0
+  contact:
+    name: Dootling Support
+    email: support@dootling.com
+  license:
+    name: ISC
+    url: https://opensource.org/licenses/ISC
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.dootling.com
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Check if the service is running
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+                  message:
+                    type: string
+                    example: Service is healthy
+
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user
+      description: Register a new user with password and send OTP verification code to email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - firstname
+                - lastname
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Valid email format
+                firstname:
+                  type: string
+                  description: Non-empty string
+                lastname:
+                  type: string
+                  description: Non-empty string
+                password:
+                  type: string
+                  minLength: 8
+                  description: Minimum 8 characters
+                phone:
+                  type: string
+                  description: Any format (optional)
+                howDidYouFindUs:
+                  type: string
+                  description: Any string (optional)
+                subscribeToMarketing:
+                  type: boolean
+                  default: false
+                  description: Boolean flag to opt-in for marketing communications
+            example:
+              email: user@example.com
+              firstname: John
+              lastname: Doe
+              password: SecurePass123!
+              phone: "+1234567890"
+              howDidYouFindUs: Google Ads
+              subscribeToMarketing: true
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Registration successful. Please check your email for verification code.
+                  userId:
+                    type: integer
+                    example: 1
+        '400':
+          description: Missing required fields / Invalid email format / Password too short / Email already registered
+        '500':
+          description: Internal server error
+
+  /api/auth/verify-email:
+    post:
+      tags:
+        - Authentication
+      summary: Verify email with OTP
+      description: Verify email with OTP code and receive access/refresh tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Must match registered email
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  description: 6-digit OTP code sent to email
+            example:
+              email: user@example.com
+              code: "123456"
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                        format: email
+                      fullName:
+                        type: string
+                      isVerified:
+                        type: boolean
+        '400':
+          description: Missing required fields / Invalid verification code / Code expired / Email already verified
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      description: Login with email and password. Email must be verified before login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Valid registered email
+                password:
+                  type: string
+                  description: Correct password for the account
+            example:
+              email: user@example.com
+              password: SecurePass123!
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                        format: email
+                      fullName:
+                        type: string
+                      username:
+                        type: string
+        '400':
+          description: Missing required fields / Invalid credentials / Email not verified
+        '500':
+          description: Internal server error
+
+  /api/auth/refresh-token:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: JWT refresh token
+            example:
+              refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: New JWT access token
+        '400':
+          description: Invalid refresh token
+        '500':
+          description: Internal server error
+
+  /api/auth/set-password:
+    post:
+      tags:
+        - Authentication
+      summary: Change password
+      description: Change password for authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  minLength: 8
+                  description: Minimum 8 characters
+            example:
+              password: NewSecurePass123!
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password changed successfully
+        '400':
+          description: Missing password / Password too short
+        '401':
+          description: Unauthorized / Invalid token
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/auth/resend-verification:
+    post:
+      tags:
+        - Authentication
+      summary: Resend verification code
+      description: Resend OTP verification code to email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: user@example.com
+      responses:
+        '200':
+          description: Verification code resent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Verification code resent successfully
+        '400':
+          description: Invalid email format
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/store/setup:
+    post:
+      tags:
+        - Store
+      summary: Setup store
+      description: Create a new store for the authenticated user. Each user can have only one store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - businessName
+                - storeUrl
+                - country
+              properties:
+                businessName:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: Name of the business
+                storeUrl:
+                  type: string
+                  minLength: 3
+                  maxLength: 63
+                  pattern: '^[a-z0-9-]+$'
+                  description: Unique store URL (lowercase alphanumeric and hyphens only)
+                country:
+                  type: string
+                  minLength: 1
+                  description: Country name
+                currency:
+                  type: string
+                  default: USD
+                  description: Currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
+            example:
+              businessName: My Awesome Shop
+              storeUrl: my-awesome-shop
+              country: United States
+              currency: USD
+      responses:
+        '201':
+          description: Store setup successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Store setup successful
+                  store:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+        '400':
+          description: Invalid input / Store URL already taken / User already has a store / Invalid store URL format
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/store/:
+    get:
+      tags:
+        - Store
+      summary: Get store
+      description: Retrieve the authenticated user's store details
+      responses:
+        '200':
+          description: Store retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Store retrieved successfully
+                  store:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '404':
+          description: Store not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - Store
+      summary: Update store
+      description: Update the authenticated user's store details. Only businessName, country, and currency can be updated. storeUrl is immutable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                businessName:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: New business name (non-empty if provided)
+                country:
+                  type: string
+                  minLength: 1
+                  description: New country name (non-empty if provided)
+                currency:
+                  type: string
+                  description: New currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
+            example:
+              businessName: Updated Shop Name
+              country: Canada
+              currency: CAD
+      responses:
+        '200':
+          description: Store updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Store updated successfully
+                  store:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '404':
+          description: Store not found
+        '500':
+          description: Internal server error
+
+  /api/store/launch:
+    post:
+      tags:
+        - Store
+      summary: Launch store
+      description: Launch the authenticated user's store. Once launched, the store becomes publicly accessible
+      responses:
+        '200':
+          description: Store launched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Store launched successfully
+                  store:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '404':
+          description: Store not found
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token. Enter your access token in the format: Bearer <token>
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        error: Bad Request
+        message: Invalid input data
+        statusCode: 400
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: User authentication and registration endpoints
+  - name: Store
+    description: Store management endpoints for authenticated users
