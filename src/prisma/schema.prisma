@@ -25,7 +25,22 @@ model User {
   resetPasswordToken        String?
   resetPasswordExpires      DateTime?
   refreshToken              String?
+  subscribeToMarketing      Boolean   @default(false)
   createdAt                 DateTime  @default(now())
   updatedAt                 DateTime  @updatedAt
   lastActive                DateTime?
+  stores                    Store[]
+}
+
+model Store {
+  id                        Int       @id @default(autoincrement())
+  userId                    Int
+  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName              String
+  storeUrl                  String    @unique
+  country                   String
+  currency                  String    @default("USD")
+  isLaunched                Boolean   @default(false)
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
 }

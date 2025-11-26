@@ -29,41 +29,69 @@ const generateRefreshToken = (userId: number): string => {
   return jwt.sign({ id: userId }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY } as jwt.SignOptions);
 };
 
-export const register = async (email: string, firstname: string, lastname: string, phone?: string, howDidYouFindUs?: string) => {
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePassword = (password: string): boolean => {
+  return password.length >= 8;
+};
+
+export const register = async (email: string, firstname: string, lastname: string, password: string, phone?: string, howDidYouFindUs?: string, subscribeToMarketing?: boolean) => {
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+  if (!firstname || !firstname.trim()) throw new Error("First name is required");
+  if (!lastname || !lastname.trim()) throw new Error("Last name is required");
+  if (!password || !password.trim()) throw new Error("Password is required");
+
+  // Validate email format
+  if (!validateEmail(email.trim())) throw new Error("Invalid email format");
+
+  // Validate password strength
+  if (!validatePassword(password)) throw new Error("Password must be at least 8 characters long");
+
+  // Check if email already exists
+  const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (existingUser) throw new Error("Email already registered");
 
   // Generate fullName from firstname and lastname
-  const fullName = `${firstname} ${lastname}`.trim();
+  const fullName = `${firstname.trim()} ${lastname.trim()}`.trim();
 
   const username = generateUniqueUsername(fullName);
   const verificationCode = generateSixDigitCode();
   const verificationCodeExpires = getExpiry(15);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
     data: {
-      email,
-      password: "", // Empty password, will be set later
+      email: email.toLowerCase(),
+      password: hashedPassword,
       fullName,
-      firstname,
-      lastname,
-      phone,
-      howDidYouFindUs,
+      firstname: firstname.trim(),
+      lastname: lastname.trim(),
+      phone: phone?.trim(),
+      howDidYouFindUs: howDidYouFindUs?.trim(),
       username,
       verificationCode,
       verificationCodeExpires,
+      subscribeToMarketing: subscribeToMarketing || false,
     },
   });
 
-  await sendVerificationCodeEmail(email, verificationCode, fullName);
+  await sendVerificationCodeEmail(email.toLowerCase(), verificationCode, fullName);
   return { message: "Registration successful. Please check your email for verification code.", userId: user.id };
 };
 
 export const verifyEmail = async (email: string, code: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+  if (!code || !code.trim()) throw new Error("Verification code is required");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("User not found");
   if (user.isVerified) throw new Error("Email already verified");
-  if (!user.verificationCode || user.verificationCode !== code) throw new Error("Invalid verification code");
+  if (!user.verificationCode || user.verificationCode !== code.trim()) throw new Error("Invalid verification code");
   if (!user.verificationCodeExpires || user.verificationCodeExpires < new Date()) throw new Error("Verification code expired");
 
   await prisma.user.update({
@@ -80,7 +108,10 @@ export const verifyEmail = async (email: string, code: string) => {
 };
 
 export const resendVerificationCode = async (email: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("User not found");
   if (user.isVerified) throw new Error("Email already verified");
 
@@ -97,7 +128,11 @@ export const resendVerificationCode = async (email: string) => {
 };
 
 export const login = async (email: string, password: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+  if (!password || !password.trim()) throw new Error("Password is required");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("Invalid credentials");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -128,7 +163,10 @@ export const refreshAccessToken = async (refreshToken: string) => {
 };
 
 export const forgotPassword = async (email: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("User not found");
 
   const resetCode = generateSixDigitCode();
@@ -144,18 +182,30 @@ export const forgotPassword = async (email: string) => {
 };
 
 export const verifyResetCode = async (email: string, code: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+  if (!code || !code.trim()) throw new Error("Reset code is required");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("User not found");
-  if (!user.resetPasswordToken || user.resetPasswordToken !== code) throw new Error("Invalid reset code");
+  if (!user.resetPasswordToken || user.resetPasswordToken !== code.trim()) throw new Error("Invalid reset code");
   if (!user.resetPasswordExpires || user.resetPasswordExpires < new Date()) throw new Error("Reset code expired");
 
   return { message: "Reset code verified", email: user.email };
 };
 
 export const resetPassword = async (email: string, code: string, newPassword: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Validate required fields
+  if (!email || !email.trim()) throw new Error("Email is required");
+  if (!code || !code.trim()) throw new Error("Reset code is required");
+  if (!newPassword || !newPassword.trim()) throw new Error("New password is required");
+
+  // Validate password strength
+  if (!validatePassword(newPassword)) throw new Error("Password must be at least 8 characters long");
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) throw new Error("User not found");
-  if (!user.resetPasswordToken || user.resetPasswordToken !== code) throw new Error("Invalid reset code");
+  if (!user.resetPasswordToken || user.resetPasswordToken !== code.trim()) throw new Error("Invalid reset code");
   if (!user.resetPasswordExpires || user.resetPasswordExpires < new Date()) throw new Error("Reset code expired");
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -174,11 +224,14 @@ export const logout = async (userId: number) => {
 };
 
 export const setPassword = async (userId: number, password: string) => {
+  // Validate required fields
+  if (!password || !password.trim()) throw new Error("Password is required");
+
+  // Validate password strength
+  if (!validatePassword(password)) throw new Error("Password must be at least 8 characters long");
+
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
-
-  // Check if password is already set (password is not empty)
-  if (user.password) throw new Error("Password already set for this user");
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -187,5 +240,5 @@ export const setPassword = async (userId: number, password: string) => {
     data: { password: hashedPassword },
   });
 
-  return { message: "Password set successfully" };
+  return { message: "Password changed successfully" };
 };
