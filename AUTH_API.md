@@ -23,7 +23,8 @@ Register a new user with password and send OTP verification code to email. Full 
   "lastname": "Doe",
   "password": "SecurePass123!",
   "phone": "+1234567890",
-  "howDidYouFindUs": "Google Ads"
+  "howDidYouFindUs": "Google Ads",
+  "subscribeToMarketing": true
 }
 ```
 
@@ -34,6 +35,7 @@ Register a new user with password and send OTP verification code to email. Full 
 - `password` (required): Minimum 8 characters
 - `phone` (optional): Any format
 - `howDidYouFindUs` (optional): Any string
+- `subscribeToMarketing` (optional): Boolean flag to opt-in for marketing communications (defaults to false)
 
 **Response (201):**
 ```json

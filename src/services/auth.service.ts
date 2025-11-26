@@ -38,7 +38,7 @@ const validatePassword = (password: string): boolean => {
   return password.length >= 8;
 };
 
-export const register = async (email: string, firstname: string, lastname: string, password: string, phone?: string, howDidYouFindUs?: string) => {
+export const register = async (email: string, firstname: string, lastname: string, password: string, phone?: string, howDidYouFindUs?: string, subscribeToMarketing?: boolean) => {
   // Validate required fields
   if (!email || !email.trim()) throw new Error("Email is required");
   if (!firstname || !firstname.trim()) throw new Error("First name is required");
@@ -75,6 +75,7 @@ export const register = async (email: string, firstname: string, lastname: strin
       username,
       verificationCode,
       verificationCodeExpires,
+      subscribeToMarketing: subscribeToMarketing || false,
     },
   });
 
