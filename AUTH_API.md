@@ -27,6 +27,14 @@ Register a new user with password and send OTP verification code to email. Full 
 }
 ```
 
+**Validation Rules:**
+- `email` (required): Valid email format
+- `firstname` (required): Non-empty string
+- `lastname` (required): Non-empty string
+- `password` (required): Minimum 8 characters
+- `phone` (optional): Any format
+- `howDidYouFindUs` (optional): Any string
+
 **Response (201):**
 ```json
 {
@@ -34,6 +42,10 @@ Register a new user with password and send OTP verification code to email. Full 
   "userId": 1
 }
 ```
+
+**Error Responses:**
+- `400` - Missing required fields / Invalid email format / Password too short / Email already registered
+- `500` - Internal server error
 
 ---
 
@@ -50,6 +62,10 @@ Verify email with OTP code and receive access/refresh tokens. User can then logi
 }
 ```
 
+**Validation Rules:**
+- `email` (required): Must match registered email
+- `code` (required): 6-digit OTP code sent to email
+
 **Response (200):**
 ```json
 {
@@ -63,6 +79,11 @@ Verify email with OTP code and receive access/refresh tokens. User can then logi
   }
 }
 ```
+
+**Error Responses:**
+- `400` - Missing required fields / Invalid verification code / Code expired / Email already verified
+- `404` - User not found
+- `500` - Internal server error
 
 ---
 
@@ -83,12 +104,21 @@ Authorization: Bearer <accessToken>
 }
 ```
 
+**Validation Rules:**
+- `password` (required): Minimum 8 characters
+
 **Response (200):**
 ```json
 {
   "message": "Password changed successfully"
 }
 ```
+
+**Error Responses:**
+- `400` - Missing password / Password too short
+- `401` - Unauthorized / Invalid token
+- `404` - User not found
+- `500` - Internal server error
 
 ---
 
@@ -116,7 +146,7 @@ Resend OTP verification code to email.
 ### 5. Login
 **POST** `/login`
 
-Login with email and password.
+Login with email and password. Email must be verified before login.
 
 **Request Body:**
 ```json
@@ -125,6 +155,10 @@ Login with email and password.
   "password": "SecurePass123!"
 }
 ```
+
+**Validation Rules:**
+- `email` (required): Valid registered email
+- `password` (required): Correct password for the account
 
 **Response (200):**
 ```json
@@ -139,6 +173,10 @@ Login with email and password.
   }
 }
 ```
+
+**Error Responses:**
+- `400` - Missing required fields / Invalid credentials / Email not verified
+- `500` - Internal server error
 
 ---
 
@@ -221,12 +259,22 @@ Reset password with verified OTP code.
 }
 ```
 
+**Validation Rules:**
+- `email` (required): Valid registered email
+- `code` (required): Valid reset code from email
+- `newPassword` (required): Minimum 8 characters
+
 **Response (200):**
 ```json
 {
   "message": "Password reset successful"
 }
 ```
+
+**Error Responses:**
+- `400` - Missing required fields / Invalid reset code / Code expired / Password too short
+- `404` - User not found
+- `500` - Internal server error
 
 ---
 
