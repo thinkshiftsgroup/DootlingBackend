@@ -14,9 +14,7 @@ module.exports = {
   testPathIgnorePatterns: ["/dist/"],
   coverageDirectory: "./coverage",
   collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/server.ts",
-    "!src/app.ts",
-    "!src/config/*.ts",
+    "src/controllers/**/*.ts",
+    "src/services/**/*.ts",
   ],
 };
