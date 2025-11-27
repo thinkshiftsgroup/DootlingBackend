@@ -44,7 +44,7 @@ paths:
       tags:
         - Authentication
       summary: Register a new user
-      description: Register a new user with email and password
+      description: Register a new user with email and password. Sends verification code to email.
       security: []
       requestBody:
         required: true
@@ -61,22 +61,29 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
                 firstname:
                   type: string
+                  example: John
                 lastname:
                   type: string
+                  example: Doe
                 password:
                   type: string
                   minLength: 8
+                  example: password123
                 phone:
                   type: string
+                  example: "+1234567890"
                 howDidYouFindUs:
                   type: string
+                  example: Google
                 subscribeToMarketing:
                   type: boolean
+                  example: true
       responses:
         '201':
-          description: User registered successfully
+          description: User registered successfully. Verification code sent to email.
           content:
             application/json:
               schema:
@@ -84,19 +91,29 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Registration successful. Please check your email for verification code."
                   userId:
                     type: integer
+                    example: 1
         '400':
-          description: Bad request
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/verify-email:
     post:
       tags:
         - Authentication
       summary: Verify email with OTP
-      description: Verify email address with OTP code sent to email
+      description: Verify email address with OTP code sent to email. Returns access and refresh tokens.
       security: []
       requestBody:
         required: true
@@ -111,11 +128,13 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
                 code:
                   type: string
+                  example: "123456"
       responses:
         '200':
-          description: Email verified successfully
+          description: Email verified successfully. User is now authenticated.
           content:
             application/json:
               schema:
@@ -123,14 +142,39 @@ paths:
                 properties:
                   accessToken:
                     type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   refreshToken:
                     type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   user:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      fullName:
+                        type: string
+                      isVerified:
+                        type: boolean
         '400':
-          description: Bad request
+          description: Bad request - invalid code or code expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/resend-verification:
     post:
@@ -167,7 +211,7 @@ paths:
       tags:
         - Authentication
       summary: Login user
-      description: Login with email and password
+      description: Login with email and password. Email must be verified first.
       security: []
       requestBody:
         required: true
@@ -182,11 +226,13 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
                 password:
                   type: string
+                  example: password123
       responses:
         '200':
-          description: Login successful
+          description: Login successful. Returns access and refresh tokens.
           content:
             application/json:
               schema:
@@ -194,12 +240,33 @@ paths:
                 properties:
                   accessToken:
                     type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   refreshToken:
                     type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   user:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      fullName:
+                        type: string
+                      username:
+                        type: string
         '400':
-          description: Bad request
+          description: Bad request - invalid credentials or email not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/refresh-token:
     post:
@@ -219,9 +286,10 @@ paths:
               properties:
                 refreshToken:
                   type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
         '200':
-          description: Token refreshed
+          description: Token refreshed successfully
           content:
             application/json:
               schema:
@@ -229,6 +297,19 @@ paths:
                 properties:
                   accessToken:
                     type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Bad request - invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/forgot-password:
     post:
@@ -249,6 +330,7 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
       responses:
         '200':
           description: Reset code sent to email
@@ -259,6 +341,25 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Password reset code sent to your email"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/verify-reset-code:
     post:
@@ -280,11 +381,13 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
                 code:
                   type: string
+                  example: "123456"
       responses:
         '200':
-          description: Reset code verified
+          description: Reset code verified successfully
           content:
             application/json:
               schema:
@@ -292,8 +395,28 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Reset code verified"
                   email:
                     type: string
+                    example: user@example.com
+        '400':
+          description: Bad request - invalid or expired code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/reset-password:
     post:
@@ -316,11 +439,14 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: user@example.com
                 code:
                   type: string
+                  example: "123456"
                 newPassword:
                   type: string
                   minLength: 8
+                  example: newpassword123
       responses:
         '200':
           description: Password reset successful
@@ -331,6 +457,25 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Password reset successful"
+        '400':
+          description: Bad request - invalid code or password too short
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/set-password:
     post:
@@ -350,6 +495,7 @@ paths:
                 password:
                   type: string
                   minLength: 8
+                  example: newpassword123
       responses:
         '200':
           description: Password changed successfully
@@ -360,6 +506,31 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Password changed successfully"
+        '400':
+          description: Bad request - password too short
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/auth/logout:
     post:
@@ -377,6 +548,19 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== USER PROFILE ENDPOINTS ====================
 
@@ -399,11 +583,142 @@ paths:
                     properties:
                       id:
                         type: integer
+                        example: 1
                       email:
                         type: string
+                        example: user@example.com
                       username:
                         type: string
+                        example: johndoe1234
                       fullName:
+                        type: string
+                        example: John Michael Doe
+                      firstname:
+                        type: string
+                        example: John
+                      lastname:
+                        type: string
+                        example: Doe
+                      middleName:
+                        type: string
+                        example: Michael
+                      gender:
+                        type: string
+                        example: Male
+                      dateOfBirth:
+                        type: string
+                        format: date
+                        example: "1990-01-15"
+                      phone:
+                        type: string
+                        example: "+1234567890"
+                      meansOfIdentification:
+                        type: string
+                        example: INTERNATIONAL_PASSPORT
+                      identificationNumber:
+                        type: string
+                        example: A12345678
+                      identificationExpiry:
+                        type: string
+                        format: date
+                        example: "2030-12-31"
+                      countryOfResidency:
+                        type: string
+                        example: United States
+                      contactAddress:
+                        type: string
+                        example: "123 Main Street, New York, NY 10001"
+                      profilePhotoUrl:
+                        type: string
+                        example: "https://res.cloudinary.com/..."
+                      isVerified:
+                        type: boolean
+                        example: true
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - User Profile
+      summary: Update user profile
+      description: Update user profile including personal and identification details. All fields are optional.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  example: John
+                lastname:
+                  type: string
+                  example: Doe
+                middleName:
+                  type: string
+                  example: Michael
+                gender:
+                  type: string
+                  enum: [Male, Female, Other]
+                  example: Male
+                dateOfBirth:
+                  type: string
+                  format: date
+                  example: "1990-01-15"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                meansOfIdentification:
+                  type: string
+                  enum: [NIN, VOTERS_CARD, DRIVERS_LICENSE, INTERNATIONAL_PASSPORT]
+                  example: INTERNATIONAL_PASSPORT
+                identificationNumber:
+                  type: string
+                  example: A12345678
+                identificationExpiry:
+                  type: string
+                  format: date
+                  example: "2030-12-31"
+                countryOfResidency:
+                  type: string
+                  example: United States
+                contactAddress:
+                  type: string
+                  example: "123 Main Street, New York, NY 10001"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
                         type: string
                       firstname:
                         type: string
@@ -429,74 +744,37 @@ paths:
                         type: string
                       contactAddress:
                         type: string
-                      profilePhotoUrl:
-                        type: string
-                      isVerified:
-                        type: boolean
-        '401':
-          description: Unauthorized
-
-    put:
-      tags:
-        - User Profile
-      summary: Update user profile
-      description: Update user profile including personal and identification details
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstname:
-                  type: string
-                lastname:
-                  type: string
-                middleName:
-                  type: string
-                gender:
-                  type: string
-                  enum: [Male, Female, Other]
-                dateOfBirth:
-                  type: string
-                  format: date
-                phone:
-                  type: string
-                meansOfIdentification:
-                  type: string
-                  enum: [NIN, VOTERS_CARD, DRIVERS_LICENSE, INTERNATIONAL_PASSPORT]
-                identificationNumber:
-                  type: string
-                identificationExpiry:
-                  type: string
-                  format: date
-                countryOfResidency:
-                  type: string
-                contactAddress:
-                  type: string
-      responses:
-        '200':
-          description: Profile updated successfully
+        '400':
+          description: Bad request - validation error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  user:
-                    type: object
-        '400':
-          description: Bad request
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/user/profile/photo:
     post:
       tags:
         - User Profile
       summary: Upload profile photo
-      description: Upload profile photo to Cloudinary
+      description: Upload profile photo to Cloudinary. Supported formats - JPEG, PNG, PDF. Max size 50MB.
       requestBody:
         required: true
         content:
@@ -509,6 +787,7 @@ paths:
                 file:
                   type: string
                   format: binary
+                  description: Profile photo file (JPEG, PNG, or PDF)
       responses:
         '200':
           description: Photo uploaded successfully
@@ -519,12 +798,28 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Profile photo uploaded successfully"
                   profilePhotoUrl:
                     type: string
+                    example: "https://res.cloudinary.com/..."
         '400':
-          description: No file provided
+          description: No file provided or invalid file type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== KYC PERSONAL ENDPOINTS ====================
 
@@ -533,10 +828,10 @@ paths:
       tags:
         - KYC Personal
       summary: Get personal KYC profile
-      description: Retrieve personal KYC information
+      description: Retrieve personal KYC information for the authenticated user
       responses:
         '200':
-          description: Personal KYC retrieved
+          description: Personal KYC retrieved successfully
           content:
             application/json:
               schema:
@@ -544,14 +839,50 @@ paths:
                 properties:
                   profile:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      userId:
+                        type: integer
+                      middleName:
+                        type: string
+                      gender:
+                        type: string
+                      dateOfBirth:
+                        type: string
+                        format: date
+                      meansOfIdentification:
+                        type: string
+                      identificationNumber:
+                        type: string
+                      identificationExpiry:
+                        type: string
+                        format: date
+                      countryOfResidency:
+                        type: string
+                      contactAddress:
+                        type: string
+                      status:
+                        type: string
+                        enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
         - KYC Personal
       summary: Update personal KYC profile
-      description: Create or update personal KYC information
+      description: Create or update personal KYC information. All fields are optional.
       requestBody:
         required: true
         content:
@@ -561,25 +892,33 @@ paths:
               properties:
                 middleName:
                   type: string
+                  example: Michael
                 gender:
                   type: string
+                  example: Male
                 dateOfBirth:
                   type: string
                   format: date
+                  example: "1990-01-15"
                 meansOfIdentification:
                   type: string
+                  example: INTERNATIONAL_PASSPORT
                 identificationNumber:
                   type: string
+                  example: A12345678
                 identificationExpiry:
                   type: string
                   format: date
+                  example: "2030-12-31"
                 countryOfResidency:
                   type: string
+                  example: United States
                 contactAddress:
                   type: string
+                  example: "123 Main Street, New York, NY 10001"
       responses:
         '200':
-          description: Personal KYC updated
+          description: Personal KYC updated successfully
           content:
             application/json:
               schema:
@@ -587,10 +926,21 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Personal KYC profile created"
                   profile:
                     type: object
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== KYC BUSINESS ENDPOINTS ====================
 
@@ -599,10 +949,10 @@ paths:
       tags:
         - KYC Business
       summary: Get business KYC profile
-      description: Retrieve business KYC information
+      description: Retrieve business KYC information for the authenticated user
       responses:
         '200':
-          description: Business KYC retrieved
+          description: Business KYC retrieved successfully
           content:
             application/json:
               schema:
@@ -610,14 +960,54 @@ paths:
                 properties:
                   profile:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      userId:
+                        type: integer
+                      businessName:
+                        type: string
+                      companyType:
+                        type: string
+                      incorporationNumber:
+                        type: string
+                      dateOfIncorporation:
+                        type: string
+                        format: date
+                      countryOfIncorporation:
+                        type: string
+                      taxNumber:
+                        type: string
+                      companyAddress:
+                        type: string
+                      zipOrPostcode:
+                        type: string
+                      stateOrProvince:
+                        type: string
+                      city:
+                        type: string
+                      businessDescription:
+                        type: string
+                      companyWebsite:
+                        type: string
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
         - KYC Business
       summary: Update business KYC profile
-      description: Create or update business KYC information
+      description: Create or update business KYC information. Business name is required.
       requestBody:
         required: true
         content:
@@ -629,32 +1019,44 @@ paths:
               properties:
                 businessName:
                   type: string
+                  example: "Test Business Ltd"
                 companyType:
                   type: string
+                  example: "Limited Liability Company"
                 incorporationNumber:
                   type: string
+                  example: "RC123456"
                 dateOfIncorporation:
                   type: string
                   format: date
+                  example: "2020-01-01"
                 countryOfIncorporation:
                   type: string
+                  example: "Nigeria"
                 taxNumber:
                   type: string
+                  example: "TAX123456"
                 companyAddress:
                   type: string
+                  example: "456 Business Ave"
                 zipOrPostcode:
                   type: string
+                  example: "100001"
                 stateOrProvince:
                   type: string
+                  example: "Lagos"
                 city:
                   type: string
+                  example: "Lagos"
                 businessDescription:
                   type: string
+                  example: "E-commerce platform"
                 companyWebsite:
                   type: string
+                  example: "https://testbusiness.com"
       responses:
         '200':
-          description: Business KYC updated
+          description: Business KYC updated successfully
           content:
             application/json:
               schema:
@@ -662,12 +1064,27 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Business KYC created"
                   profile:
                     type: object
         '400':
-          description: Bad request
+          description: Bad request - business name required or empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== KYC DOCUMENTS ENDPOINTS ====================
 
@@ -676,10 +1093,10 @@ paths:
       tags:
         - KYC Documents
       summary: Get KYC documents
-      description: List all uploaded KYC documents
+      description: List all uploaded KYC documents for the authenticated user
       responses:
         '200':
-          description: Documents retrieved
+          description: Documents retrieved successfully
           content:
             application/json:
               schema:
@@ -689,14 +1106,44 @@ paths:
                     type: array
                     items:
                       type: object
+                      properties:
+                        id:
+                          type: integer
+                        userId:
+                          type: integer
+                        type:
+                          type: string
+                          enum:
+                            - GOVERNMENT_ID
+                            - INCORPORATION_CERTIFICATE
+                            - ARTICLE_OF_ASSOCIATION
+                            - PROOF_OF_ADDRESS
+                            - SELFIE_WITH_ID
+                            - BANK_STATEMENT
+                            - ADDITIONAL
+                        url:
+                          type: string
+                        uploadedAt:
+                          type: string
+                          format: date-time
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
         - KYC Documents
       summary: Save KYC documents
-      description: Save KYC document URLs
+      description: Save KYC document URLs. At least one document is required.
       requestBody:
         required: true
         content:
@@ -708,6 +1155,7 @@ paths:
               properties:
                 documents:
                   type: array
+                  minItems: 1
                   items:
                     type: object
                     required:
@@ -724,11 +1172,13 @@ paths:
                           - SELFIE_WITH_ID
                           - BANK_STATEMENT
                           - ADDITIONAL
+                        example: GOVERNMENT_ID
                       url:
                         type: string
+                        example: "https://res.cloudinary.com/..."
       responses:
         '200':
-          description: Documents saved
+          description: Documents saved successfully
           content:
             application/json:
               schema:
@@ -736,19 +1186,35 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "KYC documents saved"
                   count:
                     type: integer
+                    example: 2
         '400':
-          description: Bad request
+          description: Bad request - no documents provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/kyc/documents/upload:
     post:
       tags:
         - KYC Documents
       summary: Upload KYC documents
-      description: Upload KYC documents to Cloudinary
+      description: Upload KYC documents to Cloudinary. Supported formats - JPEG, PNG, PDF. Max size 50MB per file, max 5 files.
       requestBody:
         required: true
         content:
@@ -759,26 +1225,33 @@ paths:
                 governmentId:
                   type: string
                   format: binary
+                  description: Government issued ID
                 incorporationCertificate:
                   type: string
                   format: binary
+                  description: Business incorporation certificate
                 articleOfAssociation:
                   type: string
                   format: binary
+                  description: Article of association
                 proofOfAddress:
                   type: string
                   format: binary
+                  description: Proof of address
                 selfieWithId:
                   type: string
                   format: binary
+                  description: Selfie with ID
                 bankStatement:
                   type: string
                   format: binary
+                  description: Bank statement
                 additionalDocuments:
                   type: array
                   items:
                     type: string
                     format: binary
+                  description: Additional documents (max 5)
       responses:
         '200':
           description: Documents uploaded successfully
@@ -789,14 +1262,34 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Files uploaded successfully"
                   documents:
                     type: array
                     items:
                       type: object
+                      properties:
+                        type:
+                          type: string
+                        url:
+                          type: string
         '400':
-          description: No files provided
+          description: No files provided or invalid file type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== KYC PEPS ENDPOINTS ====================
 
@@ -805,10 +1298,10 @@ paths:
       tags:
         - KYC PEPS
       summary: Get PEPs
-      description: List all Politically Exposed Persons
+      description: List all Politically Exposed Persons for the authenticated user
       responses:
         '200':
-          description: PEPs retrieved
+          description: PEPs retrieved successfully
           content:
             application/json:
               schema:
@@ -818,8 +1311,35 @@ paths:
                     type: array
                     items:
                       type: object
+                      properties:
+                        id:
+                          type: integer
+                        userId:
+                          type: integer
+                        name:
+                          type: string
+                        position:
+                          type: string
+                        description:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
@@ -845,13 +1365,16 @@ paths:
                     properties:
                       name:
                         type: string
+                        example: "Jane Doe"
                       position:
                         type: string
+                        example: "Minister of Finance"
                       description:
                         type: string
+                        example: "Senior government official"
       responses:
         '200':
-          description: PEPs saved
+          description: PEPs saved successfully
           content:
             application/json:
               schema:
@@ -859,10 +1382,22 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "PEPs saved"
                   count:
                     type: integer
+                    example: 1
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== KYC SUBMISSION ENDPOINTS ====================
 
@@ -871,10 +1406,10 @@ paths:
       tags:
         - KYC Submission
       summary: Submit KYC for approval
-      description: Submit complete KYC for review and approval
+      description: Submit complete KYC for review and approval. Personal KYC must be complete.
       responses:
         '200':
-          description: KYC submitted
+          description: KYC submitted successfully
           content:
             application/json:
               schema:
@@ -882,12 +1417,42 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "KYC submitted for approval"
                   profile:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      userId:
+                        type: integer
+                      status:
+                        type: string
+                        enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
+                        example: SUBMITTED
         '400':
-          description: Bad request
+          description: Bad request - incomplete KYC information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: KYC profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   # ==================== STORE ENDPOINTS ====================
 
@@ -896,7 +1461,7 @@ paths:
       tags:
         - Store
       summary: Setup store
-      description: Create a new store for the authenticated user
+      description: Create a new store for the authenticated user. Each user can have only one store.
       requestBody:
         required: true
         content:
@@ -910,13 +1475,18 @@ paths:
               properties:
                 businessName:
                   type: string
+                  example: "My Awesome Shop"
                 storeUrl:
                   type: string
+                  example: "my-awesome-shop"
+                  description: "3-63 characters, lowercase alphanumeric and hyphens only"
                 country:
                   type: string
+                  example: "United States"
                 currency:
                   type: string
                   default: USD
+                  example: USD
       responses:
         '201':
           description: Store created successfully
@@ -927,12 +1497,40 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Store setup successful"
                   store:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
         '400':
-          description: Bad request
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/store:
     get:
@@ -950,16 +1548,49 @@ paths:
                 properties:
                   store:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: Store not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
         - Store
       summary: Update store
-      description: Update the authenticated user's store details
+      description: Update the authenticated user's store details. Store URL cannot be changed.
       requestBody:
         required: true
         content:
@@ -969,10 +1600,13 @@ paths:
               properties:
                 businessName:
                   type: string
+                  example: "Updated Shop Name"
                 country:
                   type: string
+                  example: "Canada"
                 currency:
                   type: string
+                  example: "CAD"
       responses:
         '200':
           description: Store updated successfully
@@ -983,19 +1617,53 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Store updated successfully"
                   store:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
         '400':
-          description: Bad request
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Store not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/store/launch:
     post:
       tags:
         - Store
       summary: Launch store
-      description: Launch the authenticated user's store
+      description: Launch the authenticated user's store. Once launched, the store becomes publicly accessible.
       responses:
         '200':
           description: Store launched successfully
@@ -1006,12 +1674,47 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Store launched successfully"
                   store:
                     type: object
+                    properties:
+                      id:
+                        type: integer
+                      businessName:
+                        type: string
+                      storeUrl:
+                        type: string
+                      country:
+                        type: string
+                      currency:
+                        type: string
+                      isLaunched:
+                        type: boolean
+                        example: true
         '400':
-          description: Bad request
+          description: Bad request - store already launched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Store not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   securitySchemes:
