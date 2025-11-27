@@ -1,7 +1,9 @@
 whenever you modify run
 
-npx prisma generate in /src/prisma
+npm install -g tsconfig-paths
 
+npx prisma generate in /src/prisma
+npx prisma migrate dev --name product
 To renew ssl
 sudo certbot renew --dry-run
 
