@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Dootling API
   description: |
-    Complete JWT authentication system with store management for Dootling platform.
+    Complete JWT authentication system with store management and user KYC for Dootling platform.
     
     ## Authentication
     Most endpoints require authentication. Include the access token in the Authorization header:
@@ -13,6 +13,7 @@ info:
     ## Base URLs
     - Authentication: `/api/auth`
     - Store: `/api/store`
+    - KYC: `/api/kyc`
     
     ## Documentation
     - **Swagger UI**: [http://localhost:8000/api-docs](http://localhost:8000/api-docs)
@@ -126,6 +127,182 @@ paths:
           description: Missing required fields / Invalid email format / Password too short / Email already registered
         '500':
           description: Internal server error
+
+  /api/kyc/personal:
+    get:
+      tags:
+        - KYC
+      summary: Get personal KYC profile
+      description: Retrieve the authenticated user's personal KYC profile.
+      responses:
+        '200':
+          description: Personal KYC profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: '#/components/schemas/UserKycProfile'
+        '401':
+          description: Unauthorized (missing or invalid token)
+    put:
+      tags:
+        - KYC
+      summary: Update personal KYC profile
+      description: Create or update the authenticated user's personal KYC profile.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserKycProfileInput'
+      responses:
+        '200':
+          description: Personal KYC profile saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personal KYC profile updated
+                  profile:
+                    $ref: '#/components/schemas/UserKycProfile'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+
+  /api/kyc/business:
+    get:
+      tags:
+        - KYC
+      summary: Get business KYC profile
+      description: Retrieve the authenticated user's business KYC profile.
+      responses:
+        '200':
+          description: Business KYC profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: '#/components/schemas/BusinessKyc'
+        '401':
+          description: Unauthorized (missing or invalid token)
+    put:
+      tags:
+        - KYC
+      summary: Update business KYC profile
+      description: Create or update the authenticated user's business KYC profile.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessKycInput'
+      responses:
+        '200':
+          description: Business KYC profile saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Business KYC updated
+                  profile:
+                    $ref: '#/components/schemas/BusinessKyc'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+
+  /api/kyc/documents:
+    get:
+      tags:
+        - KYC
+      summary: List KYC documents
+      description: Retrieve all KYC documents uploaded for the authenticated user.
+      responses:
+        '200':
+          description: KYC documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  documents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KycDocument'
+        '401':
+          description: Unauthorized (missing or invalid token)
+    put:
+      tags:
+        - KYC
+      summary: Save KYC documents
+      description: Save or replace KYC documents for the authenticated user by type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - documents
+              properties:
+                documents:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/KycDocumentInput'
+      responses:
+        '200':
+          description: KYC documents saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: KYC documents saved
+                  count:
+                    type: integer
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized (missing or invalid token)
+
+  /api/kyc/submit:
+    post:
+      tags:
+        - KYC
+      summary: Submit KYC for approval
+      description: Mark the authenticated user's KYC as submitted for review.
+      responses:
+        '200':
+          description: KYC submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: KYC submitted for approval
+                  profile:
+                    $ref: '#/components/schemas/UserKycProfile'
+        '400':
+          description: KYC information incomplete
+        '401':
+          description: Unauthorized (missing or invalid token)
+        '404':
+          description: Personal KYC profile not found
 
   /api/auth/verify-email:
     post:
@@ -620,6 +797,210 @@ components:
         error: Bad Request
         message: Invalid input data
         statusCode: 400
+    UserKycProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        middleName:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        dateOfBirth:
+          type: string
+          format: date-time
+          nullable: true
+        meansOfIdentification:
+          type: string
+          nullable: true
+        identificationNumber:
+          type: string
+          nullable: true
+        identificationExpiry:
+          type: string
+          format: date-time
+          nullable: true
+        countryOfResidency:
+          type: string
+          nullable: true
+        contactAddress:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UserKycProfileInput:
+      type: object
+      properties:
+        middleName:
+          type: string
+        gender:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date-time
+        meansOfIdentification:
+          type: string
+        identificationNumber:
+          type: string
+        identificationExpiry:
+          type: string
+          format: date-time
+        countryOfResidency:
+          type: string
+        contactAddress:
+          type: string
+      example:
+        middleName: Andrew
+        gender: Male
+        dateOfBirth: 1990-01-01T00:00:00.000Z
+        meansOfIdentification: Passport
+        identificationNumber: A1234567
+        identificationExpiry: 2030-12-31T00:00:00.000Z
+        countryOfResidency: United Kingdom
+        contactAddress: 221B Baker Street, London
+    BusinessKyc:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        businessName:
+          type: string
+        companyType:
+          type: string
+          nullable: true
+        incorporationNumber:
+          type: string
+          nullable: true
+        dateOfIncorporation:
+          type: string
+          format: date-time
+          nullable: true
+        countryOfIncorporation:
+          type: string
+          nullable: true
+        taxNumber:
+          type: string
+          nullable: true
+        companyAddress:
+          type: string
+          nullable: true
+        zipOrPostcode:
+          type: string
+          nullable: true
+        stateOrProvince:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        businessDescription:
+          type: string
+          nullable: true
+        companyWebsite:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    BusinessKycInput:
+      type: object
+      required:
+        - businessName
+      properties:
+        businessName:
+          type: string
+        companyType:
+          type: string
+        incorporationNumber:
+          type: string
+        dateOfIncorporation:
+          type: string
+          format: date-time
+        countryOfIncorporation:
+          type: string
+        taxNumber:
+          type: string
+        companyAddress:
+          type: string
+        zipOrPostcode:
+          type: string
+        stateOrProvince:
+          type: string
+        city:
+          type: string
+        businessDescription:
+          type: string
+        companyWebsite:
+          type: string
+      example:
+        businessName: Example Ltd
+        companyType: Limited Liability Company
+        incorporationNumber: INC-123456
+        dateOfIncorporation: 2015-05-20T00:00:00.000Z
+        countryOfIncorporation: United Kingdom
+        taxNumber: TAX-987654
+        companyAddress: 10 Downing Street, London
+        zipOrPostcode: SW1A 2AA
+        stateOrProvince: London
+        city: London
+        businessDescription: Online retail services
+        companyWebsite: https://example.com
+    KycDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+          enum:
+            - GOVERNMENT_ID
+            - INCORPORATION_CERTIFICATE
+            - ARTICLE_OF_ASSOCIATION
+            - PROOF_OF_ADDRESS
+            - SELFIE_WITH_ID
+            - BANK_STATEMENT
+            - ADDITIONAL
+        url:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+    KycDocumentInput:
+      type: object
+      required:
+        - type
+        - url
+      properties:
+        type:
+          type: string
+          enum:
+            - GOVERNMENT_ID
+            - INCORPORATION_CERTIFICATE
+            - ARTICLE_OF_ASSOCIATION
+            - PROOF_OF_ADDRESS
+            - SELFIE_WITH_ID
+            - BANK_STATEMENT
+            - ADDITIONAL
+        url:
+          type: string
 
 tags:
   - name: Health
@@ -628,3 +1009,5 @@ tags:
     description: User authentication and registration endpoints
   - name: Store
     description: Store management endpoints for authenticated users
+  - name: KYC
+    description: User KYC (Know Your Customer) endpoints for personal, business, and document verification
