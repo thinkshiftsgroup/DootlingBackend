@@ -1,4 +1,5 @@
 import { prisma } from "../prisma";
+import { uploadToCloudinary } from "../utils/cloudinary";
 
 interface PersonalKycInput {
   middleName?: string;
@@ -171,4 +172,64 @@ export const submitKyc = async (userId: number) => {
   });
 
   return { message: "KYC submitted for approval", profile: updated };
+};
+
+export const listPeps = async (userId: number) => {
+  const peps = await (prisma as any).pep.findMany({ where: { userId } });
+  return { peps };
+};
+
+export const savePeps = async (userId: number, peps: { name: string; position: string; description?: string }[]) => {
+  await (prisma as any).pep.deleteMany({ where: { userId } });
+  const created = await (prisma as any).pep.createMany({
+    data: peps.map(p => ({ userId, name: p.name, position: p.position, description: p.description })),
+  });
+  return { message: "PEPs saved", count: created.count };
+};
+
+export const uploadKycDocuments = async (userId: number, files: { [fieldname: string]: Express.Multer.File[] }) => {
+  const documentTypeMap: { [key: string]: KycDocumentTypeString } = {
+    governmentId: "GOVERNMENT_ID",
+    incorporationCertificate: "INCORPORATION_CERTIFICATE",
+    articleOfAssociation: "ARTICLE_OF_ASSOCIATION",
+    proofOfAddress: "PROOF_OF_ADDRESS",
+    selfieWithId: "SELFIE_WITH_ID",
+    bankStatement: "BANK_STATEMENT",
+    additionalDocuments: "ADDITIONAL",
+  };
+
+  const uploadedDocuments: { type: KycDocumentTypeString; url: string }[] = [];
+
+  for (const [fieldName, fileArray] of Object.entries(files)) {
+    const docType = documentTypeMap[fieldName];
+    if (!docType) continue;
+
+    for (const file of fileArray) {
+      const url = await uploadToCloudinary(file, "auto");
+      uploadedDocuments.push({ type: docType, url });
+    }
+  }
+
+  if (uploadedDocuments.length === 0) {
+    throw new Error("No valid documents uploaded");
+  }
+
+  const types = Array.from(new Set(uploadedDocuments.map((d) => d.type))) as KycDocumentTypeString[];
+  await prisma.kycDocument.deleteMany({
+    where: { userId, type: { in: types } },
+  });
+
+  const created = await prisma.kycDocument.createMany({
+    data: uploadedDocuments.map((d) => ({
+      userId,
+      type: d.type,
+      url: d.url,
+    })),
+  });
+
+  return {
+    message: "Documents uploaded successfully",
+    count: created.count,
+    documents: uploadedDocuments,
+  };
 };

@@ -33,6 +33,7 @@ model User {
   kycProfile                UserKycProfile?
   businessKyc               BusinessKyc?
   kycDocuments              KycDocument[]
+  peps                      Pep[]
 }
 
 model Store {
@@ -110,5 +111,16 @@ model KycDocument {
   type        KycDocumentType
   url         String
   uploadedAt  DateTime        @default(now())
+}
+
+model Pep {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  position    String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
