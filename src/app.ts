@@ -11,6 +11,7 @@ import { errorHandler } from "@middlewares/error.middleware";
 
 import { authRouter } from "@routes/auth.routes";
 import { storeRouter } from "@routes/store.routes";
+import { kycRouter } from "@routes/kyc.routes";
 
 const app = express();
 
@@ -69,11 +70,11 @@ app.get('/swagger.yml', (req: Request, res: Response) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/store", storeRouter);
+app.use("/api/kyc", kycRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
 });
-
 
 app.use(errorHandler);
 
