@@ -8,45 +8,47 @@ datasource db {
 }
 
 model User {
-  id                        Int       @id @default(autoincrement())
-  email                     String    @unique
-  username                  String    @unique 
-  fullName                  String 
-  firstname                 String?
-  lastname                  String?
-  phone                     String?
-  howDidYouFindUs           String?
-  userType                  String    @default("user")
-  password                  String    
-  profilePhotoUrl           String?
-  isVerified                Boolean   @default(false)
-  verificationCode          String?
-  verificationCodeExpires   DateTime?
-  resetPasswordToken        String?
-  resetPasswordExpires      DateTime?
-  refreshToken              String?
-  subscribeToMarketing      Boolean   @default(false)
-  createdAt                 DateTime  @default(now())
-  updatedAt                 DateTime  @updatedAt
-  lastActive                DateTime?
-  stores                    Store[]
-  kycProfile                UserKycProfile?
-  businessKyc               BusinessKyc?
-  kycDocuments              KycDocument[]
-  peps                      Pep[]
+  id                      Int       @id @default(autoincrement())
+  email                   String    @unique
+  username                String    @unique
+  fullName                String
+  firstname               String?
+  lastname                String?
+  phone                   String?
+  howDidYouFindUs         String?
+  userType                String    @default("user")
+  password                String
+  profilePhotoUrl         String?
+  isVerified              Boolean   @default(false)
+  verificationCode        String?
+  verificationCodeExpires DateTime?
+  resetPasswordToken      String?
+  resetPasswordExpires    DateTime?
+  refreshToken            String?
+  subscribeToMarketing    Boolean   @default(false)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  lastActive              DateTime?
+  stores                  Store[]
+  kycProfile              UserKycProfile?
+  businessKyc             BusinessKyc?
+  kycDocuments            KycDocument[]
+  peps                    Pep[]
 }
 
 model Store {
-  id                        Int       @id @default(autoincrement())
-  userId                    Int
-  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName              String
-  storeUrl                  String    @unique
-  country                   String
-  currency                  String    @default("USD")
-  isLaunched                Boolean   @default(false)
-  createdAt                 DateTime  @default(now())
-  updatedAt                 DateTime  @updatedAt
+  id              Int        @id @default(autoincrement())
+  userId          Int
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName    String
+  storeUrl        String     @unique
+  country         String
+  currency        String     @default("USD")
+  isLaunched      Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  products        Product[]
+  categories      Category[] // <--- NEW RELATIONSHIP ADDED HERE
 }
 
 enum KycStatus {
@@ -68,9 +70,9 @@ enum KycDocumentType {
 }
 
 model UserKycProfile {
-  id                      Int        @id @default(autoincrement())
-  userId                  Int        @unique
-  user                    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                      Int       @id @default(autoincrement())
+  userId                  Int       @unique
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   middleName              String?
   gender                  String?
   dateOfBirth             DateTime?
@@ -79,38 +81,38 @@ model UserKycProfile {
   identificationExpiry    DateTime?
   countryOfResidency      String?
   contactAddress          String?
-  status                  KycStatus  @default(NOT_STARTED)
-  createdAt               DateTime   @default(now())
-  updatedAt               DateTime   @updatedAt
+  status                  KycStatus @default(NOT_STARTED)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 }
 
 model BusinessKyc {
-  id                      Int        @id @default(autoincrement())
-  userId                  Int        @unique
-  user                    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName            String
-  companyType             String?
-  incorporationNumber     String?
-  dateOfIncorporation     DateTime?
-  countryOfIncorporation  String?
-  taxNumber               String?
-  companyAddress          String?
-  zipOrPostcode           String?
-  stateOrProvince         String?
-  city                    String?
-  businessDescription     String?
-  companyWebsite          String?
-  createdAt               DateTime   @default(now())
-  updatedAt               DateTime   @updatedAt
+  id                     Int       @id @default(autoincrement())
+  userId                 Int       @unique
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName           String
+  companyType            String?
+  incorporationNumber    String?
+  dateOfIncorporation    DateTime?
+  countryOfIncorporation String?
+  taxNumber              String?
+  companyAddress         String?
+  zipOrPostcode          String?
+  stateOrProvince        String?
+  city                   String?
+  businessDescription    String?
+  companyWebsite         String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 }
 
 model KycDocument {
-  id          Int             @id @default(autoincrement())
-  userId      Int
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        KycDocumentType
-  url         String
-  uploadedAt  DateTime        @default(now())
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       KycDocumentType
+  url        String
+  uploadedAt DateTime        @default(now())
 }
 
 model Pep {
@@ -124,3 +126,110 @@ model Pep {
   updatedAt   DateTime @updatedAt
 }
 
+enum ProductType {
+  REGULAR
+  VARIANT
+}
+
+model Product {
+  id                          Int                  @id @default(autoincrement())
+  storeId                     Int
+  store                       Store                @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type                        ProductType          @default(REGULAR)
+  name                        String
+  productImages               String[]
+  shortDescription            String
+  longDescription             String?
+  customProductUrl            String?              @unique
+  seoDescription              String?
+  checkoutButtonCta           String?              @default("Buy Now")
+  hideFromHomepage            Boolean              @default(false)
+  stockQuantity               Int?
+  unit                        String?
+  barcode                     String?
+  minOrderQuantity            Int                  @default(1)
+  maxOrderQuantity            Int?
+  isPreOrder                  Boolean              @default(false)
+  preOrderReleaseDate         DateTime?
+  showStrikedOutOriginalPrice Boolean              @default(false)
+  pricings                    ProductPricing[]
+  embedVideoPath              String?
+  discoveryCategories         String[]
+  commissionPercentage        Float?
+  autoRedirectAfterPurchase   Boolean              @default(false)
+  redirectUrl                 String?
+  categories                  ProductCategory[]
+  descriptionDetails          ProductDescriptionDetail[]
+  options                     ProductOption[]
+  upsellProducts              ProductUpsell[]      @relation("UpsellProduct")
+  crossSellProducts           ProductUpsell[]      @relation("CrossSellProduct")
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
+}
+
+model Category {
+  id          Int               @id @default(autoincrement())
+  storeId     Int               
+  store       Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  image       String?
+  products    ProductCategory[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([storeId, name]) 
+}
+
+model ProductCategory {
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+}
+
+model ProductPricing {
+  id              Int      @id @default(autoincrement())
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  currencyCode    String
+  sellingPrice    Float
+  originalPrice   Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([productId, currencyCode])
+}
+
+model ProductDescriptionDetail {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ProductOption {
+  id              Int                  @id @default(autoincrement())
+  productId       Int
+  product         Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  optionType      String
+  values      String[] 
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+
+
+model ProductUpsell {
+  productId       Int
+  product         Product  @relation("UpsellProduct", fields: [productId], references: [id], onDelete: Cascade)
+  upsellProductId Int
+  upsellProduct   Product  @relation("CrossSellProduct", fields: [upsellProductId], references: [id], onDelete: Cascade)
+
+  @@id([productId, upsellProductId])
+}
