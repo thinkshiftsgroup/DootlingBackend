@@ -1,30 +1,11 @@
 openapi: 3.0.3
 info:
   title: Dootling API
-  description: |
-    Complete JWT authentication system with store management and user KYC for Dootling platform.
-    
-    ## Authentication
-    Most endpoints require authentication. Include the access token in the Authorization header:
-    ```
-    Authorization: Bearer <accessToken>
-    ```
-    
-    ## Base URLs
-    - Authentication: `/api/auth`
-    - Store: `/api/store`
-    - KYC: `/api/kyc`
-    
-    ## Documentation
-    - **Swagger UI**: [http://localhost:8000/api-docs](http://localhost:8000/api-docs)
-    - **ReDoc**: [http://localhost:8000/api-redoc](http://localhost:8000/api-redoc)
+  description: Complete JWT authentication system with user profile management, store management, and KYC verification
   version: 1.0.0
   contact:
     name: Dootling Support
     email: support@dootling.com
-  license:
-    name: ISC
-    url: https://opensource.org/licenses/ISC
 
 servers:
   - url: http://localhost:8000
@@ -53,17 +34,17 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: UP
                   message:
                     type: string
-                    example: Service is healthy
+
+  # ==================== AUTHENTICATION ENDPOINTS ====================
 
   /api/auth/register:
     post:
       tags:
         - Authentication
-      summary: Register new user
-      description: Register a new user with password and send OTP verification code to email
+      summary: Register a new user
+      description: Register a new user with email and password
       security: []
       requestBody:
         required: true
@@ -80,38 +61,22 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: Valid email format
                 firstname:
                   type: string
-                  description: Non-empty string
                 lastname:
                   type: string
-                  description: Non-empty string
                 password:
                   type: string
                   minLength: 8
-                  description: Minimum 8 characters
                 phone:
                   type: string
-                  description: Any format (optional)
                 howDidYouFindUs:
                   type: string
-                  description: Any string (optional)
                 subscribeToMarketing:
                   type: boolean
-                  default: false
-                  description: Boolean flag to opt-in for marketing communications
-            example:
-              email: user@example.com
-              firstname: John
-              lastname: Doe
-              password: SecurePass123!
-              phone: "+1234567890"
-              howDidYouFindUs: Google Ads
-              subscribeToMarketing: true
       responses:
         '201':
-          description: Registration successful
+          description: User registered successfully
           content:
             application/json:
               schema:
@@ -119,197 +84,19 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Registration successful. Please check your email for verification code.
                   userId:
                     type: integer
-                    example: 1
         '400':
-          description: Missing required fields / Invalid email format / Password too short / Email already registered
+          description: Bad request
         '500':
           description: Internal server error
-
-  /api/kyc/personal:
-    get:
-      tags:
-        - KYC
-      summary: Get personal KYC profile
-      description: Retrieve the authenticated user's personal KYC profile.
-      responses:
-        '200':
-          description: Personal KYC profile retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  profile:
-                    $ref: '#/components/schemas/UserKycProfile'
-        '401':
-          description: Unauthorized (missing or invalid token)
-    put:
-      tags:
-        - KYC
-      summary: Update personal KYC profile
-      description: Create or update the authenticated user's personal KYC profile.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserKycProfileInput'
-      responses:
-        '200':
-          description: Personal KYC profile saved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Personal KYC profile updated
-                  profile:
-                    $ref: '#/components/schemas/UserKycProfile'
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized (missing or invalid token)
-
-  /api/kyc/business:
-    get:
-      tags:
-        - KYC
-      summary: Get business KYC profile
-      description: Retrieve the authenticated user's business KYC profile.
-      responses:
-        '200':
-          description: Business KYC profile retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  profile:
-                    $ref: '#/components/schemas/BusinessKyc'
-        '401':
-          description: Unauthorized (missing or invalid token)
-    put:
-      tags:
-        - KYC
-      summary: Update business KYC profile
-      description: Create or update the authenticated user's business KYC profile.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BusinessKycInput'
-      responses:
-        '200':
-          description: Business KYC profile saved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Business KYC updated
-                  profile:
-                    $ref: '#/components/schemas/BusinessKyc'
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized (missing or invalid token)
-
-  /api/kyc/documents:
-    get:
-      tags:
-        - KYC
-      summary: List KYC documents
-      description: Retrieve all KYC documents uploaded for the authenticated user.
-      responses:
-        '200':
-          description: KYC documents retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  documents:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/KycDocument'
-        '401':
-          description: Unauthorized (missing or invalid token)
-    put:
-      tags:
-        - KYC
-      summary: Save KYC documents
-      description: Save or replace KYC documents for the authenticated user by type.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - documents
-              properties:
-                documents:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/KycDocumentInput'
-      responses:
-        '200':
-          description: KYC documents saved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: KYC documents saved
-                  count:
-                    type: integer
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized (missing or invalid token)
-
-  /api/kyc/submit:
-    post:
-      tags:
-        - KYC
-      summary: Submit KYC for approval
-      description: Mark the authenticated user's KYC as submitted for review.
-      responses:
-        '200':
-          description: KYC submitted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: KYC submitted for approval
-                  profile:
-                    $ref: '#/components/schemas/UserKycProfile'
-        '400':
-          description: KYC information incomplete
-        '401':
-          description: Unauthorized (missing or invalid token)
-        '404':
-          description: Personal KYC profile not found
 
   /api/auth/verify-email:
     post:
       tags:
         - Authentication
       summary: Verify email with OTP
-      description: Verify email with OTP code and receive access/refresh tokens
+      description: Verify email address with OTP code sent to email
       security: []
       requestBody:
         required: true
@@ -324,14 +111,8 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: Must match registered email
                 code:
                   type: string
-                  pattern: '^[0-9]{6}$'
-                  description: 6-digit OTP code sent to email
-            example:
-              email: user@example.com
-              code: "123456"
       responses:
         '200':
           description: Email verified successfully
@@ -342,164 +123,14 @@ paths:
                 properties:
                   accessToken:
                     type: string
-                    description: JWT access token
                   refreshToken:
                     type: string
-                    description: JWT refresh token
                   user:
                     type: object
-                    properties:
-                      id:
-                        type: integer
-                      email:
-                        type: string
-                        format: email
-                      fullName:
-                        type: string
-                      isVerified:
-                        type: boolean
         '400':
-          description: Missing required fields / Invalid verification code / Code expired / Email already verified
+          description: Bad request
         '404':
           description: User not found
-        '500':
-          description: Internal server error
-
-  /api/auth/login:
-    post:
-      tags:
-        - Authentication
-      summary: Login user
-      description: Login with email and password. Email must be verified before login
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  format: email
-                  description: Valid registered email
-                password:
-                  type: string
-                  description: Correct password for the account
-            example:
-              email: user@example.com
-              password: SecurePass123!
-      responses:
-        '200':
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  accessToken:
-                    type: string
-                    description: JWT access token
-                  refreshToken:
-                    type: string
-                    description: JWT refresh token
-                  user:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      email:
-                        type: string
-                        format: email
-                      fullName:
-                        type: string
-                      username:
-                        type: string
-        '400':
-          description: Missing required fields / Invalid credentials / Email not verified
-        '500':
-          description: Internal server error
-
-  /api/auth/refresh-token:
-    post:
-      tags:
-        - Authentication
-      summary: Refresh access token
-      description: Get a new access token using refresh token
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - refreshToken
-              properties:
-                refreshToken:
-                  type: string
-                  description: JWT refresh token
-            example:
-              refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-      responses:
-        '200':
-          description: Token refreshed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  accessToken:
-                    type: string
-                    description: New JWT access token
-        '400':
-          description: Invalid refresh token
-        '500':
-          description: Internal server error
-
-  /api/auth/set-password:
-    post:
-      tags:
-        - Authentication
-      summary: Change password
-      description: Change password for authenticated user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - password
-              properties:
-                password:
-                  type: string
-                  minLength: 8
-                  description: Minimum 8 characters
-            example:
-              password: NewSecurePass123!
-      responses:
-        '200':
-          description: Password changed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Password changed successfully
-        '400':
-          description: Missing password / Password too short
-        '401':
-          description: Unauthorized / Invalid token
-        '404':
-          description: User not found
-        '500':
-          description: Internal server error
 
   /api/auth/resend-verification:
     post:
@@ -520,11 +151,9 @@ paths:
                 email:
                   type: string
                   format: email
-            example:
-              email: user@example.com
       responses:
         '200':
-          description: Verification code resent successfully
+          description: Verification code resent
           content:
             application/json:
               schema:
@@ -532,20 +161,742 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Verification code resent successfully
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      description: Login with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  user:
+                    type: object
         '400':
-          description: Invalid email format
-        '404':
-          description: User not found
-        '500':
-          description: Internal server error
+          description: Bad request
+
+  /api/auth/refresh-token:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+
+  /api/auth/forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: Request password reset
+      description: Request password reset code via email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Reset code sent to email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/auth/verify-reset-code:
+    post:
+      tags:
+        - Authentication
+      summary: Verify password reset code
+      description: Verify the password reset OTP code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Reset code verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  email:
+                    type: string
+
+  /api/auth/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password
+      description: Reset password with verified OTP code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+                - newPassword
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/auth/set-password:
+    post:
+      tags:
+        - Authentication
+      summary: Set password for authenticated user
+      description: Change password for authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Logout and invalidate refresh token
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  # ==================== USER PROFILE ENDPOINTS ====================
+
+  /api/user/profile:
+    get:
+      tags:
+        - User Profile
+      summary: Get user profile
+      description: Retrieve the authenticated user's complete profile including personal and identification details
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      fullName:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      middleName:
+                        type: string
+                      gender:
+                        type: string
+                      dateOfBirth:
+                        type: string
+                        format: date
+                      phone:
+                        type: string
+                      meansOfIdentification:
+                        type: string
+                      identificationNumber:
+                        type: string
+                      identificationExpiry:
+                        type: string
+                        format: date
+                      countryOfResidency:
+                        type: string
+                      contactAddress:
+                        type: string
+                      profilePhotoUrl:
+                        type: string
+                      isVerified:
+                        type: boolean
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - User Profile
+      summary: Update user profile
+      description: Update user profile including personal and identification details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                middleName:
+                  type: string
+                gender:
+                  type: string
+                  enum: [Male, Female, Other]
+                dateOfBirth:
+                  type: string
+                  format: date
+                phone:
+                  type: string
+                meansOfIdentification:
+                  type: string
+                  enum: [NIN, VOTERS_CARD, DRIVERS_LICENSE, INTERNATIONAL_PASSPORT]
+                identificationNumber:
+                  type: string
+                identificationExpiry:
+                  type: string
+                  format: date
+                countryOfResidency:
+                  type: string
+                contactAddress:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/user/profile/photo:
+    post:
+      tags:
+        - User Profile
+      summary: Upload profile photo
+      description: Upload profile photo to Cloudinary
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  profilePhotoUrl:
+                    type: string
+        '400':
+          description: No file provided
+        '401':
+          description: Unauthorized
+
+  # ==================== KYC PERSONAL ENDPOINTS ====================
+
+  /api/kyc/personal:
+    get:
+      tags:
+        - KYC Personal
+      summary: Get personal KYC profile
+      description: Retrieve personal KYC information
+      responses:
+        '200':
+          description: Personal KYC retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    type: object
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - KYC Personal
+      summary: Update personal KYC profile
+      description: Create or update personal KYC information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                middleName:
+                  type: string
+                gender:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+                meansOfIdentification:
+                  type: string
+                identificationNumber:
+                  type: string
+                identificationExpiry:
+                  type: string
+                  format: date
+                countryOfResidency:
+                  type: string
+                contactAddress:
+                  type: string
+      responses:
+        '200':
+          description: Personal KYC updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  profile:
+                    type: object
+        '401':
+          description: Unauthorized
+
+  # ==================== KYC BUSINESS ENDPOINTS ====================
+
+  /api/kyc/business:
+    get:
+      tags:
+        - KYC Business
+      summary: Get business KYC profile
+      description: Retrieve business KYC information
+      responses:
+        '200':
+          description: Business KYC retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    type: object
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - KYC Business
+      summary: Update business KYC profile
+      description: Create or update business KYC information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - businessName
+              properties:
+                businessName:
+                  type: string
+                companyType:
+                  type: string
+                incorporationNumber:
+                  type: string
+                dateOfIncorporation:
+                  type: string
+                  format: date
+                countryOfIncorporation:
+                  type: string
+                taxNumber:
+                  type: string
+                companyAddress:
+                  type: string
+                zipOrPostcode:
+                  type: string
+                stateOrProvince:
+                  type: string
+                city:
+                  type: string
+                businessDescription:
+                  type: string
+                companyWebsite:
+                  type: string
+      responses:
+        '200':
+          description: Business KYC updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  profile:
+                    type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  # ==================== KYC DOCUMENTS ENDPOINTS ====================
+
+  /api/kyc/documents:
+    get:
+      tags:
+        - KYC Documents
+      summary: Get KYC documents
+      description: List all uploaded KYC documents
+      responses:
+        '200':
+          description: Documents retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  documents:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - KYC Documents
+      summary: Save KYC documents
+      description: Save KYC document URLs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - documents
+              properties:
+                documents:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - url
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - GOVERNMENT_ID
+                          - INCORPORATION_CERTIFICATE
+                          - ARTICLE_OF_ASSOCIATION
+                          - PROOF_OF_ADDRESS
+                          - SELFIE_WITH_ID
+                          - BANK_STATEMENT
+                          - ADDITIONAL
+                      url:
+                        type: string
+      responses:
+        '200':
+          description: Documents saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  count:
+                    type: integer
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/kyc/documents/upload:
+    post:
+      tags:
+        - KYC Documents
+      summary: Upload KYC documents
+      description: Upload KYC documents to Cloudinary
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                governmentId:
+                  type: string
+                  format: binary
+                incorporationCertificate:
+                  type: string
+                  format: binary
+                articleOfAssociation:
+                  type: string
+                  format: binary
+                proofOfAddress:
+                  type: string
+                  format: binary
+                selfieWithId:
+                  type: string
+                  format: binary
+                bankStatement:
+                  type: string
+                  format: binary
+                additionalDocuments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Documents uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  documents:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: No files provided
+        '401':
+          description: Unauthorized
+
+  # ==================== KYC PEPS ENDPOINTS ====================
+
+  /api/kyc/peps:
+    get:
+      tags:
+        - KYC PEPS
+      summary: Get PEPs
+      description: List all Politically Exposed Persons
+      responses:
+        '200':
+          description: PEPs retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  peps:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - KYC PEPS
+      summary: Save PEPs
+      description: Save Politically Exposed Persons information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - peps
+              properties:
+                peps:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - position
+                    properties:
+                      name:
+                        type: string
+                      position:
+                        type: string
+                      description:
+                        type: string
+      responses:
+        '200':
+          description: PEPs saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  count:
+                    type: integer
+        '401':
+          description: Unauthorized
+
+  # ==================== KYC SUBMISSION ENDPOINTS ====================
+
+  /api/kyc/submit:
+    post:
+      tags:
+        - KYC Submission
+      summary: Submit KYC for approval
+      description: Submit complete KYC for review and approval
+      responses:
+        '200':
+          description: KYC submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  profile:
+                    type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  # ==================== STORE ENDPOINTS ====================
 
   /api/store/setup:
     post:
       tags:
         - Store
       summary: Setup store
-      description: Create a new store for the authenticated user. Each user can have only one store
+      description: Create a new store for the authenticated user
       requestBody:
         required: true
         content:
@@ -559,31 +910,16 @@ paths:
               properties:
                 businessName:
                   type: string
-                  minLength: 1
-                  maxLength: 255
-                  description: Name of the business
                 storeUrl:
                   type: string
-                  minLength: 3
-                  maxLength: 63
-                  pattern: '^[a-z0-9-]+$'
-                  description: Unique store URL (lowercase alphanumeric and hyphens only)
                 country:
                   type: string
-                  minLength: 1
-                  description: Country name
                 currency:
                   type: string
                   default: USD
-                  description: Currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
-            example:
-              businessName: My Awesome Shop
-              storeUrl: my-awesome-shop
-              country: United States
-              currency: USD
       responses:
         '201':
-          description: Store setup successful
+          description: Store created successfully
           content:
             application/json:
               schema:
@@ -591,32 +927,14 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Store setup successful
                   store:
                     type: object
-                    properties:
-                      id:
-                        type: integer
-                      businessName:
-                        type: string
-                      storeUrl:
-                        type: string
-                      country:
-                        type: string
-                      currency:
-                        type: string
-                      isLaunched:
-                        type: boolean
         '400':
-          description: Invalid input / Store URL already taken / User already has a store / Invalid store URL format
+          description: Bad request
         '401':
-          description: Unauthorized (missing or invalid token)
-        '404':
-          description: User not found
-        '500':
-          description: Internal server error
+          description: Unauthorized
 
-  /api/store/:
+  /api/store:
     get:
       tags:
         - Store
@@ -630,42 +948,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
-                    example: Store retrieved successfully
                   store:
                     type: object
-                    properties:
-                      id:
-                        type: integer
-                      businessName:
-                        type: string
-                      storeUrl:
-                        type: string
-                      country:
-                        type: string
-                      currency:
-                        type: string
-                      isLaunched:
-                        type: boolean
-                      createdAt:
-                        type: string
-                        format: date-time
-                      updatedAt:
-                        type: string
-                        format: date-time
         '401':
-          description: Unauthorized (missing or invalid token)
+          description: Unauthorized
         '404':
           description: Store not found
-        '500':
-          description: Internal server error
 
     put:
       tags:
         - Store
       summary: Update store
-      description: Update the authenticated user's store details. Only businessName, country, and currency can be updated. storeUrl is immutable
+      description: Update the authenticated user's store details
       requestBody:
         required: true
         content:
@@ -675,20 +969,10 @@ paths:
               properties:
                 businessName:
                   type: string
-                  minLength: 1
-                  maxLength: 255
-                  description: New business name (non-empty if provided)
                 country:
                   type: string
-                  minLength: 1
-                  description: New country name (non-empty if provided)
                 currency:
                   type: string
-                  description: New currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
-            example:
-              businessName: Updated Shop Name
-              country: Canada
-              currency: CAD
       responses:
         '200':
           description: Store updated successfully
@@ -699,43 +983,19 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Store updated successfully
                   store:
                     type: object
-                    properties:
-                      id:
-                        type: integer
-                      businessName:
-                        type: string
-                      storeUrl:
-                        type: string
-                      country:
-                        type: string
-                      currency:
-                        type: string
-                      isLaunched:
-                        type: boolean
-                      createdAt:
-                        type: string
-                        format: date-time
-                      updatedAt:
-                        type: string
-                        format: date-time
         '400':
-          description: Invalid input
+          description: Bad request
         '401':
-          description: Unauthorized (missing or invalid token)
-        '404':
-          description: Store not found
-        '500':
-          description: Internal server error
+          description: Unauthorized
 
   /api/store/launch:
     post:
       tags:
         - Store
       summary: Launch store
-      description: Launch the authenticated user's store. Once launched, the store becomes publicly accessible
+      description: Launch the authenticated user's store
       responses:
         '200':
           description: Store launched successfully
@@ -746,34 +1006,12 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Store launched successfully
                   store:
                     type: object
-                    properties:
-                      id:
-                        type: integer
-                      businessName:
-                        type: string
-                      storeUrl:
-                        type: string
-                      country:
-                        type: string
-                      currency:
-                        type: string
-                      isLaunched:
-                        type: boolean
-                      createdAt:
-                        type: string
-                        format: date-time
-                      updatedAt:
-                        type: string
-                        format: date-time
+        '400':
+          description: Bad request
         '401':
-          description: Unauthorized (missing or invalid token)
-        '404':
-          description: Store not found
-        '500':
-          description: Internal server error
+          description: Unauthorized
 
 components:
   securitySchemes:
@@ -781,233 +1019,15 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: JWT authentication token. Enter your access token in the format: Bearer <token>
+      description: JWT authentication token
 
   schemas:
     Error:
       type: object
       properties:
-        error:
-          type: string
+        success:
+          type: boolean
         message:
           type: string
-        statusCode:
-          type: integer
-      example:
-        error: Bad Request
-        message: Invalid input data
-        statusCode: 400
-    UserKycProfile:
-      type: object
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        middleName:
-          type: string
-          nullable: true
-        gender:
-          type: string
-          nullable: true
-        dateOfBirth:
-          type: string
-          format: date-time
-          nullable: true
-        meansOfIdentification:
-          type: string
-          nullable: true
-        identificationNumber:
-          type: string
-          nullable: true
-        identificationExpiry:
-          type: string
-          format: date-time
-          nullable: true
-        countryOfResidency:
-          type: string
-          nullable: true
-        contactAddress:
-          type: string
-          nullable: true
-        status:
-          type: string
-          enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    UserKycProfileInput:
-      type: object
-      properties:
-        middleName:
-          type: string
-        gender:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date-time
-        meansOfIdentification:
-          type: string
-        identificationNumber:
-          type: string
-        identificationExpiry:
-          type: string
-          format: date-time
-        countryOfResidency:
-          type: string
-        contactAddress:
-          type: string
-      example:
-        middleName: Andrew
-        gender: Male
-        dateOfBirth: 1990-01-01T00:00:00.000Z
-        meansOfIdentification: Passport
-        identificationNumber: A1234567
-        identificationExpiry: 2030-12-31T00:00:00.000Z
-        countryOfResidency: United Kingdom
-        contactAddress: 221B Baker Street, London
-    BusinessKyc:
-      type: object
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        businessName:
-          type: string
-        companyType:
-          type: string
-          nullable: true
-        incorporationNumber:
-          type: string
-          nullable: true
-        dateOfIncorporation:
-          type: string
-          format: date-time
-          nullable: true
-        countryOfIncorporation:
-          type: string
-          nullable: true
-        taxNumber:
-          type: string
-          nullable: true
-        companyAddress:
-          type: string
-          nullable: true
-        zipOrPostcode:
-          type: string
-          nullable: true
-        stateOrProvince:
-          type: string
-          nullable: true
-        city:
-          type: string
-          nullable: true
-        businessDescription:
-          type: string
-          nullable: true
-        companyWebsite:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    BusinessKycInput:
-      type: object
-      required:
-        - businessName
-      properties:
-        businessName:
-          type: string
-        companyType:
-          type: string
-        incorporationNumber:
-          type: string
-        dateOfIncorporation:
-          type: string
-          format: date-time
-        countryOfIncorporation:
-          type: string
-        taxNumber:
-          type: string
-        companyAddress:
-          type: string
-        zipOrPostcode:
-          type: string
-        stateOrProvince:
-          type: string
-        city:
-          type: string
-        businessDescription:
-          type: string
-        companyWebsite:
-          type: string
-      example:
-        businessName: Example Ltd
-        companyType: Limited Liability Company
-        incorporationNumber: INC-123456
-        dateOfIncorporation: 2015-05-20T00:00:00.000Z
-        countryOfIncorporation: United Kingdom
-        taxNumber: TAX-987654
-        companyAddress: 10 Downing Street, London
-        zipOrPostcode: SW1A 2AA
-        stateOrProvince: London
-        city: London
-        businessDescription: Online retail services
-        companyWebsite: https://example.com
-    KycDocument:
-      type: object
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        type:
-          type: string
-          enum:
-            - GOVERNMENT_ID
-            - INCORPORATION_CERTIFICATE
-            - ARTICLE_OF_ASSOCIATION
-            - PROOF_OF_ADDRESS
-            - SELFIE_WITH_ID
-            - BANK_STATEMENT
-            - ADDITIONAL
-        url:
-          type: string
-        uploadedAt:
-          type: string
-          format: date-time
-    KycDocumentInput:
-      type: object
-      required:
-        - type
-        - url
-      properties:
-        type:
-          type: string
-          enum:
-            - GOVERNMENT_ID
-            - INCORPORATION_CERTIFICATE
-            - ARTICLE_OF_ASSOCIATION
-            - PROOF_OF_ADDRESS
-            - SELFIE_WITH_ID
-            - BANK_STATEMENT
-            - ADDITIONAL
-        url:
-          type: string
-
-tags:
-  - name: Health
-    description: Health check endpoints
-  - name: Authentication
-    description: User authentication and registration endpoints
-  - name: Store
-    description: Store management endpoints for authenticated users
-  - name: KYC
-    description: User KYC (Know Your Customer) endpoints for personal, business, and document verification
+        stack:
+          type: object
