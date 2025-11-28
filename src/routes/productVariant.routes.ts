@@ -5,8 +5,8 @@ import * as productVariantController from "@controllers/productVariant.controlle
 export const productVariantRouter = Router();
 
 productVariantRouter.post("/:storeId", authenticate, productVariantController.createProductVariant);
-productVariantRouter.get("/:storeId", authenticate, productVariantController.getProductVariants);
 productVariantRouter.get("/:storeId/export", authenticate, productVariantController.exportProductVariantsCSV);
 productVariantRouter.get("/:storeId/:id", authenticate, productVariantController.getProductVariantById);
+productVariantRouter.get("/:storeId", authenticate, productVariantController.getProductVariants);
 productVariantRouter.put("/:id", authenticate, productVariantController.updateProductVariant);
 productVariantRouter.delete("/:id", authenticate, productVariantController.deleteProductVariant);
