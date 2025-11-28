@@ -6,7 +6,7 @@
     "prestart": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "build:prisma": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "start:server": "ts-node -r tsconfig-paths/register src/server.ts",
-    "start": "npm run build:prisma && npm run start:server",
+    "start": "npm run build:prisma && ts-node -r /home/samuel/DootlingBackend/node_modules/tsconfig-paths/register src/server.ts",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
     "build": "rimraf dist && tsc",
     "lint": "eslint src --ext .ts",
