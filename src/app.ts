@@ -15,6 +15,10 @@ import { kycRouter } from "@routes/kyc.routes";
 import { userRouter } from "@routes/user.routes";
 import { productRouter } from "@routes/product.routes";
 import { categoryRouter } from "@routes/category.routes";
+import { brandRouter } from "@routes/brand.routes";
+import { productGroupRouter } from "@routes/productGroup.routes";
+import { productVariantRouter } from "@routes/productVariant.routes";
+import unitRouter from "@routes/unit.routes";
 
 const app = express();
 
@@ -87,6 +91,10 @@ app.use("/api/store", storeRouter);
 app.use("/api/kyc", kycRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/brands", brandRouter);
+app.use("/api/product-groups", productGroupRouter);
+app.use("/api/product-variants", productVariantRouter);
+app.use("/api", unitRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
