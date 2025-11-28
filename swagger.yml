@@ -1718,12 +1718,40 @@ paths:
 
   # ==================== CATEGORY ENDPOINTS ====================
 
-  /api/categories:
+  /api/categories/{storeId}:
     get:
       tags:
         - Categories
       summary: Get all categories
-      description: Retrieve all product categories for the authenticated user's store
+      description: Retrieve all product categories for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of categories per page
+        - name: categoryName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter categories by name
       responses:
         '200':
           description: Categories retrieved successfully
@@ -1732,10 +1760,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  categories:
+                  message:
+                    type: string
+                    example: "Categories retrieved successfully."
+                  data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Category'
+                  meta:
+                    $ref: '#/components/schemas/Pagination'
         '401':
           description: Unauthorized
           content:
@@ -1753,7 +1786,15 @@ paths:
       tags:
         - Categories
       summary: Create a new category
-      description: Create a new product category for the authenticated user's store
+      description: Create a new product category for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
       requestBody:
         required: true
         content:
@@ -1782,8 +1823,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Category created successfully"
-                  category:
+                    example: "Category created successfully."
+                  data:
                     $ref: '#/components/schemas/Category'
         '400':
           description: Bad request - validation error
@@ -1804,19 +1845,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/categories/{categoryId}:
+  /api/categories/{storeId}/{categoryId}:
     get:
       tags:
         - Categories
       summary: Get category by ID
-      description: Retrieve a specific category by ID
+      description: Retrieve a specific category by ID for a specific store
       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
         - name: categoryId
           in: path
           required: true
           schema:
             type: integer
           example: 1
+          description: Category ID
       responses:
         '200':
           description: Category retrieved successfully
@@ -1825,7 +1874,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  category:
+                  message:
+                    type: string
+                    example: "Category retrieved successfully."
+                  data:
                     $ref: '#/components/schemas/Category'
         '404':
           description: Category not found
@@ -1850,14 +1902,22 @@ paths:
       tags:
         - Categories
       summary: Update category
-      description: Update a category by ID
+      description: Update a category by ID for a specific store
       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
         - name: categoryId
           in: path
           required: true
           schema:
             type: integer
           example: 1
+          description: Category ID
       requestBody:
         required: true
         content:
@@ -1884,8 +1944,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Category updated successfully"
-                  category:
+                    example: "Category updated successfully."
+                  data:
                     $ref: '#/components/schemas/Category'
         '404':
           description: Category not found
@@ -1910,14 +1970,22 @@ paths:
       tags:
         - Categories
       summary: Delete category
-      description: Delete a category by ID
+      description: Delete a category by ID for a specific store
       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
         - name: categoryId
           in: path
           required: true
           schema:
             type: integer
           example: 1
+          description: Category ID
       responses:
         '200':
           description: Category deleted successfully
@@ -1928,7 +1996,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Category deleted successfully"
+                    example: "Category deleted successfully."
+                  data:
+                    type: object
+                    nullable: true
         '404':
           description: Category not found
           content:
@@ -1950,19 +2021,20 @@ paths:
 
   # ==================== PRODUCT ENDPOINTS ====================
 
-  /api/products:
+  /api/products/{storeId}:
     get:
       tags:
         - Products
       summary: Get all products
-      description: Retrieve all products for the authenticated user's store
+      description: Retrieve all products for a specific store
       parameters:
-        - name: categoryId
-          in: query
-          required: false
+        - name: storeId
+          in: path
+          required: true
           schema:
             type: integer
-          description: Filter products by category ID
+          example: 1
+          description: Store ID
         - name: page
           in: query
           required: false
@@ -1970,13 +2042,32 @@ paths:
             type: integer
             default: 1
           description: Page number for pagination
-        - name: limit
+        - name: pageSize
           in: query
           required: false
           schema:
             type: integer
             default: 10
           description: Number of products per page
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter products by category ID
+        - name: productName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter products by name
+        - name: sortByPrice
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [highest, lowest]
+          description: Sort products by price
       responses:
         '200':
           description: Products retrieved successfully
@@ -1985,21 +2076,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  products:
+                  message:
+                    type: string
+                    example: "Products retrieved successfully."
+                  data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Product'
-                  pagination:
-                    type: object
-                    properties:
-                      page:
-                        type: integer
-                      limit:
-                        type: integer
-                      total:
-                        type: integer
-                      totalPages:
-                        type: integer
+                  meta:
+                    $ref: '#/components/schemas/Pagination'
         '401':
           description: Unauthorized
           content:
@@ -2017,7 +2102,15 @@ paths:
       tags:
         - Products
       summary: Create a new product
-      description: Create a new product for the authenticated user's store
+      description: Create a new product for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
       requestBody:
         required: true
         content:
@@ -2026,62 +2119,116 @@ paths:
               type: object
               required:
                 - name
-                - price
-                - categoryId
+                - productImages
+                - shortDescription
+                - stockQuantity
+                - pricings
+                - descriptionDetails
+                - options
+                - categories
               properties:
                 name:
                   type: string
                   example: "Wireless Headphones"
-                description:
-                  type: string
-                  example: "High-quality wireless headphones with noise cancellation"
-                price:
-                  type: number
-                  format: float
-                  example: 99.99
-                compareAtPrice:
-                  type: number
-                  format: float
-                  example: 149.99
-                sku:
-                  type: string
-                  example: "WH-001"
-                barcode:
-                  type: string
-                  example: "1234567890123"
-                weight:
-                  type: number
-                  format: float
-                  example: 0.5
-                categoryId:
-                  type: integer
-                  example: 1
-                images:
+                productImages:
                   type: array
                   items:
                     type: string
                   example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
-                tags:
+                shortDescription:
+                  type: string
+                  example: "High-quality wireless headphones with noise cancellation"
+                stockQuantity:
+                  type: integer
+                  example: 100
+                type:
+                  type: string
+                  enum: [REGULAR, VARIANT]
+                  default: REGULAR
+                  example: REGULAR
+                longDescription:
+                  type: string
+                  example: "Detailed product description with features and specifications"
+                customProductUrl:
+                  type: string
+                  example: "wireless-headphones-pro"
+                seoDescription:
+                  type: string
+                  example: "Premium wireless headphones with active noise cancellation"
+                checkoutButtonCta:
+                  type: string
+                  default: "Buy Now"
+                  example: "Add to Cart"
+                hideFromHomepage:
+                  type: boolean
+                  default: false
+                unit:
+                  type: string
+                  example: "pieces"
+                barcode:
+                  type: string
+                  example: "1234567890123"
+                minOrderQuantity:
+                  type: integer
+                  default: 1
+                  example: 1
+                maxOrderQuantity:
+                  type: integer
+                  example: 10
+                isPreOrder:
+                  type: boolean
+                  default: false
+                preOrderReleaseDate:
+                  type: string
+                  format: date-time
+                showStrikedOutOriginalPrice:
+                  type: boolean
+                  default: false
+                embedVideoPath:
+                  type: string
+                  example: "https://youtube.com/watch?v=example"
+                discoveryCategories:
                   type: array
                   items:
                     type: string
-                  example: ["wireless", "bluetooth", "audio"]
-                status:
+                  example: ["electronics", "audio"]
+                commissionPercentage:
+                  type: number
+                  format: float
+                  example: 5.5
+                autoRedirectAfterPurchase:
+                  type: boolean
+                  default: false
+                redirectUrl:
                   type: string
-                  enum: [ACTIVE, INACTIVE, DRAFT]
-                  example: "ACTIVE"
-                inventory:
-                  type: object
-                  properties:
-                    quantity:
-                      type: integer
-                      example: 100
-                    trackQuantity:
-                      type: boolean
-                      example: true
-                    allowOutOfStock:
-                      type: boolean
-                      example: false
+                  example: "https://thank-you-page.com"
+                pricings:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductPricingInput'
+                descriptionDetails:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductDescriptionDetailInput'
+                options:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductOptionInput'
+                categories:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2]
+                upsellProductIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [5, 6]
+                crossSellProductIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [7, 8]
       responses:
         '201':
           description: Product created successfully
@@ -2092,8 +2239,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Product created successfully"
-                  product:
+                    example: "Product created successfully."
+                  data:
                     $ref: '#/components/schemas/Product'
         '400':
           description: Bad request - validation error
@@ -2103,12 +2250,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Category not found
           content:
             application/json:
               schema:
@@ -2133,6 +2274,7 @@ paths:
           schema:
             type: integer
           example: 1
+          description: Product ID
       responses:
         '200':
           description: Product retrieved successfully
@@ -2141,7 +2283,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  product:
+                  message:
+                    type: string
+                    example: "Product retrieved successfully."
+                  data:
                     $ref: '#/components/schemas/Product'
         '404':
           description: Product not found
@@ -2174,6 +2319,7 @@ paths:
           schema:
             type: integer
           example: 1
+          description: Product ID
       requestBody:
         required: true
         content:
@@ -2184,56 +2330,98 @@ paths:
                 name:
                   type: string
                   example: "Updated Wireless Headphones"
-                description:
-                  type: string
-                  example: "Updated description"
-                price:
-                  type: number
-                  format: float
-                  example: 89.99
-                compareAtPrice:
-                  type: number
-                  format: float
-                  example: 139.99
-                sku:
-                  type: string
-                  example: "WH-001-UPD"
-                barcode:
-                  type: string
-                  example: "1234567890124"
-                weight:
-                  type: number
-                  format: float
-                  example: 0.6
-                categoryId:
-                  type: integer
-                  example: 2
-                images:
+                productImages:
                   type: array
                   items:
                     type: string
                   example: ["https://example.com/updated-product1.jpg"]
-                tags:
+                shortDescription:
+                  type: string
+                  example: "Updated description"
+                stockQuantity:
+                  type: integer
+                  example: 150
+                longDescription:
+                  type: string
+                  example: "Updated detailed description"
+                customProductUrl:
+                  type: string
+                  example: "updated-wireless-headphones"
+                seoDescription:
+                  type: string
+                  example: "Updated SEO description"
+                checkoutButtonCta:
+                  type: string
+                  example: "Buy Now"
+                hideFromHomepage:
+                  type: boolean
+                  example: false
+                unit:
+                  type: string
+                  example: "pieces"
+                barcode:
+                  type: string
+                  example: "1234567890124"
+                minOrderQuantity:
+                  type: integer
+                  example: 1
+                maxOrderQuantity:
+                  type: integer
+                  example: 10
+                isPreOrder:
+                  type: boolean
+                  example: false
+                preOrderReleaseDate:
+                  type: string
+                  format: date-time
+                showStrikedOutOriginalPrice:
+                  type: boolean
+                  example: false
+                embedVideoPath:
+                  type: string
+                  example: "https://youtube.com/watch?v=updated"
+                discoveryCategories:
                   type: array
                   items:
                     type: string
-                  example: ["wireless", "bluetooth", "audio", "updated"]
-                status:
+                  example: ["electronics", "audio", "updated"]
+                commissionPercentage:
+                  type: number
+                  format: float
+                  example: 5.5
+                autoRedirectAfterPurchase:
+                  type: boolean
+                  example: false
+                redirectUrl:
                   type: string
-                  enum: [ACTIVE, INACTIVE, DRAFT]
-                  example: "ACTIVE"
-                inventory:
-                  type: object
-                  properties:
-                    quantity:
-                      type: integer
-                      example: 150
-                    trackQuantity:
-                      type: boolean
-                      example: true
-                    allowOutOfStock:
-                      type: boolean
-                      example: false
+                  example: "https://updated-thank-you-page.com"
+                pricings:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductPricingInput'
+                descriptionDetails:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductDescriptionDetailInput'
+                options:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductOptionInput'
+                categories:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2]
+                upsellProductIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [5, 6]
+                crossSellProductIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [7, 8]
       responses:
         '200':
           description: Product updated successfully
@@ -2244,8 +2432,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Product updated successfully"
-                  product:
+                    example: "Product updated successfully."
+                  data:
                     $ref: '#/components/schemas/Product'
         '404':
           description: Product not found
@@ -2278,6 +2466,7 @@ paths:
           schema:
             type: integer
           example: 1
+          description: Product ID
       responses:
         '200':
           description: Product deleted successfully
@@ -2288,7 +2477,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Product deleted successfully"
+                    example: "Product deleted successfully."
+                  data:
+                    type: object
+                    nullable: true
         '404':
           description: Product not found
           content:
@@ -2297,6 +2489,1348 @@ paths:
                 $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== BRAND ENDPOINTS ====================
+
+  /api/brands/{storeId}:
+    post:
+      tags:
+        - Brands
+      summary: Create brand
+      description: Create a new brand for the store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Nike"
+                description:
+                  type: string
+                  example: "Premium athletic brand"
+                file:
+                  type: string
+                  format: binary
+                  description: Brand image (JPEG, PNG, or PDF)
+      responses:
+        '201':
+          description: Brand created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - brand name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Brands
+      summary: Get brands
+      description: Get all brands for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by variant name
+          example: "Size"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product variants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      brands:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Brand'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/brands/{storeId}/export:
+    get:
+      tags:
+        - Brands
+      summary: Export brands to CSV
+      description: Export all brands for a store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/brands/{storeId}/{id}:
+    get:
+      tags:
+        - Brands
+      summary: Get brand by ID
+      description: Get a specific brand by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Brand retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Brand'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Brand not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/brands/{id}:
+    put:
+      tags:
+        - Brands
+      summary: Update brand
+      description: Update a brand by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Nike"
+                description:
+                  type: string
+                  example: "Premium athletic brand"
+                file:
+                  type: string
+                  format: binary
+                  description: Brand image (JPEG, PNG, or PDF)
+      responses:
+        '200':
+          description: Brand updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Brand not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Brands
+      summary: Delete brand
+      description: Delete a brand by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Brand deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Brand deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Brand not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-variants/{storeId}/export:
+    get:
+      tags:
+        - Product Variants
+      summary: Export product variants to CSV
+      description: Export all product variants for a store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-variants/{storeId}/{id}:
+    get:
+      tags:
+        - Product Variants
+      summary: Get product variant by ID
+      description: Get a specific product variant by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product variant retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-variants/{id}:
+    put:
+      tags:
+        - Product Variants
+      summary: Update product variant
+      description: Update a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Small", "Medium", "Large", "XL"]
+      responses:
+        '200':
+          description: Product variant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Product Variants
+      summary: Delete product variant
+      description: Delete a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product variant deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product variant deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== BRAND ENDPOINTS ====================
+
+  /api/product-groups/{storeId}:
+    post:
+      tags:
+        - Product Groups
+      summary: Create product group
+      description: Create a new product group for the store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Electronics"
+                description:
+                  type: string
+                  example: "Electronic devices and accessories"
+                file:
+                  type: string
+                  format: binary
+                  description: Group image (JPEG, PNG, or PDF)
+      responses:
+        '201':
+          description: Product group created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - group name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Product Groups
+      summary: Get product groups
+      description: Get all product groups for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by group name or description
+          example: "Electronics"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductGroup'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{storeId}/export:
+    get:
+      tags:
+        - Product Groups
+      summary: Export product groups to CSV
+      description: Export all product groups for a store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{storeId}/{id}:
+    get:
+      tags:
+        - Product Groups
+      summary: Get product group by ID
+      description: Get a specific product group by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product group retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{id}:
+    put:
+      tags:
+        - Product Groups
+      summary: Update product group
+      description: Update a product group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Electronics"
+                description:
+                  type: string
+                  example: "Electronic devices and accessories"
+                file:
+                  type: string
+                  format: binary
+                  description: Group image (JPEG, PNG, or PDF)
+      responses:
+        '200':
+          description: Product group updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Product Groups
+      summary: Delete product group
+      description: Delete a product group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product group deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product group deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== PRODUCT VARIANT ENDPOINTS ====================
+
+  /api/product-variants/{storeId}:
+    post:
+      tags:
+        - Product Variants
+      summary: Create product variant
+      description: Create a new product variant for the store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  default: false
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Small", "Medium", "Large"]
+      responses:
+        '201':
+          description: Product variant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - variant name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Product Variants
+      summary: Get product variants
+      description: Get all product variants for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by variant name
+          example: "Size"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product variants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductVariant'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/units:
+    post:
+      tags:
+        - Units
+      summary: Create a new unit
+      description: Create a new unit for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Living Room Furniture"
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  default: active
+                  example: "active"
+      responses:
+        '201':
+          description: Unit created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Unit'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - unit name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Units
+      summary: Get all units
+      description: Retrieve all units for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search units by name
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, inactive]
+          description: Filter units by status
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of units per page
+      responses:
+        '200':
+          description: Units retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      units:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Unit'
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          page:
+                            type: integer
+                          limit:
+                            type: integer
+                          totalPages:
+                            type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/units/export:
+    get:
+      tags:
+        - Units
+      summary: Export units as CSV
+      description: Export all units for a store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/units/{id}:
+    get:
+      tags:
+        - Units
+      summary: Get unit by ID
+      description: Retrieve a specific unit by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Unit retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Unit'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Unit not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Units
+      summary: Update unit
+      description: Update a unit by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated Living Room Furniture"
+                status:
+                  type: string
+                  enum: [active, inactive]
+                  example: "active"
+      responses:
+        '200':
+          description: Unit updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Unit'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Unit not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - unit name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Units
+      summary: Delete unit
+      description: Delete a unit by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Unit deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Unit deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Unit not found
           content:
             application/json:
               schema:
@@ -2354,68 +3888,372 @@ components:
           format: date-time
           example: "2023-01-01T00:00:00.000Z"
 
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Nike"
+        description:
+          type: string
+          example: "Premium athletic brand"
+        imageUrl:
+          type: string
+          example: "https://example.com/brand-image.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Electronics"
+        description:
+          type: string
+          example: "Electronic devices and accessories"
+        imageUrl:
+          type: string
+          example: "https://example.com/group-image.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Size"
+        hasMultipleOptions:
+          type: boolean
+          example: true
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantOption'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductVariantOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        variantId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Small"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Living Room Furniture"
+        status:
+          type: string
+          enum: [active, inactive]
+          example: "active"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 10
+
+    ProductPricingInput:
+      type: object
+      required:
+        - currencyCode
+        - sellingPrice
+      properties:
+        currencyCode:
+          type: string
+          example: "USD"
+        sellingPrice:
+          type: number
+          format: float
+          example: 99.99
+        originalPrice:
+          type: number
+          format: float
+          example: 149.99
+
+    ProductDescriptionDetailInput:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          example: "Specifications"
+        description:
+          type: string
+          example: "Detailed product specifications and features"
+
+    ProductOptionInput:
+      type: object
+      required:
+        - optionType
+        - values
+      properties:
+        optionType:
+          type: string
+          example: "Color"
+        values:
+          type: array
+          items:
+            type: string
+          example: ["Red", "Blue", "Black"]
+
     Product:
       type: object
       properties:
         id:
           type: integer
           example: 1
-        name:
-          type: string
-          example: "Wireless Headphones"
-        description:
-          type: string
-          example: "High-quality wireless headphones with noise cancellation"
-        price:
-          type: number
-          format: float
-          example: 99.99
-        compareAtPrice:
-          type: number
-          format: float
-          example: 149.99
-        sku:
-          type: string
-          example: "WH-001"
-        barcode:
-          type: string
-          example: "1234567890123"
-        weight:
-          type: number
-          format: float
-          example: 0.5
-        categoryId:
-          type: integer
-          example: 1
         storeId:
           type: integer
           example: 1
-        images:
+        type:
+          type: string
+          enum: [REGULAR, VARIANT]
+          example: REGULAR
+        name:
+          type: string
+          example: "Wireless Headphones"
+        productImages:
           type: array
           items:
             type: string
           example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
-        tags:
+        shortDescription:
+          type: string
+          example: "High-quality wireless headphones with noise cancellation"
+        longDescription:
+          type: string
+          example: "Detailed product description with features and specifications"
+        customProductUrl:
+          type: string
+          example: "wireless-headphones-pro"
+        seoDescription:
+          type: string
+          example: "Premium wireless headphones with active noise cancellation"
+        checkoutButtonCta:
+          type: string
+          example: "Buy Now"
+        hideFromHomepage:
+          type: boolean
+          example: false
+        stockQuantity:
+          type: integer
+          example: 100
+        unit:
+          type: string
+          example: "pieces"
+        barcode:
+          type: string
+          example: "1234567890123"
+        minOrderQuantity:
+          type: integer
+          example: 1
+        maxOrderQuantity:
+          type: integer
+          example: 10
+        isPreOrder:
+          type: boolean
+          example: false
+        preOrderReleaseDate:
+          type: string
+          format: date-time
+        showStrikedOutOriginalPrice:
+          type: boolean
+          example: false
+        embedVideoPath:
+          type: string
+          example: "https://youtube.com/watch?v=example"
+        discoveryCategories:
           type: array
           items:
             type: string
-          example: ["wireless", "bluetooth", "audio"]
-        status:
+          example: ["electronics", "audio"]
+        commissionPercentage:
+          type: number
+          format: float
+          example: 5.5
+        autoRedirectAfterPurchase:
+          type: boolean
+          example: false
+        redirectUrl:
           type: string
-          enum: [ACTIVE, INACTIVE, DRAFT]
-          example: "ACTIVE"
-        inventory:
-          type: object
-          properties:
-            quantity:
-              type: integer
-              example: 100
-            trackQuantity:
-              type: boolean
-              example: true
-            allowOutOfStock:
-              type: boolean
-              example: false
+          example: "https://thank-you-page.com"
+        pricings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPricing'
+        descriptionDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDescriptionDetail'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOption'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductPricing:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        currencyCode:
+          type: string
+          example: "USD"
+        sellingPrice:
+          type: number
+          format: float
+          example: 99.99
+        originalPrice:
+          type: number
+          format: float
+          example: 149.99
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductDescriptionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Specifications"
+        description:
+          type: string
+          example: "Detailed product specifications and features"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        optionType:
+          type: string
+          example: "Color"
+        values:
+          type: array
+          items:
+            type: string
+          example: ["Red", "Blue", "Black"]
         createdAt:
           type: string
           format: date-time

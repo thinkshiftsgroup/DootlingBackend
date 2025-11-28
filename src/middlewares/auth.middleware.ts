@@ -124,3 +124,7 @@ export const optionalProtect = async (
   }
   next();
 };
+
+// Aliases for consistency
+export const authenticate = protect;
+export const authenticateToken = protect;

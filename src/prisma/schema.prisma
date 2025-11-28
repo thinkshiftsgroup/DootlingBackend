@@ -48,7 +48,11 @@ model Store {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
   products        Product[]
-  categories      Category[] // <--- NEW RELATIONSHIP ADDED HERE
+  categories      Category[]
+  brands          Brand[]
+  productGroups   ProductGroup[]
+  productVariants ProductVariant[]
+  units           Unit[]
 }
 
 enum KycStatus {
@@ -232,4 +236,64 @@ model ProductUpsell {
   upsellProduct   Product  @relation("CrossSellProduct", fields: [upsellProductId], references: [id], onDelete: Cascade)
 
   @@id([productId, upsellProductId])
+}
+
+model Brand {
+  id          Int      @id @default(autoincrement())
+  storeId     Int
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, name])
+}
+
+model ProductGroup {
+  id          Int      @id @default(autoincrement())
+  storeId     Int
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, name])
+}
+
+model ProductVariant {
+  id                 Int                       @id @default(autoincrement())
+  storeId            Int
+  store              Store                     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name               String
+  hasMultipleOptions Boolean                   @default(false)
+  options            ProductVariantOption[]
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  @@unique([storeId, name])
+}
+
+model ProductVariantOption {
+  id        Int            @id @default(autoincrement())
+  variantId Int
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Unit {
+  id          Int      @id @default(autoincrement())
+  storeId     Int
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, name])
 }
