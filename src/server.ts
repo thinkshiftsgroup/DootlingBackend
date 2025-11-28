@@ -7,7 +7,7 @@ const startServer = async () => {
   await connectDB();
   const server = app.listen(PORT, () => {
     logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);
-    logger.info(`Access it at http://localhost:${PORT}`);
+    logger.info(`Access on prod at https://api.dootling.com`);
   });
 
   const shutdown = async () => {
