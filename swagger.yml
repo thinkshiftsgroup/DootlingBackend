@@ -1716,6 +1716,761 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  # ==================== CUSTOMER ENDPOINTS ====================
+
+  /api/stores/{storeId}/customers:
+    get:
+      tags:
+        - Customers
+      summary: Get all customers
+      description: Retrieve paginated list of customers for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of customers per page
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search customers by name, email or phone
+        - name: customerGroupId
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter customers by customer group ID
+      responses:
+        '200':
+          description: Customers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      customers:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Customer'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Customers
+      summary: Create a new customer
+      description: Create a new customer for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+              properties:
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@example.com
+                phone:
+                  type: string
+                  example: +1234567890
+                instagramHandle:
+                  type: string
+                  example: @johndoe
+                additionalInfo:
+                  type: string
+                  example: VIP customer
+                customerGroupId:
+                  type: integer
+                  example: 1
+                shippingAddress:
+                  type: string
+                  example: 123 Main St
+                shippingCountry:
+                  type: string
+                  example: USA
+                shippingState:
+                  type: string
+                  example: CA
+                shippingCity:
+                  type: string
+                  example: Los Angeles
+                shippingZipCode:
+                  type: string
+                  example: 90001
+                billingAddress:
+                  type: string
+                  example: 456 Oak Ave
+                billingCountry:
+                  type: string
+                  example: USA
+                billingState:
+                  type: string
+                  example: CA
+                billingCity:
+                  type: string
+                  example: Los Angeles
+                billingZipCode:
+                  type: string
+                  example: 90002
+                sameAsShippingAddress:
+                  type: boolean
+                  example: false
+                sendWelcomeEmail:
+                  type: boolean
+                  example: true
+                subscribedToNewsletter:
+                  type: boolean
+                  example: true
+      responses:
+        '201':
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Customer'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/customers/stats:
+    get:
+      tags:
+        - Customers
+      summary: Get customer statistics
+      description: Retrieve statistics about customers for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CustomerStats'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/customers/export:
+    get:
+      tags:
+        - Customers
+      summary: Export customers to CSV
+      description: Export all customers for a specific store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/customers/{id}:
+    get:
+      tags:
+        - Customers
+      summary: Get customer by ID
+      description: Retrieve a specific customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer ID
+      responses:
+        '200':
+          description: Customer retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Customer'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Customers
+      summary: Update customer
+      description: Update a specific customer by ID. All fields are optional.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                instagramHandle:
+                  type: string
+                additionalInfo:
+                  type: string
+                customerGroupId:
+                  type: integer
+                shippingAddress:
+                  type: string
+                shippingCountry:
+                  type: string
+                shippingState:
+                  type: string
+                shippingCity:
+                  type: string
+                shippingZipCode:
+                  type: string
+                billingAddress:
+                  type: string
+                billingCountry:
+                  type: string
+                billingState:
+                  type: string
+                billingCity:
+                  type: string
+                billingZipCode:
+                  type: string
+                sameAsShippingAddress:
+                  type: boolean
+                subscribedToNewsletter:
+                  type: boolean
+      responses:
+        '200':
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Customer'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Customers
+      summary: Delete customer
+      description: Delete a specific customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer ID
+      responses:
+        '200':
+          description: Customer deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Customer deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+# ==================== CUSTOMER GROUP ENDPOINTS ====================
+
+  /api/stores/{storeId}/customer-groups:
+    get:
+      tags:
+        - Customer Groups
+      summary: Get all customer groups
+      description: Retrieve paginated list of customer groups for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of groups per page
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search groups by name or description
+      responses:
+        '200':
+          description: Customer groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      customerGroups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CustomerGroup'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Customer Groups
+      summary: Create a new customer group
+      description: Create a new customer group for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: VIP Customers
+                description:
+                  type: string
+                  example: High-value customers with special privileges
+      responses:
+        '201':
+          description: Customer group created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CustomerGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/customer-groups/export:
+    get:
+      tags:
+        - Customer Groups
+      summary: Export customer groups to CSV
+      description: Export all customer groups for a specific store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/customer-groups/{id}:
+    get:
+      tags:
+        - Customer Groups
+      summary: Get customer group by ID
+      description: Retrieve a specific customer group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer Group ID
+      responses:
+        '200':
+          description: Customer group retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CustomerGroup'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Customer Groups
+      summary: Update customer group
+      description: Update a specific customer group by ID. All fields are optional.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer Group ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Customer group updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/CustomerGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Customer Groups
+      summary: Delete customer group
+      description: Delete a specific customer group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Customer Group ID
+      responses:
+        '200':
+          description: Customer group deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Customer group deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   # ==================== CATEGORY ENDPOINTS ====================
 
   /api/categories/{storeId}:
@@ -2425,6 +3180,7 @@ paths:
       responses:
         '200':
           description: Product updated successfully
+
           content:
             application/json:
               schema:
@@ -2878,763 +3634,6 @@ paths:
           schema:
             type: integer
           example: 1
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        '200':
-          description: Product variant retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product variant not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/product-variants/{id}:
-    put:
-      tags:
-        - Product Variants
-      summary: Update product variant
-      description: Update a product variant by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Size"
-                hasMultipleOptions:
-                  type: boolean
-                  example: true
-                options:
-                  type: array
-                  items:
-                    type: string
-                  example: ["Small", "Medium", "Large", "XL"]
-      responses:
-        '200':
-          description: Product variant updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '400':
-          description: Bad request - validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product variant not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    delete:
-      tags:
-        - Product Variants
-      summary: Delete product variant
-      description: Delete a product variant by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        '200':
-          description: Product variant deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Product variant deleted successfully"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product variant not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  # ==================== BRAND ENDPOINTS ====================
-
-  /api/product-groups/{storeId}:
-    post:
-      tags:
-        - Product Groups
-      summary: Create product group
-      description: Create a new product group for the store
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: "Electronics"
-                description:
-                  type: string
-                  example: "Electronic devices and accessories"
-                file:
-                  type: string
-                  format: binary
-                  description: Group image (JPEG, PNG, or PDF)
-      responses:
-        '201':
-          description: Product group created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductGroup'
-        '400':
-          description: Bad request - validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '409':
-          description: Conflict - group name already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    get:
-      tags:
-        - Product Groups
-      summary: Get product groups
-      description: Get all product groups for a store with pagination and search
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-        - name: search
-          in: query
-          schema:
-            type: string
-          description: Search by group name or description
-          example: "Electronics"
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-          example: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 10
-          example: 10
-      responses:
-        '200':
-          description: Product groups retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    type: object
-                    properties:
-                      groups:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/ProductGroup'
-                      pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/product-groups/{storeId}/export:
-    get:
-      tags:
-        - Product Groups
-      summary: Export product groups to CSV
-      description: Export all product groups for a store as CSV file
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        '200':
-          description: CSV file generated successfully
-          content:
-            text/csv:
-              schema:
-                type: string
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/product-groups/{storeId}/{id}:
-    get:
-      tags:
-        - Product Groups
-      summary: Get product group by ID
-      description: Get a specific product group by ID
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        '200':
-          description: Product group retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductGroup'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product group not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/product-groups/{id}:
-    put:
-      tags:
-        - Product Groups
-      summary: Update product group
-      description: Update a product group by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Electronics"
-                description:
-                  type: string
-                  example: "Electronic devices and accessories"
-                file:
-                  type: string
-                  format: binary
-                  description: Group image (JPEG, PNG, or PDF)
-      responses:
-        '200':
-          description: Product group updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductGroup'
-        '400':
-          description: Bad request - validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product group not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    delete:
-      tags:
-        - Product Groups
-      summary: Delete product group
-      description: Delete a product group by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      responses:
-        '200':
-          description: Product group deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Product group deleted successfully"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Product group not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  # ==================== PRODUCT VARIANT ENDPOINTS ====================
-
-  /api/product-variants/{storeId}:
-    post:
-      tags:
-        - Product Variants
-      summary: Create product variant
-      description: Create a new product variant for the store
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: "Size"
-                hasMultipleOptions:
-                  type: boolean
-                  default: false
-                  example: true
-                options:
-                  type: array
-                  items:
-                    type: string
-                  example: ["Small", "Medium", "Large"]
-      responses:
-        '201':
-          description: Product variant created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '400':
-          description: Bad request - validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '409':
-          description: Conflict - variant name already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    get:
-      tags:
-        - Product Variants
-      summary: Get product variants
-      description: Get all product variants for a store with pagination and search
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-        - name: search
-          in: query
-          schema:
-            type: string
-          description: Search by variant name
-          example: "Size"
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-          example: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 10
-          example: 10
-      responses:
-        '200':
-          description: Product variants retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    type: object
-                    properties:
-                      variants:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/ProductVariant'
-                      pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/stores/{storeId}/units:
-    post:
-      tags:
-        - Units
-      summary: Create a new unit
-      description: Create a new unit for a specific store
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: "Living Room Furniture"
-                status:
-                  type: string
-                  enum: [active, inactive]
-                  default: active
-                  example: "active"
-      responses:
-        '201':
-          description: Unit created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    $ref: '#/components/schemas/Unit'
-        '400':
-          description: Bad request - validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '409':
-          description: Conflict - unit name already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-    get:
-      tags:
-        - Units
-      summary: Get all units
-      description: Retrieve all units for a specific store
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-        - name: search
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Search units by name
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            enum: [active, inactive]
-          description: Filter units by status
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            default: 1
-          description: Page number for pagination
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            default: 10
-          description: Number of units per page
-      responses:
-        '200':
-          description: Units retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    type: object
-                    properties:
-                      units:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Unit'
-                      pagination:
-                        type: object
-                        properties:
-                          total:
-                            type: integer
-                          page:
-                            type: integer
-                          limit:
-                            type: integer
-                          totalPages:
-                            type: integer
         '401':
           description: Unauthorized
           content:

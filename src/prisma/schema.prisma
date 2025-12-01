@@ -343,3 +343,5 @@ model Customer {
 
   @@unique([storeId, email])
 }
+
+
