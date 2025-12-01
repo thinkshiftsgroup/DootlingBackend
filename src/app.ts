@@ -22,6 +22,7 @@ import unitRouter from "@routes/unit.routes";
 import { customerRouter } from "@routes/customer.routes";
 import { customerGroupRouter } from "@routes/customerGroup.routes";
 import { newsletterRouter } from "@routes/newsletter.routes";
+import { customerAuthRouter } from "@routes/customerAuth.routes";
 
 const app = express();
 
@@ -31,6 +32,8 @@ const allowedOrigins = [
   "https://www.dootling.com",
   "http://localhost:3000",
   "http://localhost:3002",
+  "http://localhost:8000",
+  "http://127.0.0.1:8000",
 ];
 
 const corsOptions = {
@@ -43,13 +46,20 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "https://unpkg.com"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
+        connectSrc: ["'self'", "https://unpkg.com", "http://localhost:8000", "https://localhost:8000"],
+        imgSrc: ["'self'", "data:", "https:"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
       },
     },
   })
 );
 app.use(cors(corsOptions));
+
+// Allow all origins for Swagger docs
+app.use("/docs", cors());
+app.use("/swagger.json", cors());
+app.use("/swagger.yml", cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -101,6 +111,7 @@ app.use("/api", unitRouter);
 app.use("/api", customerRouter);
 app.use("/api", customerGroupRouter);
 app.use("/api", newsletterRouter);
+app.use("/storefront", customerAuthRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });

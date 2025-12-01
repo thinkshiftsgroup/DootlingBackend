@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for controllers/unit.controller.ts</title>
+    <title>Code coverage report for controllers/customerGroup.controller.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">controllers</a> unit.controller.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">controllers</a> customerGroup.controller.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -144,7 +144,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -179,65 +178,66 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response } from "express";
-<span class="cstat-no" title="statement not covered" >import { unitService } from "@services/unit.service";</span>
+<span class="cstat-no" title="statement not covered" >import { customerGroupService } from "@services/customerGroup.service";</span>
 <span class="cstat-no" title="statement not covered" >import { asyncHandler } from "@utils/asyncHandler";</span>
 <span class="cstat-no" title="statement not covered" >import { Parser } from "json2csv";</span>
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >createUnit = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
-  const { name, status } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+export const <span class="cstat-no" title="statement not covered" >createCustomerGroup = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+  const { name, description } = <span class="cstat-no" title="statement not covered" >req.body;</span>
   const storeId = <span class="cstat-no" title="statement not covered" >parseInt(req.params.storeId);</span>
 &nbsp;
-  const unit = <span class="cstat-no" title="statement not covered" >await unitService.createUnit(storeId, { name, status });</span>
-<span class="cstat-no" title="statement not covered" >  res.status(201).json({ success: true, data: unit });</span>
+  const customerGroup = <span class="cstat-no" title="statement not covered" >await customerGroupService.createCustomerGroup(storeId, { name, description });</span>
+<span class="cstat-no" title="statement not covered" >  res.status(201).json({ success: true, data: customerGroup });</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getUnits = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >getCustomerGroups = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
   const storeId = <span class="cstat-no" title="statement not covered" >parseInt(req.params.storeId);</span>
-  const { search, status, page = <span class="branch-0 cbranch-no" title="branch not covered" >"1",</span> limit = <span class="branch-0 cbranch-no" title="branch not covered" >"10" </span>} = <span class="cstat-no" title="statement not covered" >req.query;</span>
+  const { search, page = <span class="branch-0 cbranch-no" title="branch not covered" >"1",</span> limit = <span class="branch-0 cbranch-no" title="branch not covered" >"10" </span>} = <span class="cstat-no" title="statement not covered" >req.query;</span>
 &nbsp;
-  const units = <span class="cstat-no" title="statement not covered" >await unitService.getUnits(storeId, {</span>
+  const customerGroups = <span class="cstat-no" title="statement not covered" >await customerGroupService.getCustomerGroups(storeId, {</span>
     search: search as string,
-    status: status as string,
     page: parseInt(page as string),
     limit: parseInt(limit as string),
   });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: units });</span>
+<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: customerGroups });</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getUnitById = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >getCustomerGroupById = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
   const id = <span class="cstat-no" title="statement not covered" >parseInt(req.params.id);</span>
-  const unit = <span class="cstat-no" title="statement not covered" >await unitService.getUnitById(id);</span>
-<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: unit });</span>
+  const customerGroup = <span class="cstat-no" title="statement not covered" >await customerGroupService.getCustomerGroupById(id);</span>
+<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: customerGroup });</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >updateUnit = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >updateCustomerGroup = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
   const id = <span class="cstat-no" title="statement not covered" >parseInt(req.params.id);</span>
-  const { name, status } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+  const { name, description } = <span class="cstat-no" title="statement not covered" >req.body;</span>
 &nbsp;
-  const unit = <span class="cstat-no" title="statement not covered" >await unitService.updateUnit(id, { name, status });</span>
-<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: unit });</span>
+  const customerGroup = <span class="cstat-no" title="statement not covered" >await customerGroupService.updateCustomerGroup(id, { name, description });</span>
+<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, data: customerGroup });</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >deleteUnit = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >deleteCustomerGroup = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
   const id = <span class="cstat-no" title="statement not covered" >parseInt(req.params.id);</span>
-<span class="cstat-no" title="statement not covered" >  await unitService.deleteUnit(id);</span>
-<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, message: "Unit deleted successfully" });</span>
+<span class="cstat-no" title="statement not covered" >  await customerGroupService.deleteCustomerGroup(id);</span>
+<span class="cstat-no" title="statement not covered" >  res.status(200).json({ success: true, message: "Customer group deleted successfully" });</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >exportUnitsCSV = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >exportCustomerGroupsCSV = asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {</span>
   const storeId = <span class="cstat-no" title="statement not covered" >parseInt(req.params.storeId);</span>
-  const units = <span class="cstat-no" title="statement not covered" >await unitService.getAllUnits(storeId);</span>
+  const customerGroups = <span class="cstat-no" title="statement not covered" >await customerGroupService.getAllCustomerGroups(storeId);</span>
 &nbsp;
-  const fields = <span class="cstat-no" title="statement not covered" >["id", "name", "status", "createdAt"];</span>
+  const fields = <span class="cstat-no" title="statement not covered" >["id", "name", "description", "_count.customers", "createdAt"];</span>
   const parser = <span class="cstat-no" title="statement not covered" >new Parser({ fields });</span>
-  const csv = <span class="cstat-no" title="statement not covered" >parser.parse(units);</span>
+  const csv = <span class="cstat-no" title="statement not covered" >parser.parse(customerGroups);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  res.header("Content-Type", "text/csv");</span>
-<span class="cstat-no" title="statement not covered" >  res.attachment("units.csv");</span>
+<span class="cstat-no" title="statement not covered" >  res.attachment("customer-groups.csv");</span>
 <span class="cstat-no" title="statement not covered" >  res.send(csv);</span>
-});</pre></td></tr></table></pre>
+});
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
