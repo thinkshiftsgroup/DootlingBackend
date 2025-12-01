@@ -1829,7 +1829,7 @@ paths:
                   example: +1234567890
                 instagramHandle:
                   type: string
-                  example: @johndoe
+                  example: "@johndoe"
                 additionalInfo:
                   type: string
                   example: VIP customer
@@ -3633,9 +3633,28 @@ paths:
           required: true
           schema:
             type: integer
-          example: 1
+            example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Product variant retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
           content:
             application/json:
               schema:
@@ -4261,3 +4280,122 @@ components:
           type: string
           format: date-time
           example: "2023-01-01T00:00:00.000Z"
+
+    CustomerGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "VIP Customers"
+        description:
+          type: string
+          example: "Premium customer group with special benefits"
+        discountPercentage:
+          type: number
+          format: float
+          example: 10.5
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          example: "+1234567890"
+        instagramHandle:
+          type: string
+          example: "@johndoe"
+        additionalInfo:
+          type: string
+          example: "VIP customer"
+        customerGroupId:
+          type: integer
+          example: 1
+        shippingAddress:
+          type: string
+          example: "123 Main St, City, Country"
+        shippingCountry:
+          type: string
+          example: "United States"
+        shippingState:
+          type: string
+          example: "California"
+        shippingCity:
+          type: string
+          example: "Los Angeles"
+        shippingZipCode:
+          type: string
+          example: "90210"
+        billingAddress:
+          type: string
+          example: "456 Billing Ave, City, Country"
+        billingCountry:
+          type: string
+          example: "United States"
+        billingState:
+          type: string
+          example: "California"
+        billingCity:
+          type: string
+          example: "Los Angeles"
+        billingZipCode:
+          type: string
+          example: "90210"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    CustomerStats:
+      type: object
+      properties:
+        totalCustomers:
+          type: integer
+          example: 1500
+        activeCustomers:
+          type: integer
+          example: 1200
+        newCustomersThisMonth:
+          type: integer
+          example: 45
+        customersByGroup:
+          type: array
+          items:
+            type: object
+            properties:
+              groupName:
+                type: string
+                example: "VIP Customers"
+              count:
+                type: integer
+                example: 300
