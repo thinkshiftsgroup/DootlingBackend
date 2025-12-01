@@ -100,11 +100,7 @@ export const verifyResourceOwnership = (resourceType: string) => {
             where: { id: resourceId, storeId: userStore.id },
           });
           break;
-        case "order":
-          resource = await prisma.order.findFirst({
-            where: { id: resourceId, storeId: userStore.id },
-          });
-          break;
+        
         default:
           res.status(400).json({ success: false, message: "Invalid resource type" });
           return;
