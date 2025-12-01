@@ -53,6 +53,8 @@ model Store {
   productGroups   ProductGroup[]
   productVariants ProductVariant[]
   units           Unit[]
+  customers       Customer[]
+  customerGroups  CustomerGroup[]
 }
 
 enum KycStatus {
@@ -297,3 +299,49 @@ model Unit {
 
   @@unique([storeId, name])
 }
+
+model CustomerGroup {
+  id          Int        @id @default(autoincrement())
+  storeId     Int
+  store       Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  customers   Customer[]
+
+  @@unique([storeId, name])
+}
+
+model Customer {
+  id                    Int            @id @default(autoincrement())
+  storeId               Int
+  store                 Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  firstName             String
+  lastName              String
+  email                 String?
+  phone                 String?
+  instagramHandle       String?
+  additionalInfo        String?
+  customerGroupId       Int?
+  customerGroup         CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
+  shippingAddress       String?
+  shippingCountry       String?
+  shippingState         String?
+  shippingCity          String?
+  shippingZipCode       String?
+  billingAddress        String?
+  billingCountry        String?
+  billingState          String?
+  billingCity           String?
+  billingZipCode        String?
+  sameAsShippingAddress Boolean        @default(false)
+  sendWelcomeEmail      Boolean        @default(true)
+  subscribedToNewsletter Boolean       @default(false)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@unique([storeId, email])
+}
+
+

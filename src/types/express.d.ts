@@ -1,4 +1,5 @@
 import "express-session";
+import { Store } from "@prisma/client";
 
 declare global {
   namespace Express {
@@ -10,6 +11,7 @@ declare global {
         isVerified: boolean;
         userType: string;
       };
+      store?: Store;
     }
   }
 }

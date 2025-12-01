@@ -19,6 +19,9 @@ import { brandRouter } from "@routes/brand.routes";
 import { productGroupRouter } from "@routes/productGroup.routes";
 import { productVariantRouter } from "@routes/productVariant.routes";
 import unitRouter from "@routes/unit.routes";
+import { customerRouter } from "@routes/customer.routes";
+import { customerGroupRouter } from "@routes/customerGroup.routes";
+import { newsletterRouter } from "@routes/newsletter.routes";
 
 const app = express();
 
@@ -95,6 +98,9 @@ app.use("/api/brands", brandRouter);
 app.use("/api/product-groups", productGroupRouter);
 app.use("/api/product-variants", productVariantRouter);
 app.use("/api", unitRouter);
+app.use("/api", customerRouter);
+app.use("/api", customerGroupRouter);
+app.use("/api", newsletterRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
