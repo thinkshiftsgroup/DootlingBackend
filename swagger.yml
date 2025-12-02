@@ -4497,6 +4497,1727 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  # ==================== WAREHOUSE ENDPOINTS ====================
+
+  /api/warehouses/{storeId}:
+    post:
+      tags:
+        - Warehouses
+      summary: Create a new warehouse
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                zipCode:
+                  type: string
+                phone:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '201':
+          description: Warehouse created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Warehouses
+      summary: Get all warehouses with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of warehouses
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/warehouses/{storeId}/all:
+    get:
+      tags:
+        - Warehouses
+      summary: Get all active warehouses
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all active warehouses
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/warehouses/{storeId}/export:
+    get:
+      tags:
+        - Warehouses
+      summary: Export warehouses to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/warehouses/{storeId}/{id}:
+    get:
+      tags:
+        - Warehouses
+      summary: Get warehouse by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Warehouse details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Warehouse not found
+
+  /api/warehouses/{id}:
+    put:
+      tags:
+        - Warehouses
+      summary: Update warehouse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                zipCode:
+                  type: string
+                phone:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: Warehouse updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Warehouses
+      summary: Delete warehouse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Warehouse deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== SUPPLIER ENDPOINTS ====================
+
+  /api/suppliers/{storeId}:
+    post:
+      tags:
+        - Suppliers
+      summary: Create a new supplier
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                zipCode:
+                  type: string
+                contactPerson:
+                  type: string
+                notes:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '201':
+          description: Supplier created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Suppliers
+      summary: Get all suppliers with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of suppliers
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/suppliers/{storeId}/all:
+    get:
+      tags:
+        - Suppliers
+      summary: Get all active suppliers
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all active suppliers
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/suppliers/{storeId}/export:
+    get:
+      tags:
+        - Suppliers
+      summary: Export suppliers to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/suppliers/{storeId}/{id}:
+    get:
+      tags:
+        - Suppliers
+      summary: Get supplier by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Supplier details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Supplier not found
+
+  /api/suppliers/{id}:
+    put:
+      tags:
+        - Suppliers
+      summary: Update supplier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                zipCode:
+                  type: string
+                contactPerson:
+                  type: string
+                notes:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: Supplier updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Suppliers
+      summary: Delete supplier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Supplier deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== STOCK LOT ENDPOINTS ====================
+
+  /api/stock-lots/{storeId}:
+    post:
+      tags:
+        - Stock Lots
+      summary: Create a new stock lot (purchase order)
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - warehouseId
+                - supplierId
+                - productId
+                - lotReferenceNo
+                - purchaseDate
+                - quantity
+                - purchasePrice
+              properties:
+                warehouseId:
+                  type: integer
+                supplierId:
+                  type: integer
+                productId:
+                  type: integer
+                lotReferenceNo:
+                  type: string
+                purchaseDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                purchasePrice:
+                  type: number
+                otherCharges:
+                  type: number
+                discount:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, DELIVERED, CANCELLED]
+                notes:
+                  type: string
+                createdBy:
+                  type: string
+      responses:
+        '201':
+          description: Stock lot created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Stock Lots
+      summary: Get all stock lots with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: warehouseId
+          in: query
+          schema:
+            type: integer
+        - name: supplierId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, DELIVERED, CANCELLED]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of stock lots
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-lots/{storeId}/all:
+    get:
+      tags:
+        - Stock Lots
+      summary: Get all stock lots
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all stock lots
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-lots/{storeId}/import:
+    post:
+      tags:
+        - Stock Lots
+      summary: Import stock lots from CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lots:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Import results
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-lots/{storeId}/export:
+    get:
+      tags:
+        - Stock Lots
+      summary: Export stock lots to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-lots/{storeId}/{id}:
+    get:
+      tags:
+        - Stock Lots
+      summary: Get stock lot by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Stock lot details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/stock-lots/{id}:
+    put:
+      tags:
+        - Stock Lots
+      summary: Update stock lot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                warehouseId:
+                  type: integer
+                supplierId:
+                  type: integer
+                productId:
+                  type: integer
+                purchaseDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                purchasePrice:
+                  type: number
+                otherCharges:
+                  type: number
+                discount:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, DELIVERED, CANCELLED]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Stock lot updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Stock Lots
+      summary: Delete stock lot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Stock lot deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== STOCK ADJUSTMENT ENDPOINTS ====================
+
+  /api/stock-adjustments/{storeId}:
+    post:
+      tags:
+        - Stock Adjustments
+      summary: Create a new stock adjustment
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - warehouseId
+                - productId
+                - adjustmentDate
+                - quantity
+                - type
+              properties:
+                warehouseId:
+                  type: integer
+                productId:
+                  type: integer
+                referenceNo:
+                  type: string
+                adjustmentDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                type:
+                  type: string
+                  enum: [INCREASE, DECREASE, DAMAGE, RETURN, TRANSFER, OTHER]
+                notes:
+                  type: string
+                createdBy:
+                  type: string
+      responses:
+        '201':
+          description: Stock adjustment created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Stock Adjustments
+      summary: Get all stock adjustments with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: warehouseId
+          in: query
+          schema:
+            type: integer
+        - name: productId
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [INCREASE, DECREASE, DAMAGE, RETURN, TRANSFER, OTHER]
+        - name: createdBy
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of stock adjustments
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-adjustments/{storeId}/all:
+    get:
+      tags:
+        - Stock Adjustments
+      summary: Get all stock adjustments
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all stock adjustments
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-adjustments/{storeId}/export:
+    get:
+      tags:
+        - Stock Adjustments
+      summary: Export stock adjustments to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stock-adjustments/{storeId}/{id}:
+    get:
+      tags:
+        - Stock Adjustments
+      summary: Get stock adjustment by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Stock adjustment details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock adjustment not found
+
+  /api/stock-adjustments/{id}:
+    put:
+      tags:
+        - Stock Adjustments
+      summary: Update stock adjustment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                warehouseId:
+                  type: integer
+                productId:
+                  type: integer
+                referenceNo:
+                  type: string
+                adjustmentDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                type:
+                  type: string
+                  enum: [INCREASE, DECREASE, DAMAGE, RETURN, TRANSFER, OTHER]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Stock adjustment updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Stock Adjustments
+      summary: Delete stock adjustment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Stock adjustment deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== STOCK ENDPOINTS ====================
+
+  /api/stocks/{storeId}:
+    get:
+      tags:
+        - Stocks
+      summary: Get all stocks with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: warehouseId
+          in: query
+          schema:
+            type: integer
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of stocks
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stocks/{storeId}/all:
+    get:
+      tags:
+        - Stocks
+      summary: Get all stocks
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all stocks
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stocks/{storeId}/export:
+    get:
+      tags:
+        - Stocks
+      summary: Export stocks to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stocks/{storeId}/product/{productId}:
+    get:
+      tags:
+        - Stocks
+      summary: Get stocks by product
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of stocks for the product
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/stocks/{storeId}/product/{productId}/warehouse/{warehouseId}:
+    get:
+      tags:
+        - Stocks
+      summary: Get stock by product and warehouse
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: warehouseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Stock details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock not found
+
+  # ==================== INTERNAL TRANSFER ENDPOINTS ====================
+
+  /api/internal-transfers/{storeId}:
+    post:
+      tags:
+        - Internal Transfers
+      summary: Create a new internal transfer
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fromWarehouseId
+                - toWarehouseId
+                - productId
+                - transferDate
+                - quantity
+              properties:
+                fromWarehouseId:
+                  type: integer
+                toWarehouseId:
+                  type: integer
+                productId:
+                  type: integer
+                referenceNo:
+                  type: string
+                transferDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                costForTransfer:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, IN_TRANSIT, COMPLETED, CANCELLED]
+                notes:
+                  type: string
+                createdBy:
+                  type: string
+      responses:
+        '201':
+          description: Internal transfer created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Internal Transfers
+      summary: Get all internal transfers with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: fromWarehouseId
+          in: query
+          schema:
+            type: integer
+        - name: toWarehouseId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, IN_TRANSIT, COMPLETED, CANCELLED]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of internal transfers
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/internal-transfers/{storeId}/all:
+    get:
+      tags:
+        - Internal Transfers
+      summary: Get all internal transfers
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all internal transfers
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/internal-transfers/{storeId}/export:
+    get:
+      tags:
+        - Internal Transfers
+      summary: Export internal transfers to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/internal-transfers/{storeId}/{id}:
+    get:
+      tags:
+        - Internal Transfers
+      summary: Get internal transfer by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Internal transfer details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Internal transfer not found
+
+  /api/internal-transfers/{id}:
+    put:
+      tags:
+        - Internal Transfers
+      summary: Update internal transfer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fromWarehouseId:
+                  type: integer
+                toWarehouseId:
+                  type: integer
+                productId:
+                  type: integer
+                referenceNo:
+                  type: string
+                transferDate:
+                  type: string
+                  format: date
+                quantity:
+                  type: integer
+                costForTransfer:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, IN_TRANSIT, COMPLETED, CANCELLED]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Internal transfer updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Internal Transfers
+      summary: Delete internal transfer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Internal transfer deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== INVOICE ENDPOINTS ====================
+
+  /api/invoices/{storeId}:
+    post:
+      tags:
+        - Invoices
+      summary: Create a new invoice
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoiceNumber
+                - warehouseId
+                - billerName
+                - invoiceDate
+                - items
+              properties:
+                invoiceNumber:
+                  type: string
+                warehouseId:
+                  type: integer
+                customerId:
+                  type: integer
+                supplierId:
+                  type: integer
+                billerName:
+                  type: string
+                invoiceDate:
+                  type: string
+                  format: date
+                dueDate:
+                  type: string
+                  format: date
+                paymentMethod:
+                  type: string
+                  enum: [CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, OTHER]
+                paymentNote:
+                  type: string
+                discountAmount:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, PAID, PARTIALLY_PAID, OVERDUE, CANCELLED]
+                notes:
+                  type: string
+                createdBy:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      quantity:
+                        type: integer
+                      unitPrice:
+                        type: number
+                      taxRate:
+                        type: number
+      responses:
+        '201':
+          description: Invoice created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Invoices
+      summary: Get all invoices with pagination
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: warehouseId
+          in: query
+          schema:
+            type: integer
+        - name: customerId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, PAID, PARTIALLY_PAID, OVERDUE, CANCELLED]
+        - name: minAmount
+          in: query
+          schema:
+            type: number
+        - name: maxAmount
+          in: query
+          schema:
+            type: number
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: List of invoices
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/invoices/{storeId}/all:
+    get:
+      tags:
+        - Invoices
+      summary: Get all invoices
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of all invoices
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/invoices/{storeId}/export:
+    get:
+      tags:
+        - Invoices
+      summary: Export invoices to CSV
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/invoices/{storeId}/{id}:
+    get:
+      tags:
+        - Invoices
+      summary: Get invoice by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Invoice details
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Invoice not found
+
+  /api/invoices/{id}:
+    put:
+      tags:
+        - Invoices
+      summary: Update invoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                warehouseId:
+                  type: integer
+                customerId:
+                  type: integer
+                supplierId:
+                  type: integer
+                billerName:
+                  type: string
+                invoiceDate:
+                  type: string
+                  format: date
+                dueDate:
+                  type: string
+                  format: date
+                paidAmount:
+                  type: number
+                paymentMethod:
+                  type: string
+                  enum: [CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, OTHER]
+                paymentNote:
+                  type: string
+                discountAmount:
+                  type: number
+                status:
+                  type: string
+                  enum: [PENDING, PAID, PARTIALLY_PAID, OVERDUE, CANCELLED]
+                notes:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      quantity:
+                        type: integer
+                      unitPrice:
+                        type: number
+                      taxRate:
+                        type: number
+      responses:
+        '200':
+          description: Invoice updated successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - Invoices
+      summary: Delete invoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Invoice deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # ==================== BARCODE ENDPOINTS ====================
+
+  /api/barcodes/product/{productId}:
+    get:
+      tags:
+        - Barcodes
+      summary: Generate barcode for a product (display)
+      description: Generate a barcode for a product. Returns PNG image or base64 data URL for display in web pages.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [png, base64]
+            default: png
+          description: Response format - png returns image, base64 returns data URL
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+      responses:
+        '200':
+          description: Barcode image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      barcode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Product not found
+
+  /api/barcodes/product/{productId}/download:
+    get:
+      tags:
+        - Barcodes
+      summary: Download barcode image for a product
+      description: Download a barcode image as a PNG file for printing or storage.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Product not found
+
+  /api/barcodes/lot/{lotId}:
+    get:
+      tags:
+        - Barcodes
+      summary: Generate barcode for a stock lot (display)
+      description: Generate a barcode for a stock lot. Returns PNG image or base64 data URL for display in web pages.
+      parameters:
+        - name: lotId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [png, base64]
+            default: png
+          description: Response format - png returns image, base64 returns data URL
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+        - name: pageStyle
+          in: query
+          schema:
+            type: string
+            default: A4
+          description: Page style for printing
+      responses:
+        '200':
+          description: Barcode image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      barcode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/barcodes/lot/{lotId}/download:
+    get:
+      tags:
+        - Barcodes
+      summary: Download barcode image for a stock lot
+      description: Download a barcode image as a PNG file for printing or storage.
+      parameters:
+        - name: lotId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/barcodes/bulk:
+    post:
+      tags:
+        - Barcodes
+      summary: Generate barcodes in bulk
+      description: Generate multiple barcodes for products in a lot or from a supplier. Can return as JSON data URLs or downloadable HTML file.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lotId:
+                  type: integer
+                  description: Stock lot ID (use either lotId or supplierId)
+                supplierId:
+                  type: integer
+                  description: Supplier ID (use either lotId or supplierId)
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [base64, png]
+            default: base64
+          description: Response format - base64 for data URLs, png for binary
+        - name: download
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+            default: 'false'
+          description: Set to 'true' to download as HTML file with embedded images
+      responses:
+        '200':
+          description: Array of barcode data or HTML file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                        productName:
+                          type: string
+                        barcode:
+                          type: string
+                          description: Base64 encoded barcode or data URL
+                        quantity:
+                          type: integer
+                        format:
+                          type: string
+            text/html:
+              schema:
+                type: string
+                description: HTML file with embedded barcode images
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -5041,3 +6762,4 @@ components:
               count:
                 type: integer
                 example: 300
+
