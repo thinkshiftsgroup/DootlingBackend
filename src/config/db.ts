@@ -1,6 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import logger from "@utils/logger";
+import "dotenv/config";
 
+import { PrismaClient } from "@prisma/client";
+
+import logger from "@utils/logger";
 const prisma = new PrismaClient();
 
 export async function connectDB() {
@@ -12,10 +14,3 @@ export async function connectDB() {
     process.exit(1);
   }
 }
-
-export async function disconnectDB() {
-  await prisma.$disconnect();
-  logger.info("Disconnected from Postgres.");
-}
-
-export default prisma;
