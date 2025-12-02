@@ -14,6 +14,7 @@ export class LocationController {
       const newLocation = await locationService.createLocation(data);
       res.status(201).json(newLocation);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Failed to create location" });
     }
   }

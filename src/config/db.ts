@@ -14,3 +14,4 @@ export async function connectDB() {
     process.exit(1);
   }
 }
+export default prisma;
