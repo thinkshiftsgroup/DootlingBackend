@@ -23,6 +23,14 @@ import { customerRouter } from "@routes/customer.routes";
 import { customerGroupRouter } from "@routes/customerGroup.routes";
 import { newsletterRouter } from "@routes/newsletter.routes";
 import { customerAuthRouter } from "@routes/customerAuth.routes";
+import { warehouseRouter } from "@routes/warehouse.routes";
+import { supplierRouter } from "@routes/supplier.routes";
+import { stockLotRouter } from "@routes/stockLot.routes";
+import { stockAdjustmentRouter } from "@routes/stockAdjustment.routes";
+import { stockRouter } from "@routes/stock.routes";
+import { internalTransferRouter } from "@routes/internalTransfer.routes";
+import { invoiceRouter } from "@routes/invoice.routes";
+import { barcodeRouter } from "@routes/barcode.routes";
 
 const app = express();
 
@@ -112,6 +120,14 @@ app.use("/api", customerRouter);
 app.use("/api", customerGroupRouter);
 app.use("/api", newsletterRouter);
 app.use("/storefront", customerAuthRouter);
+app.use("/api/warehouses", warehouseRouter);
+app.use("/api/suppliers", supplierRouter);
+app.use("/api/stock-lots", stockLotRouter);
+app.use("/api/stock-adjustments", stockAdjustmentRouter);
+app.use("/api/stocks", stockRouter);
+app.use("/api/internal-transfers", internalTransferRouter);
+app.use("/api/invoices", invoiceRouter);
+app.use("/api/barcodes", barcodeRouter);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
