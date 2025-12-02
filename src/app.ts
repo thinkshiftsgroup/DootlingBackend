@@ -24,6 +24,7 @@ import { customerGroupRouter } from "@routes/customerGroup.routes";
 import { newsletterRouter } from "@routes/newsletter.routes";
 import { customerAuthRouter } from "@routes/customerAuth.routes";
 import { staffRouter } from "@routes/staff.routes";
+import { locationRouter } from "@routes/location.route";
 const app = express();
 
 const allowedOrigins = [
@@ -123,6 +124,7 @@ app.use("/api", customerGroupRouter);
 app.use("/api", newsletterRouter);
 app.use("/storefront", customerAuthRouter);
 app.use("/api/staff", staffRouter);
+app.use("/api/locations", locationRouter);
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
 });
