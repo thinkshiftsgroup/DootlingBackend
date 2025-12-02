@@ -3860,13 +3860,655 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  # ==================== CUSTOMER AUTHENTICATION ENDPOINTS ====================
+
+  /storefront/{storeUrl}/auth/register:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Register a new customer
+      description: Register a new customer with email and password. Sends verification code to email.
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - firstName
+                - lastName
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                password:
+                  type: string
+                  minLength: 8
+                  example: password123
+      responses:
+        '201':
+          description: Customer registered successfully. Verification code sent to email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Registration successful. Please check your email for verification code."
+                  customerId:
+                    type: integer
+                    example: 1
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/verify-email:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Verify customer email with OTP
+      description: Verify customer email address with OTP code sent to email. Returns access and refresh tokens.
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                code:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: Email verified successfully. Customer is now authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refreshToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  customer:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      isVerified:
+                        type: boolean
+        '400':
+          description: Bad request - invalid code or code expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/resend-verification:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Resend customer verification code
+      description: Resend OTP verification code to customer email
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+      responses:
+        '200':
+          description: Verification code resent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Verification code resent successfully"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/login:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Login customer
+      description: Login with email and password. Email must be verified first.
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Login successful. Returns access and refresh tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refreshToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  customer:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+        '400':
+          description: Bad request - invalid credentials or email not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/refresh-token:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Refresh customer access token
+      description: Get a new customer access token using refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Bad request - invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/forgot-password:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Request customer password reset
+      description: Request password reset code via email
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+      responses:
+        '200':
+          description: Reset code sent to email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password reset code sent to your email"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/verify-reset-code:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Verify customer password reset code
+      description: Verify the customer password reset OTP code
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                code:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: Reset code verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reset code verified"
+                  email:
+                    type: string
+                    example: customer@example.com
+        '400':
+          description: Bad request - invalid or expired code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/reset-password:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Reset customer password
+      description: Reset customer password with verified OTP code
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+                - newPassword
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: customer@example.com
+                code:
+                  type: string
+                  example: "123456"
+                newPassword:
+                  type: string
+                  minLength: 8
+                  example: newpassword123
+      responses:
+        '200':
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password reset successful"
+        '400':
+          description: Bad request - invalid code or password too short
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/auth/logout:
+    post:
+      tags:
+        - Customer Authentication
+      summary: Logout customer
+      description: Logout customer and invalidate refresh token
+      security:
+        - customerBearerAuth: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /storefront/{storeUrl}/customer/profile:
+    put:
+      tags:
+        - Customer Authentication
+      summary: Update customer profile
+      description: Update customer profile information
+      security:
+        - customerBearerAuth: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-store"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                phone:
+                  type: string
+                  example: "+1234567890"
+                instagramHandle:
+                  type: string
+                  example: "@johndoe"
+                additionalInfo:
+                  type: string
+                  example: "VIP customer"
+                shippingAddress:
+                  type: string
+                  example: "123 Main St, City, Country"
+                shippingCountry:
+                  type: string
+                  example: "United States"
+                shippingState:
+                  type: string
+                  example: "California"
+                shippingCity:
+                  type: string
+                  example: "Los Angeles"
+                shippingZipCode:
+                  type: string
+                  example: "90210"
+                billingAddress:
+                  type: string
+                  example: "456 Billing Ave, City, Country"
+                billingCountry:
+                  type: string
+                  example: "United States"
+                billingState:
+                  type: string
+                  example: "California"
+                billingCity:
+                  type: string
+                  example: "Los Angeles"
+                billingZipCode:
+                  type: string
+                  example: "90210"
+                sameAsShippingAddress:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+                  customer:
+                    $ref: '#/components/schemas/Customer'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: JWT authentication token
+      description: JWT authentication token for admin users
+    customerBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token for customers
 
   schemas:
     Error:

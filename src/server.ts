@@ -12,7 +12,7 @@ const startServer = async () => {
 
   const shutdown = async () => {
     logger.info("Shutting down server...");
-    await disconnectDB();
+    // await disconnectDB();
     server.close(() => {
       logger.info("HTTP server closed");
       process.exit(0);

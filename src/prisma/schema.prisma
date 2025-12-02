@@ -320,6 +320,14 @@ model Customer {
   firstName             String
   lastName              String
   email                 String?
+  password              String?
+  isVerified            Boolean        @default(false)
+  verificationCode      String?
+  verificationCodeExpires DateTime?
+  resetPasswordToken    String?
+  resetPasswordExpires  DateTime?
+  refreshToken          String?
+  lastActive            DateTime?
   phone                 String?
   instagramHandle       String?
   additionalInfo        String?
@@ -343,5 +351,3 @@ model Customer {
 
   @@unique([storeId, email])
 }
-
-
