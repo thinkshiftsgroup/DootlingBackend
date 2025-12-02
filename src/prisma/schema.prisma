@@ -291,8 +291,6 @@ model Product {
   stocks                      Stock[]
   internalTransfers           InternalTransfer[]
   invoiceItems                InvoiceItem[]
-  createdAt                   DateTime             @default(now())
-  updatedAt                   DateTime             @updatedAt
   upsellProducts              ProductUpsell[]              @relation("UpsellProduct")
   crossSellProducts           ProductUpsell[]              @relation("CrossSellProduct")
   createdAt                   DateTime                     @default(now())
