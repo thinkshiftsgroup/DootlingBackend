@@ -61,7 +61,7 @@ export const invoiceService = {
 
     const itemsWithCalculations = items.map((item) => {
       const totalPrice = item.quantity * item.unitPrice;
-      const itemTaxAmount = totalPrice * (item.taxRate || 0) / 100;
+      const itemTaxAmount = (totalPrice * (item.taxRate || 0)) / 100;
       totalAmount += totalPrice;
       taxAmount += itemTaxAmount;
 
@@ -106,7 +106,16 @@ export const invoiceService = {
   },
 
   async getInvoices(storeId: number, query: GetInvoicesQuery) {
-    const { search, warehouseId, customerId, status, minAmount, maxAmount, page = 1, limit = 10 } = query;
+    const {
+      search,
+      warehouseId,
+      customerId,
+      status,
+      minAmount,
+      maxAmount,
+      page = 1,
+      limit = 10,
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: any = { storeId };
@@ -134,7 +143,9 @@ export const invoiceService = {
         take: limit,
         include: {
           warehouse: true,
-          customer: { select: { id: true, firstName: true, lastName: true, email: true } },
+          customer: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
           supplier: { select: { id: true, name: true } },
           items: {
             include: {
@@ -193,73 +204,73 @@ export const invoiceService = {
     return invoice;
   },
 
-  async updateInvoice(id: number, data: UpdateInvoiceInput) {
-    const { items, ...invoiceData } = data;
+  // async updateInvoice(id: number, data: UpdateInvoiceInput) {
+  //   const { items, ...invoiceData } = data;
 
-    return prisma.$transaction(async (tx) => {
-      if (items) {
-        await tx.invoiceItem.deleteMany({ where: { invoiceId: id } });
+  //   return prisma.$transaction(async (tx) => {
+  //     if (items) {
+  //       await tx.invoiceItem.deleteMany({ where: { invoiceId: id } });
 
-        let totalAmount = 0;
-        let taxAmount = 0;
+  //       let totalAmount = 0;
+  //       let taxAmount = 0;
 
-        const itemsWithCalculations = items.map((item) => {
-          const totalPrice = item.quantity * item.unitPrice;
-          const itemTaxAmount = totalPrice * (item.taxRate || 0) / 100;
-          totalAmount += totalPrice;
-          taxAmount += itemTaxAmount;
+  //       const itemsWithCalculations = items.map((item) => {
+  //         const totalPrice = item.quantity * item.unitPrice;
+  //         const itemTaxAmount = totalPrice * (item.taxRate || 0) / 100;
+  //         totalAmount += totalPrice;
+  //         taxAmount += itemTaxAmount;
 
-          return {
-            invoiceId: id,
-            productId: item.productId,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice,
-            taxRate: item.taxRate || 0,
-            taxAmount: itemTaxAmount,
-          };
-        });
+  //         return {
+  //           invoiceId: id,
+  //           productId: item.productId,
+  //           quantity: item.quantity,
+  //           unitPrice: item.unitPrice,
+  //           totalPrice,
+  //           taxRate: item.taxRate || 0,
+  //           taxAmount: itemTaxAmount,
+  //         };
+  //       });
 
-        await tx.invoiceItem.createMany({ data: itemsWithCalculations });
+  //       await tx.invoiceItem.createMany({ data: itemsWithCalculations });
 
-        const discountAmount = data.discountAmount || 0;
-        const finalTotal = totalAmount + taxAmount - discountAmount;
-        const paidAmount = data.paidAmount || 0;
-        const dueAmount = finalTotal - paidAmount;
+  //       const discountAmount = data.discountAmount || 0;
+  //       const finalTotal = totalAmount + taxAmount - discountAmount;
+  //       const paidAmount = data.paidAmount || 0;
+  //       const dueAmount = finalTotal - paidAmount;
 
-        invoiceData.totalAmount = finalTotal;
-        invoiceData.taxAmount = taxAmount;
-        invoiceData.dueAmount = dueAmount;
-      }
+  //       invoiceData.totalAmount = finalTotal;
+  //       invoiceData.taxAmount = taxAmount;
+  //       invoiceData.dueAmount = dueAmount;
+  //     }
 
-      if (data.paidAmount !== undefined) {
-        const invoice = await tx.invoice.findUnique({ where: { id } });
-        if (invoice) {
-          invoiceData.dueAmount = invoice.totalAmount - data.paidAmount;
-          if (data.paidAmount >= invoice.totalAmount) {
-            invoiceData.status = "PAID";
-          } else if (data.paidAmount > 0) {
-            invoiceData.status = "PARTIALLY_PAID";
-          }
-        }
-      }
+  //     if (data.paidAmount !== undefined) {
+  //       const invoice = await tx.invoice.findUnique({ where: { id } });
+  //       if (invoice) {
+  //         invoiceData.dueAmount = invoice.totalAmount - data.paidAmount;
+  //         if (data.paidAmount >= invoice.totalAmount) {
+  //           invoiceData.status = "PAID";
+  //         } else if (data.paidAmount > 0) {
+  //           invoiceData.status = "PARTIALLY_PAID";
+  //         }
+  //       }
+  //     }
 
-      return tx.invoice.update({
-        where: { id },
-        data: invoiceData,
-        include: {
-          warehouse: true,
-          customer: true,
-          supplier: true,
-          items: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      });
-    });
-  },
+  //     return tx.invoice.update({
+  //       where: { id },
+  //       data: invoiceData,
+  //       include: {
+  //         warehouse: true,
+  //         customer: true,
+  //         supplier: true,
+  //         items: {
+  //           include: {
+  //             product: true,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   });
+  // },
 
   async deleteInvoice(id: number) {
     return prisma.invoice.delete({ where: { id } });
