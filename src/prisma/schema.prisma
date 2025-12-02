@@ -37,24 +37,118 @@ model User {
 }
 
 model Store {
-  id              Int        @id @default(autoincrement())
-  userId          Int
-  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName    String
-  storeUrl        String     @unique
-  country         String
-  currency        String     @default("USD")
-  isLaunched      Boolean    @default(false)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  products        Product[]
-  categories      Category[]
-  brands          Brand[]
-  productGroups   ProductGroup[]
-  productVariants ProductVariant[]
-  units           Unit[]
-  customers       Customer[]
-  customerGroups  CustomerGroup[]
+  id                Int             @id @default(autoincrement())
+  userId            Int
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName      String
+  storeUrl          String          @unique
+  country           String
+  currency          String          @default("USD")
+  isLaunched        Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  products          Product[]
+  categories        Category[]
+  brands            Brand[]
+  productGroups     ProductGroup[]
+  productVariants   ProductVariant[]
+  units             Unit[]
+  customers         Customer[]
+  customerGroups    CustomerGroup[]
+  shipping          Shipping?
+  shippingMethods   ShippingMethod[]
+  staff             Staff[]
+  generalSettings   GeneralSettings?
+}
+
+model GeneralSettings {
+  id                                    Int       @id @default(autoincrement())
+  storeId                               Int       @unique
+  store                                 Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  isReverseInventory                    Boolean   @default(false)
+  cancelOrderTimeDays                   Int       @default(0)
+  cancelOrderTimeHours                  Int       @default(0)
+  cancelOrderTimeMinutes                Int       @default(0)
+  lowStockThreshold                     Int       @default(10)
+  showOutOfStockItems                   Boolean   @default(true)
+  showStockCount                        Boolean   @default(true)
+  productNotePlaceholder                String?
+  productNote                           String?
+  sizeChartImageUrl                     String?
+  additionalImageTitle                  String?
+  additionalImageUrl                    String?
+  abandonedOrderRecovery                Boolean   @default(false)
+  abandonedOrderReminderNote            String?
+  abandonedOrderReminderTimeDays        Int       @default(0)
+  abandonedOrderReminderTimeHours       Int       @default(0)
+  abandonedOrderReminderTimeMinutes     Int       @default(0)
+  automatedEmailReminder                Boolean   @default(false)
+  automatedSmsReminder                  Boolean   @default(false)
+  deliveryTimelineCalendar              String[]
+  deliveryTimelineDays                  String[]
+  timelineWindow                        String    @default("no same day delivery")
+  processingDays                        Int       @default(1)
+  reminderFrame                         String?
+  displayStorePickupCheckout            Boolean   @default(false)
+  sendWelcomeEmail                      Boolean   @default(true)
+  createdAt                             DateTime  @default(now())
+  updatedAt                             DateTime  @updatedAt
+}
+
+model Staff {
+  id                      Int             @id @default(autoincrement())
+  storeId                 Int
+  store                   Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  staffRole               String
+  firstname               String
+  lastname                String
+  email                   String          @unique
+  phone                   String?
+  assignedLocations       String[]
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  permissions             StaffPermission?
+}
+
+model StaffPermission {
+  id                      Int       @id @default(autoincrement())
+  staffId                 Int       @unique
+  staff                   Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  viewProduct             Boolean   @default(false)
+  manageProduct           Boolean   @default(false)
+  deleteProduct           Boolean   @default(false)
+  viewCostPrice           Boolean   @default(false)
+  manageCostPrice         Boolean   @default(false)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+}
+
+model Shipping {
+  id                      Int       @id @default(autoincrement())
+  storeId                 Int       @unique
+  store                   Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  minimumCartItems        Int?
+  maximumCartItems        Int?
+  eligibleCurrencies      String[]
+  shippingDescription     String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+}
+
+model ShippingMethod {
+  id                          Int       @id @default(autoincrement())
+  storeId                     Int
+  store                       Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name                        String
+  shippingFee                 Float
+  eligibleLocations           String[]
+  shippingDescription         String?
+  showStrikedOutOriginalPrice Boolean   @default(false)
+  originalPrice               Float?
+  createdAt                   DateTime  @default(now())
+  updatedAt                   DateTime  @updatedAt
+
+  @@unique([storeId, name])
 }
 
 enum KycStatus {
@@ -93,43 +187,43 @@ model UserKycProfile {
 }
 
 model BusinessKyc {
-  id                     Int       @id @default(autoincrement())
-  userId                 Int       @unique
-  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName           String
-  companyType            String?
-  incorporationNumber    String?
-  dateOfIncorporation    DateTime?
-  countryOfIncorporation String?
-  taxNumber              String?
-  companyAddress         String?
-  zipOrPostcode          String?
-  stateOrProvince        String?
-  city                   String?
-  businessDescription    String?
-  companyWebsite         String?
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
+  id                      Int       @id @default(autoincrement())
+  userId                  Int       @unique
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName            String
+  companyType             String?
+  incorporationNumber     String?
+  dateOfIncorporation     DateTime?
+  countryOfIncorporation  String?
+  taxNumber               String?
+  companyAddress          String?
+  zipOrPostcode           String?
+  stateOrProvince         String?
+  city                    String?
+  businessDescription     String?
+  companyWebsite          String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 }
 
 model KycDocument {
-  id         Int             @id @default(autoincrement())
-  userId     Int
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type       KycDocumentType
-  url        String
-  uploadedAt DateTime        @default(now())
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        KycDocumentType
+  url         String
+  uploadedAt  DateTime        @default(now())
 }
 
 model Pep {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   position    String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum ProductType {
@@ -138,44 +232,44 @@ enum ProductType {
 }
 
 model Product {
-  id                          Int                  @id @default(autoincrement())
+  id                          Int                          @id @default(autoincrement())
   storeId                     Int
-  store                       Store                @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  type                        ProductType          @default(REGULAR)
+  store                       Store                        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type                        ProductType                  @default(REGULAR)
   name                        String
   productImages               String[]
   shortDescription            String
   longDescription             String?
-  customProductUrl            String?              @unique
+  customProductUrl            String?                      @unique
   seoDescription              String?
-  checkoutButtonCta           String?              @default("Buy Now")
-  hideFromHomepage            Boolean              @default(false)
+  checkoutButtonCta           String?                      @default("Buy Now")
+  hideFromHomepage            Boolean                      @default(false)
   stockQuantity               Int?
   unit                        String?
   barcode                     String?
-  minOrderQuantity            Int                  @default(1)
+  minOrderQuantity            Int                          @default(1)
   maxOrderQuantity            Int?
-  isPreOrder                  Boolean              @default(false)
+  isPreOrder                  Boolean                      @default(false)
   preOrderReleaseDate         DateTime?
-  showStrikedOutOriginalPrice Boolean              @default(false)
+  showStrikedOutOriginalPrice Boolean                      @default(false)
   pricings                    ProductPricing[]
   embedVideoPath              String?
   discoveryCategories         String[]
   commissionPercentage        Float?
-  autoRedirectAfterPurchase   Boolean              @default(false)
+  autoRedirectAfterPurchase   Boolean                      @default(false)
   redirectUrl                 String?
   categories                  ProductCategory[]
   descriptionDetails          ProductDescriptionDetail[]
   options                     ProductOption[]
-  upsellProducts              ProductUpsell[]      @relation("UpsellProduct")
-  crossSellProducts           ProductUpsell[]      @relation("CrossSellProduct")
-  createdAt                   DateTime             @default(now())
-  updatedAt                   DateTime             @updatedAt
+  upsellProducts              ProductUpsell[]              @relation("UpsellProduct")
+  crossSellProducts           ProductUpsell[]              @relation("CrossSellProduct")
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @updatedAt
 }
 
 model Category {
   id          Int               @id @default(autoincrement())
-  storeId     Int               
+  storeId     Int
   store       Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
   name        String
   description String?
@@ -184,27 +278,27 @@ model Category {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  @@unique([storeId, name]) 
+  @@unique([storeId, name])
 }
 
 model ProductCategory {
   productId   Int
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([productId, categoryId])
 }
 
 model ProductPricing {
-  id              Int      @id @default(autoincrement())
-  productId       Int
-  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  currencyCode    String
-  sellingPrice    Float
-  originalPrice   Float?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  productId     Int
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  currencyCode  String
+  sellingPrice  Float
+  originalPrice Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@unique([productId, currencyCode])
 }
@@ -220,16 +314,14 @@ model ProductDescriptionDetail {
 }
 
 model ProductOption {
-  id              Int                  @id @default(autoincrement())
-  productId       Int
-  product         Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
-  optionType      String
-  values      String[] 
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  optionType  String
+  values      String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
-
-
 
 model ProductUpsell {
   productId       Int
@@ -267,14 +359,14 @@ model ProductGroup {
 }
 
 model ProductVariant {
-  id                 Int                       @id @default(autoincrement())
-  storeId            Int
-  store              Store                     @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  name               String
-  hasMultipleOptions Boolean                   @default(false)
-  options            ProductVariantOption[]
-  createdAt          DateTime                  @default(now())
-  updatedAt          DateTime                  @updatedAt
+  id                      Int                      @id @default(autoincrement())
+  storeId                 Int
+  store                   Store                    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name                    String
+  hasMultipleOptions      Boolean                  @default(false)
+  options                 ProductVariantOption[]
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
 
   @@unique([storeId, name])
 }
@@ -289,13 +381,13 @@ model ProductVariantOption {
 }
 
 model Unit {
-  id          Int      @id @default(autoincrement())
-  storeId     Int
-  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  name        String
-  status      String   @default("active")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  storeId   Int
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name      String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([storeId, name])
 }
@@ -314,40 +406,40 @@ model CustomerGroup {
 }
 
 model Customer {
-  id                    Int            @id @default(autoincrement())
-  storeId               Int
-  store                 Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  firstName             String
-  lastName              String
-  email                 String?
-  password              String?
-  isVerified            Boolean        @default(false)
-  verificationCode      String?
-  verificationCodeExpires DateTime?
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  refreshToken          String?
-  lastActive            DateTime?
-  phone                 String?
-  instagramHandle       String?
-  additionalInfo        String?
-  customerGroupId       Int?
-  customerGroup         CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
-  shippingAddress       String?
-  shippingCountry       String?
-  shippingState         String?
-  shippingCity          String?
-  shippingZipCode       String?
-  billingAddress        String?
-  billingCountry        String?
-  billingState          String?
-  billingCity           String?
-  billingZipCode        String?
-  sameAsShippingAddress Boolean        @default(false)
-  sendWelcomeEmail      Boolean        @default(true)
-  subscribedToNewsletter Boolean       @default(false)
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  id                          Int             @id @default(autoincrement())
+  storeId                     Int
+  store                       Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  firstName                   String
+  lastName                    String
+  email                       String?
+  password                    String?
+  isVerified                  Boolean         @default(false)
+  verificationCode            String?
+  verificationCodeExpires     DateTime?
+  resetPasswordToken          String?
+  resetPasswordExpires        DateTime?
+  refreshToken                String?
+  lastActive                  DateTime?
+  phone                       String?
+  instagramHandle             String?
+  additionalInfo              String?
+  customerGroupId             Int?
+  customerGroup               CustomerGroup?  @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
+  shippingAddress             String?
+  shippingCountry             String?
+  shippingState               String?
+  shippingCity                String?
+  shippingZipCode             String?
+  billingAddress              String?
+  billingCountry              String?
+  billingState                String?
+  billingCity                 String?
+  billingZipCode              String?
+  sameAsShippingAddress       Boolean         @default(false)
+  sendWelcomeEmail            Boolean         @default(true)
+  subscribedToNewsletter      Boolean         @default(false)
+  createdAt                   DateTime        @default(now())
+  updatedAt                   DateTime        @updatedAt
 
   @@unique([storeId, email])
 }

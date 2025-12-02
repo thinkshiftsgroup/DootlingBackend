@@ -1,6 +1,6 @@
 import app from "./app";
 import { PORT, NODE_ENV } from "@config/index";
-import { connectDB, disconnectDB } from "@config/db";
+import { connectDB } from "@config/db";
 import logger from "@utils/logger";
 
 const startServer = async () => {

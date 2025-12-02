@@ -23,7 +23,7 @@ import { customerRouter } from "@routes/customer.routes";
 import { customerGroupRouter } from "@routes/customerGroup.routes";
 import { newsletterRouter } from "@routes/newsletter.routes";
 import { customerAuthRouter } from "@routes/customerAuth.routes";
-
+import { staffRouter } from "@routes/staff.routes";
 const app = express();
 
 const allowedOrigins = [
@@ -46,8 +46,18 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
-        connectSrc: ["'self'", "https://unpkg.com", "http://localhost:8000", "https://localhost:8000"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://unpkg.com",
+        ],
+        connectSrc: [
+          "'self'",
+          "https://unpkg.com",
+          "http://localhost:8000",
+          "https://localhost:8000",
+        ],
         imgSrc: ["'self'", "data:", "https:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
       },
@@ -112,7 +122,7 @@ app.use("/api", customerRouter);
 app.use("/api", customerGroupRouter);
 app.use("/api", newsletterRouter);
 app.use("/storefront", customerAuthRouter);
-
+app.use("/api/staff", staffRouter);
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({ status: "UP", message: "Service is healthy" });
 });
