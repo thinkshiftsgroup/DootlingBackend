@@ -84,6 +84,23 @@ model Store {
   shippingMethods   ShippingMethod[]
   staff             Staff[]
   generalSettings   GeneralSettings?
+  locations         Location[]
+}
+
+model Location {
+  id                Int       @id @default(autoincrement())
+  storeId           Int
+  store             Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  locationName      String
+  address           String
+  country           String
+  state             String
+  city              String
+  isPrimary         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([storeId, locationName])
 }
 
 model GeneralSettings {
