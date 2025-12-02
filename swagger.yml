@@ -4497,551 +4497,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT authentication token for admin users
-    customerBearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT authentication token for customers
-
-  schemas:
-    Error:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-        stack:
-          type: object
-
-    Category:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Electronics"
-        description:
-          type: string
-          example: "Electronic devices and accessories"
-        image:
-          type: string
-          example: "https://example.com/category-image.jpg"
-        storeId:
-          type: integer
-          example: 1
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    Brand:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Nike"
-        description:
-          type: string
-          example: "Premium athletic brand"
-        imageUrl:
-          type: string
-          example: "https://example.com/brand-image.jpg"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductGroup:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Electronics"
-        description:
-          type: string
-          example: "Electronic devices and accessories"
-        imageUrl:
-          type: string
-          example: "https://example.com/group-image.jpg"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductVariant:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Size"
-        hasMultipleOptions:
-          type: boolean
-          example: true
-        options:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductVariantOption'
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductVariantOption:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        variantId:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Small"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    Unit:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Living Room Furniture"
-        status:
-          type: string
-          enum: [active, inactive]
-          example: "active"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    Pagination:
-      type: object
-      properties:
-        total:
-          type: integer
-          example: 100
-        page:
-          type: integer
-          example: 1
-        limit:
-          type: integer
-          example: 10
-        totalPages:
-          type: integer
-          example: 10
-
-    ProductPricingInput:
-      type: object
-      required:
-        - currencyCode
-        - sellingPrice
-      properties:
-        currencyCode:
-          type: string
-          example: "USD"
-        sellingPrice:
-          type: number
-          format: float
-          example: 99.99
-        originalPrice:
-          type: number
-          format: float
-          example: 149.99
-
-    ProductDescriptionDetailInput:
-      type: object
-      required:
-        - title
-        - description
-      properties:
-        title:
-          type: string
-          example: "Specifications"
-        description:
-          type: string
-          example: "Detailed product specifications and features"
-
-    ProductOptionInput:
-      type: object
-      required:
-        - optionType
-        - values
-      properties:
-        optionType:
-          type: string
-          example: "Color"
-        values:
-          type: array
-          items:
-            type: string
-          example: ["Red", "Blue", "Black"]
-
-    Product:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        type:
-          type: string
-          enum: [REGULAR, VARIANT]
-          example: REGULAR
-        name:
-          type: string
-          example: "Wireless Headphones"
-        productImages:
-          type: array
-          items:
-            type: string
-          example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
-        shortDescription:
-          type: string
-          example: "High-quality wireless headphones with noise cancellation"
-        longDescription:
-          type: string
-          example: "Detailed product description with features and specifications"
-        customProductUrl:
-          type: string
-          example: "wireless-headphones-pro"
-        seoDescription:
-          type: string
-          example: "Premium wireless headphones with active noise cancellation"
-        checkoutButtonCta:
-          type: string
-          example: "Buy Now"
-        hideFromHomepage:
-          type: boolean
-          example: false
-        stockQuantity:
-          type: integer
-          example: 100
-        unit:
-          type: string
-          example: "pieces"
-        barcode:
-          type: string
-          example: "1234567890123"
-        minOrderQuantity:
-          type: integer
-          example: 1
-        maxOrderQuantity:
-          type: integer
-          example: 10
-        isPreOrder:
-          type: boolean
-          example: false
-        preOrderReleaseDate:
-          type: string
-          format: date-time
-        showStrikedOutOriginalPrice:
-          type: boolean
-          example: false
-        embedVideoPath:
-          type: string
-          example: "https://youtube.com/watch?v=example"
-        discoveryCategories:
-          type: array
-          items:
-            type: string
-          example: ["electronics", "audio"]
-        commissionPercentage:
-          type: number
-          format: float
-          example: 5.5
-        autoRedirectAfterPurchase:
-          type: boolean
-          example: false
-        redirectUrl:
-          type: string
-          example: "https://thank-you-page.com"
-        pricings:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductPricing'
-        descriptionDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductDescriptionDetail'
-        options:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductOption'
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/Category'
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductPricing:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        productId:
-          type: integer
-          example: 1
-        currencyCode:
-          type: string
-          example: "USD"
-        sellingPrice:
-          type: number
-          format: float
-          example: 99.99
-        originalPrice:
-          type: number
-          format: float
-          example: 149.99
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductDescriptionDetail:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        productId:
-          type: integer
-          example: 1
-        title:
-          type: string
-          example: "Specifications"
-        description:
-          type: string
-          example: "Detailed product specifications and features"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    ProductOption:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        productId:
-          type: integer
-          example: 1
-        optionType:
-          type: string
-          example: "Color"
-        values:
-          type: array
-          items:
-            type: string
-          example: ["Red", "Blue", "Black"]
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    CustomerGroup:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "VIP Customers"
-        description:
-          type: string
-          example: "Premium customer group with special benefits"
-        discountPercentage:
-          type: number
-          format: float
-          example: 10.5
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    Customer:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        storeId:
-          type: integer
-          example: 1
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        phone:
-          type: string
-          example: "+1234567890"
-        instagramHandle:
-          type: string
-          example: "@johndoe"
-        additionalInfo:
-          type: string
-          example: "VIP customer"
-        customerGroupId:
-          type: integer
-          example: 1
-        shippingAddress:
-          type: string
-          example: "123 Main St, City, Country"
-        shippingCountry:
-          type: string
-          example: "United States"
-        shippingState:
-          type: string
-          example: "California"
-        shippingCity:
-          type: string
-          example: "Los Angeles"
-        shippingZipCode:
-          type: string
-          example: "90210"
-        billingAddress:
-          type: string
-          example: "456 Billing Ave, City, Country"
-        billingCountry:
-          type: string
-          example: "United States"
-        billingState:
-          type: string
-          example: "California"
-        billingCity:
-          type: string
-          example: "Los Angeles"
-        billingZipCode:
-          type: string
-          example: "90210"
-        createdAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2023-01-01T00:00:00.000Z"
-
-    CustomerStats:
-      type: object
-      properties:
-        totalCustomers:
-          type: integer
-          example: 1500
-        activeCustomers:
-          type: integer
-          example: 1200
-        newCustomersThisMonth:
-          type: integer
-          example: 45
-        customersByGroup:
-          type: array
-          items:
-            type: object
-            properties:
-              groupName:
-                type: string
-                example: "VIP Customers"
-              count:
-                type: integer
-                example: 300
-
   # ==================== WAREHOUSE ENDPOINTS ====================
 
   /api/warehouses/{storeId}:
@@ -6532,7 +5987,8 @@ components:
     get:
       tags:
         - Barcodes
-      summary: Generate barcode for a product
+      summary: Generate barcode for a product (display)
+      description: Generate a barcode for a product. Returns PNG image or base64 data URL for display in web pages.
       parameters:
         - name: productId
           in: path
@@ -6545,14 +6001,64 @@ components:
             type: string
             enum: [png, base64]
             default: png
+          description: Response format - png returns image, base64 returns data URL
         - name: type
           in: query
           schema:
             type: string
             default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
       responses:
         '200':
-          description: Barcode image or base64 data
+          description: Barcode image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      barcode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Product not found
+
+  /api/barcodes/product/{productId}/download:
+    get:
+      tags:
+        - Barcodes
+      summary: Download barcode image for a product
+      description: Download a barcode image as a PNG file for printing or storage.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -6562,7 +6068,8 @@ components:
     get:
       tags:
         - Barcodes
-      summary: Generate barcode for a stock lot
+      summary: Generate barcode for a stock lot (display)
+      description: Generate a barcode for a stock lot. Returns PNG image or base64 data URL for display in web pages.
       parameters:
         - name: lotId
           in: path
@@ -6575,19 +6082,70 @@ components:
             type: string
             enum: [png, base64]
             default: png
+          description: Response format - png returns image, base64 returns data URL
         - name: type
           in: query
           schema:
             type: string
             default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
         - name: pageStyle
           in: query
           schema:
             type: string
             default: A4
+          description: Page style for printing
       responses:
         '200':
-          description: Barcode image or base64 data
+          description: Barcode image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      barcode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/barcodes/lot/{lotId}/download:
+    get:
+      tags:
+        - Barcodes
+      summary: Download barcode image for a stock lot
+      description: Download a barcode image as a PNG file for printing or storage.
+      parameters:
+        - name: lotId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            default: code128
+          description: Barcode type (code128, code39, ean13, etc.)
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -6598,6 +6156,7 @@ components:
       tags:
         - Barcodes
       summary: Generate barcodes in bulk
+      description: Generate multiple barcodes for products in a lot or from a supplier. Can return as JSON data URLs or downloadable HTML file.
       requestBody:
         required: true
         content:
@@ -6607,17 +6166,600 @@ components:
               properties:
                 lotId:
                   type: integer
+                  description: Stock lot ID (use either lotId or supplierId)
                 supplierId:
                   type: integer
+                  description: Supplier ID (use either lotId or supplierId)
       parameters:
         - name: format
           in: query
           schema:
             type: string
-            enum: [base64]
+            enum: [base64, png]
             default: base64
+          description: Response format - base64 for data URLs, png for binary
+        - name: download
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+            default: 'false'
+          description: Set to 'true' to download as HTML file with embedded images
       responses:
         '200':
-          description: Array of barcode data
+          description: Array of barcode data or HTML file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                        productName:
+                          type: string
+                        barcode:
+                          type: string
+                          description: Base64 encoded barcode or data URL
+                        quantity:
+                          type: integer
+                        format:
+                          type: string
+            text/html:
+              schema:
+                type: string
+                description: HTML file with embedded barcode images
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token for admin users
+    customerBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token for customers
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        stack:
+          type: object
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Electronics"
+        description:
+          type: string
+          example: "Electronic devices and accessories"
+        image:
+          type: string
+          example: "https://example.com/category-image.jpg"
+        storeId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Nike"
+        description:
+          type: string
+          example: "Premium athletic brand"
+        imageUrl:
+          type: string
+          example: "https://example.com/brand-image.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Electronics"
+        description:
+          type: string
+          example: "Electronic devices and accessories"
+        imageUrl:
+          type: string
+          example: "https://example.com/group-image.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Size"
+        hasMultipleOptions:
+          type: boolean
+          example: true
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantOption'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductVariantOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        variantId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Small"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Living Room Furniture"
+        status:
+          type: string
+          enum: [active, inactive]
+          example: "active"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 10
+
+    ProductPricingInput:
+      type: object
+      required:
+        - currencyCode
+        - sellingPrice
+      properties:
+        currencyCode:
+          type: string
+          example: "USD"
+        sellingPrice:
+          type: number
+          format: float
+          example: 99.99
+        originalPrice:
+          type: number
+          format: float
+          example: 149.99
+
+    ProductDescriptionDetailInput:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          example: "Specifications"
+        description:
+          type: string
+          example: "Detailed product specifications and features"
+
+    ProductOptionInput:
+      type: object
+      required:
+        - optionType
+        - values
+      properties:
+        optionType:
+          type: string
+          example: "Color"
+        values:
+          type: array
+          items:
+            type: string
+          example: ["Red", "Blue", "Black"]
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [REGULAR, VARIANT]
+          example: REGULAR
+        name:
+          type: string
+          example: "Wireless Headphones"
+        productImages:
+          type: array
+          items:
+            type: string
+          example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
+        shortDescription:
+          type: string
+          example: "High-quality wireless headphones with noise cancellation"
+        longDescription:
+          type: string
+          example: "Detailed product description with features and specifications"
+        customProductUrl:
+          type: string
+          example: "wireless-headphones-pro"
+        seoDescription:
+          type: string
+          example: "Premium wireless headphones with active noise cancellation"
+        checkoutButtonCta:
+          type: string
+          example: "Buy Now"
+        hideFromHomepage:
+          type: boolean
+          example: false
+        stockQuantity:
+          type: integer
+          example: 100
+        unit:
+          type: string
+          example: "pieces"
+        barcode:
+          type: string
+          example: "1234567890123"
+        minOrderQuantity:
+          type: integer
+          example: 1
+        maxOrderQuantity:
+          type: integer
+          example: 10
+        isPreOrder:
+          type: boolean
+          example: false
+        preOrderReleaseDate:
+          type: string
+          format: date-time
+        showStrikedOutOriginalPrice:
+          type: boolean
+          example: false
+        embedVideoPath:
+          type: string
+          example: "https://youtube.com/watch?v=example"
+        discoveryCategories:
+          type: array
+          items:
+            type: string
+          example: ["electronics", "audio"]
+        commissionPercentage:
+          type: number
+          format: float
+          example: 5.5
+        autoRedirectAfterPurchase:
+          type: boolean
+          example: false
+        redirectUrl:
+          type: string
+          example: "https://thank-you-page.com"
+        pricings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPricing'
+        descriptionDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDescriptionDetail'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOption'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductPricing:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        currencyCode:
+          type: string
+          example: "USD"
+        sellingPrice:
+          type: number
+          format: float
+          example: 99.99
+        originalPrice:
+          type: number
+          format: float
+          example: 149.99
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductDescriptionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Specifications"
+        description:
+          type: string
+          example: "Detailed product specifications and features"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    ProductOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        optionType:
+          type: string
+          example: "Color"
+        values:
+          type: array
+          items:
+            type: string
+          example: ["Red", "Blue", "Black"]
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    CustomerGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "VIP Customers"
+        description:
+          type: string
+          example: "Premium customer group with special benefits"
+        discountPercentage:
+          type: number
+          format: float
+          example: 10.5
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        storeId:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          example: "+1234567890"
+        instagramHandle:
+          type: string
+          example: "@johndoe"
+        additionalInfo:
+          type: string
+          example: "VIP customer"
+        customerGroupId:
+          type: integer
+          example: 1
+        shippingAddress:
+          type: string
+          example: "123 Main St, City, Country"
+        shippingCountry:
+          type: string
+          example: "United States"
+        shippingState:
+          type: string
+          example: "California"
+        shippingCity:
+          type: string
+          example: "Los Angeles"
+        shippingZipCode:
+          type: string
+          example: "90210"
+        billingAddress:
+          type: string
+          example: "456 Billing Ave, City, Country"
+        billingCountry:
+          type: string
+          example: "United States"
+        billingState:
+          type: string
+          example: "California"
+        billingCity:
+          type: string
+          example: "Los Angeles"
+        billingZipCode:
+          type: string
+          example: "90210"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00.000Z"
+
+    CustomerStats:
+      type: object
+      properties:
+        totalCustomers:
+          type: integer
+          example: 1500
+        activeCustomers:
+          type: integer
+          example: 1200
+        newCustomersThisMonth:
+          type: integer
+          example: 45
+        customersByGroup:
+          type: array
+          items:
+            type: object
+            properties:
+              groupName:
+                type: string
+                example: "VIP Customers"
+              count:
+                type: integer
+                example: 300
+

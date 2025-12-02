@@ -81,8 +81,7 @@ export const supplierService = {
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-        { contactPerson: { contains: search, mode: "insensitive" } },
+        { supplierId: { contains: search, mode: "insensitive" } },
       ];
     }
 

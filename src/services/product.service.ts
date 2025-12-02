@@ -15,6 +15,20 @@ export const createProduct = async (
     ...productData
   } = data;
 
+  // Validate categories exist if provided
+  if (categories && categories.length > 0) {
+    const existingCategories = await prisma.category.findMany({
+      where: {
+        id: { in: categories },
+        storeId: storeId,
+      },
+    });
+
+    if (existingCategories.length !== categories.length) {
+      throw new Error("One or more category IDs do not exist or do not belong to this store");
+    }
+  }
+
   const product = await prisma.product.create({
     data: {
       ...productData,
@@ -40,11 +54,11 @@ export const createProduct = async (
         })),
       },
 
-      categories: {
+      categories: categories && categories.length > 0 ? {
         create: categories.map((categoryId) => ({
           categoryId: categoryId,
         })),
-      },
+      } : undefined,
       upsellProducts: {
         create: upsellProductIds.map((upsellProductId) => ({
           upsellProduct: {
@@ -86,6 +100,30 @@ export const updateProduct = async (
     crossSellProductIds = [],
     ...productData
   } = data;
+
+  // Get the product to find its storeId
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { storeId: true },
+  });
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  // Validate categories exist if provided
+  if (categories && categories.length > 0) {
+    const existingCategories = await prisma.category.findMany({
+      where: {
+        id: { in: categories },
+        storeId: product.storeId,
+      },
+    });
+
+    if (existingCategories.length !== categories.length) {
+      throw new Error("One or more category IDs do not exist or do not belong to this store");
+    }
+  }
 
   const updatePayload: any = {
     ...productData,
@@ -129,7 +167,7 @@ export const updateProduct = async (
     };
   }
 
-  if (categories) {
+  if (categories && categories.length > 0) {
     await prisma.productCategory.deleteMany({
       where: { productId: productId },
     });
