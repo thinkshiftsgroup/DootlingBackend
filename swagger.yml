@@ -6218,6 +6218,872 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
+  # ==================== LOCATION ENDPOINTS ====================
+
+  /api/locations:
+    post:
+      tags:
+        - Locations
+      summary: Create a new location
+      description: Create a new location for a store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - storeId
+                - locationName
+                - address
+                - country
+                - state
+                - city
+                - isPrimary
+              properties:
+                storeId:
+                  type: integer
+                  example: 1
+                locationName:
+                  type: string
+                  example: "Main Warehouse"
+                address:
+                  type: string
+                  example: "123 Storage Street"
+                country:
+                  type: string
+                  example: "United States"
+                state:
+                  type: string
+                  example: "California"
+                city:
+                  type: string
+                  example: "Los Angeles"
+                isPrimary:
+                  type: boolean
+                  example: false
+      responses:
+        '201':
+          description: Location created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  storeId:
+                    type: integer
+                    example: 1
+                  locationName:
+                    type: string
+                    example: "Main Warehouse"
+                  address:
+                    type: string
+                    example: "123 Storage Street"
+                  country:
+                    type: string
+                    example: "United States"
+                  state:
+                    type: string
+                    example: "California"
+                  city:
+                    type: string
+                    example: "Los Angeles"
+                  isPrimary:
+                    type: boolean
+                    example: false
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/locations/store/{storeId}:
+    get:
+      tags:
+        - Locations
+      summary: Get all locations by store
+      description: Retrieve all locations for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: Locations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    storeId:
+                      type: integer
+                      example: 1
+                    locationName:
+                      type: string
+                      example: "Main Warehouse"
+                    address:
+                      type: string
+                      example: "123 Storage Street"
+                    country:
+                      type: string
+                      example: "United States"
+                    state:
+                      type: string
+                      example: "California"
+                    city:
+                      type: string
+                      example: "Los Angeles"
+                    isPrimary:
+                      type: boolean
+                      example: false
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/locations/{id}:
+    get:
+      tags:
+        - Locations
+      summary: Get location by ID
+      description: Retrieve a specific location by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Location ID
+      responses:
+        '200':
+          description: Location retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  storeId:
+                    type: integer
+                    example: 1
+                  locationName:
+                    type: string
+                    example: "Main Warehouse"
+                  address:
+                    type: string
+                    example: "123 Storage Street"
+                  country:
+                    type: string
+                    example: "United States"
+                  state:
+                    type: string
+                    example: "California"
+                  city:
+                    type: string
+                    example: "Los Angeles"
+                  isPrimary:
+                    type: boolean
+                    example: false
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Locations
+      summary: Update location
+      description: Update a specific location by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Location ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationName:
+                  type: string
+                  example: "Updated Warehouse"
+                address:
+                  type: string
+                  example: "456 New Storage Ave"
+                country:
+                  type: string
+                  example: "Canada"
+                state:
+                  type: string
+                  example: "Ontario"
+                city:
+                  type: string
+                  example: "Toronto"
+                isPrimary:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Location updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  storeId:
+                    type: integer
+                    example: 1
+                  locationName:
+                    type: string
+                    example: "Updated Warehouse"
+                  address:
+                    type: string
+                    example: "456 New Storage Ave"
+                  country:
+                    type: string
+                    example: "Canada"
+                  state:
+                    type: string
+                    example: "Ontario"
+                  city:
+                    type: string
+                    example: "Toronto"
+                  isPrimary:
+                    type: boolean
+                    example: true
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Locations
+      summary: Delete location
+      description: Delete a specific location by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Location ID
+      responses:
+        '200':
+          description: Location deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Location deleted successfully"
+                  location:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== STAFF ENDPOINTS ====================
+
+  /api/staff:
+    post:
+      tags:
+        - Staff
+      summary: Create a new staff member
+      description: Create a new staff member for a store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - storeId
+                - staffRole
+                - firstname
+                - lastname
+                - email
+                - assignedLocations
+                - permissions
+              properties:
+                storeId:
+                  type: integer
+                  example: 1
+                staffRole:
+                  type: string
+                  example: "Manager"
+                firstname:
+                  type: string
+                  example: "John"
+                lastname:
+                  type: string
+                  example: "Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                assignedLocations:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Main Warehouse", "Secondary Location"]
+                permissions:
+                  type: object
+                  required:
+                    - viewProduct
+                    - manageProduct
+                    - deleteProduct
+                    - viewCostPrice
+                    - manageCostPrice
+                  properties:
+                    viewProduct:
+                      type: boolean
+                      example: true
+                    manageProduct:
+                      type: boolean
+                      example: true
+                    deleteProduct:
+                      type: boolean
+                      example: false
+                    viewCostPrice:
+                      type: boolean
+                      example: true
+                    manageCostPrice:
+                      type: boolean
+                      example: false
+      responses:
+        '201':
+          description: Staff member created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Staff member created successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      storeId:
+                        type: integer
+                        example: 1
+                      staffRole:
+                        type: string
+                        example: "Manager"
+                      firstname:
+                        type: string
+                        example: "John"
+                      lastname:
+                        type: string
+                        example: "Doe"
+                      email:
+                        type: string
+                        example: "john.doe@example.com"
+                      phone:
+                        type: string
+                        example: "+1234567890"
+                      assignedLocations:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Main Warehouse", "Secondary Location"]
+                      isActive:
+                        type: boolean
+                        example: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/staff/store/{storeId}:
+    get:
+      tags:
+        - Staff
+      summary: Get all staff by store
+      description: Retrieve all staff members for a specific store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: Staff list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Staff list fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        storeId:
+                          type: integer
+                          example: 1
+                        staffRole:
+                          type: string
+                          example: "Manager"
+                        firstname:
+                          type: string
+                          example: "John"
+                        lastname:
+                          type: string
+                          example: "Doe"
+                        email:
+                          type: string
+                          example: "john.doe@example.com"
+                        phone:
+                          type: string
+                          example: "+1234567890"
+                        assignedLocations:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Main Warehouse", "Secondary Location"]
+                        isActive:
+                          type: boolean
+                          example: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/staff/{id}:
+    get:
+      tags:
+        - Staff
+      summary: Get staff member by ID
+      description: Retrieve a specific staff member by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Staff ID
+      responses:
+        '200':
+          description: Staff member retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Staff member fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      storeId:
+                        type: integer
+                        example: 1
+                      staffRole:
+                        type: string
+                        example: "Manager"
+                      firstname:
+                        type: string
+                        example: "John"
+                      lastname:
+                        type: string
+                        example: "Doe"
+                      email:
+                        type: string
+                        example: "john.doe@example.com"
+                      phone:
+                        type: string
+                        example: "+1234567890"
+                      assignedLocations:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Main Warehouse", "Secondary Location"]
+                      isActive:
+                        type: boolean
+                        example: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '404':
+          description: Staff not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Staff
+      summary: Update staff member
+      description: Update a specific staff member by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Staff ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                staffRole:
+                  type: string
+                  example: "Senior Manager"
+                firstname:
+                  type: string
+                  example: "John"
+                lastname:
+                  type: string
+                  example: "Smith"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                assignedLocations:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Main Warehouse", "Secondary Location", "New Location"]
+                permissions:
+                  type: object
+                  properties:
+                    viewProduct:
+                      type: boolean
+                      example: true
+                    manageProduct:
+                      type: boolean
+                      example: true
+                    deleteProduct:
+                      type: boolean
+                      example: true
+                    viewCostPrice:
+                      type: boolean
+                      example: true
+                    manageCostPrice:
+                      type: boolean
+                      example: true
+      responses:
+        '200':
+          description: Staff member updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Staff member updated successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      storeId:
+                        type: integer
+                        example: 1
+                      staffRole:
+                        type: string
+                        example: "Senior Manager"
+                      firstname:
+                        type: string
+                        example: "John"
+                      lastname:
+                        type: string
+                        example: "Smith"
+                      email:
+                        type: string
+                        example: "john.doe@example.com"
+                      phone:
+                        type: string
+                        example: "+1234567890"
+                      assignedLocations:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Main Warehouse", "Secondary Location", "New Location"]
+                      isActive:
+                        type: boolean
+                        example: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Staff not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Staff
+      summary: Delete staff member
+      description: Delete a specific staff member by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Staff ID
+      responses:
+        '200':
+          description: Staff member deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Staff member deleted successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+        '404':
+          description: Staff not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   securitySchemes:
     bearerAuth:
