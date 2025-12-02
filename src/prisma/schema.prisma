@@ -286,8 +286,6 @@ model Product {
   categories                  ProductCategory[]
   descriptionDetails          ProductDescriptionDetail[]
   options                     ProductOption[]
-  upsellProducts              ProductUpsell[]      @relation("UpsellProduct")
-  crossSellProducts           ProductUpsell[]      @relation("CrossSellProduct")
   stockLots                   StockLot[]
   stockAdjustments            StockAdjustment[]
   stocks                      Stock[]
