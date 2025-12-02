@@ -62,24 +62,7 @@ model Store {
   stocks           Stock[]
   internalTransfers InternalTransfer[]
   invoices         Invoice[]
-  id                Int             @id @default(autoincrement())
-  userId            Int
-  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName      String
-  storeUrl          String          @unique
-  country           String
-  currency          String          @default("USD")
-  isLaunched        Boolean         @default(false)
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  products          Product[]
-  categories        Category[]
-  brands            Brand[]
-  productGroups     ProductGroup[]
-  productVariants   ProductVariant[]
-  units             Unit[]
-  customers         Customer[]
-  customerGroups    CustomerGroup[]
+ 
   shipping          Shipping?
   shippingMethods   ShippingMethod[]
   staff             Staff[]
