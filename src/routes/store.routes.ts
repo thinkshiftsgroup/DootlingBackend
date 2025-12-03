@@ -10,4 +10,7 @@ router.get("/", protect, asyncHandler(storeController.getStore));
 router.put("/", protect, asyncHandler(storeController.updateStore));
 router.post("/launch", protect, asyncHandler(storeController.launchStore));
 
+// Public storefront endpoint (no auth required)
+router.get("/storefront/:storeUrl", asyncHandler(storeController.getStorefrontByUrl));
+
 export const storeRouter = router;

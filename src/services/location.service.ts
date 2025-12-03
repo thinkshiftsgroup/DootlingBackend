@@ -24,9 +24,9 @@ export class LocationService {
     return newLocation;
   }
 
-  async fetchLocationById(locationId: number): Promise<Location | null> {
-    const location = await prisma.location.findUnique({
-      where: { id: locationId },
+  async fetchLocationById(locationId: number, storeId: number): Promise<Location | null> {
+    const location = await prisma.location.findFirst({
+      where: { id: locationId, storeId },
     });
     return location;
   }
@@ -41,21 +41,22 @@ export class LocationService {
 
   async updateLocation(
     locationId: number,
+    storeId: number,
     data: UpdateLocationPayload
   ): Promise<Location> {
+    // Verify ownership first
+    const location = await prisma.location.findFirst({
+      where: { id: locationId, storeId }
+    });
+    if (!location) throw new Error("Location not found or access denied");
+
     const { isPrimary, ...updateData } = data;
 
     if (isPrimary === true) {
-      const locationToUpdate = await prisma.location.findUnique({
-        where: { id: locationId },
+      await prisma.location.updateMany({
+        where: { storeId: location.storeId, isPrimary: true },
+        data: { isPrimary: false },
       });
-
-      if (locationToUpdate) {
-        await prisma.location.updateMany({
-          where: { storeId: locationToUpdate.storeId, isPrimary: true },
-          data: { isPrimary: false },
-        });
-      }
     }
 
     const updatedLocation = await prisma.location.update({
@@ -66,7 +67,13 @@ export class LocationService {
     return updatedLocation;
   }
 
-  async deleteLocation(locationId: number): Promise<Location> {
+  async deleteLocation(locationId: number, storeId: number): Promise<Location> {
+    // Verify ownership first
+    const location = await prisma.location.findFirst({
+      where: { id: locationId, storeId }
+    });
+    if (!location) throw new Error("Location not found or access denied");
+
     const deletedLocation = await prisma.location.delete({
       where: { id: locationId },
     });

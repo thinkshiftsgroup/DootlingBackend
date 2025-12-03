@@ -147,22 +147,24 @@ export const stockLotService = {
     });
   },
 
-  async getStockLotById(id: number) {
-    const stockLot = await prisma.stockLot.findUnique({
-      where: { id },
+  async getStockLotById(id: number, storeId: number) {
+    const stockLot = await prisma.stockLot.findFirst({
+      where: { id, storeId },
       include: {
         warehouse: true,
         supplier: true,
         product: true,
       },
     });
-    if (!stockLot) throw new Error("Stock lot not found");
+    if (!stockLot) throw new Error("Stock lot not found or access denied");
     return stockLot;
   },
 
-  async updateStockLot(id: number, data: UpdateStockLotInput) {
-    const existingLot = await prisma.stockLot.findUnique({ where: { id } });
-    if (!existingLot) throw new Error("Stock lot not found");
+  async updateStockLot(id: number, storeId: number, data: UpdateStockLotInput) {
+    const existingLot = await prisma.stockLot.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!existingLot) throw new Error("Stock lot not found or access denied");
 
     return prisma.$transaction(async (tx) => {
       const updatedLot = await tx.stockLot.update({
@@ -224,7 +226,13 @@ export const stockLotService = {
     });
   },
 
-  async deleteStockLot(id: number) {
+  async deleteStockLot(id: number, storeId: number) {
+    // Verify ownership first
+    const stockLot = await prisma.stockLot.findFirst({
+      where: { id, storeId }
+    });
+    if (!stockLot) throw new Error("Stock lot not found or access denied");
+
     return prisma.stockLot.delete({ where: { id } });
   },
 

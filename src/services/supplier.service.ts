@@ -123,20 +123,25 @@ export const supplierService = {
     });
   },
 
-  async getSupplierById(id: number) {
-    const supplier = await prisma.supplier.findUnique({
-      where: { id },
+  async getSupplierById(id: number, storeId: number) {
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, storeId },
       include: {
         emails: true,
         phones: true,
         addresses: true,
       },
     });
-    if (!supplier) throw new Error("Supplier not found");
+    if (!supplier) throw new Error("Supplier not found or access denied");
     return supplier;
   },
 
-  async updateSupplier(id: number, data: UpdateSupplierInput) {
+  async updateSupplier(id: number, storeId: number, data: UpdateSupplierInput) {
+    // Verify ownership first
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, storeId }
+    });
+    if (!supplier) throw new Error("Supplier not found or access denied");
     const { emails, phones, addresses, ...supplierData } = data;
 
     return prisma.$transaction(async (tx) => {
@@ -173,7 +178,13 @@ export const supplierService = {
     });
   },
 
-  async deleteSupplier(id: number) {
+  async deleteSupplier(id: number, storeId: number) {
+    // Verify ownership first
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, storeId }
+    });
+    if (!supplier) throw new Error("Supplier not found or access denied");
+
     return prisma.supplier.delete({ where: { id } });
   },
 };

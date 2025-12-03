@@ -31,19 +31,22 @@ export const getAllWarehouses = asyncHandler(async (req: Request, res: Response)
 
 export const getWarehouseById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const warehouse = await warehouseService.getWarehouseById(id);
+  const storeId = req.store!.id;
+  const warehouse = await warehouseService.getWarehouseById(id, storeId);
   res.status(200).json({ success: true, data: warehouse });
 });
 
 export const updateWarehouse = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const warehouse = await warehouseService.updateWarehouse(id, req.body);
+  const storeId = req.store!.id;
+  const warehouse = await warehouseService.updateWarehouse(id, storeId, req.body);
   res.status(200).json({ success: true, data: warehouse });
 });
 
 export const deleteWarehouse = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await warehouseService.deleteWarehouse(id);
+  const storeId = req.store!.id;
+  await warehouseService.deleteWarehouse(id, storeId);
   res.status(200).json({ success: true, message: "Warehouse deleted successfully" });
 });
 

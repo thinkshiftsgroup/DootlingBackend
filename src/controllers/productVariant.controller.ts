@@ -31,15 +31,17 @@ export const getProductVariants = asyncHandler(async (req: Request, res: Respons
 
 export const getProductVariantById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const variant = await productVariantService.getProductVariantById(id);
+  const storeId = req.store!.id;
+  const variant = await productVariantService.getProductVariantById(id, storeId);
   res.status(200).json({ success: true, data: variant });
 });
 
 export const updateProductVariant = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const { name, hasMultipleOptions, options } = req.body;
 
-  const variant = await productVariantService.updateProductVariant(id, {
+  const variant = await productVariantService.updateProductVariant(id, storeId, {
     name,
     hasMultipleOptions,
     options,
@@ -50,7 +52,8 @@ export const updateProductVariant = asyncHandler(async (req: Request, res: Respo
 
 export const deleteProductVariant = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await productVariantService.deleteProductVariant(id);
+  const storeId = req.store!.id;
+  await productVariantService.deleteProductVariant(id, storeId);
   res.status(200).json({ success: true, message: "Product variant deleted successfully" });
 });
 

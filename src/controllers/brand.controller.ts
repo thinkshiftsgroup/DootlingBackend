@@ -33,7 +33,8 @@ export const getBrands = asyncHandler(async (req: Request, res: Response) => {
 
 export const getBrandById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const brand = await brandService.getBrandById(id);
+  const storeId = req.store!.id;
+  const brand = await brandService.getBrandById(id, storeId);
   res.status(200).json({ success: true, data: brand });
 });
 
@@ -47,13 +48,15 @@ export const updateBrand = asyncHandler(async (req: Request, res: Response) => {
     imageUrl = await uploadToCloudinary(file, "image");
   }
 
-  const brand = await brandService.updateBrand(id, { name, description, imageUrl });
+  const storeId = req.store!.id;
+  const brand = await brandService.updateBrand(id, storeId, { name, description, imageUrl });
   res.status(200).json({ success: true, data: brand });
 });
 
 export const deleteBrand = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await brandService.deleteBrand(id);
+  const storeId = req.store!.id;
+  await brandService.deleteBrand(id, storeId);
   res.status(200).json({ success: true, message: "Brand deleted successfully" });
 });
 

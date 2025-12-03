@@ -1716,6 +1716,101 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /api/store/storefront/{storeUrl}:
+    get:
+      tags:
+        - Store
+      summary: Get public storefront by URL
+      description: Retrieve complete storefront data including products, categories, brands, shipping, and settings. This is a public endpoint that doesn't require authentication. Only launched stores are accessible.
+      security: []
+      parameters:
+        - name: storeUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "my-awesome-shop"
+          description: Store URL slug
+      responses:
+        '200':
+          description: Storefront data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  store:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      businessName:
+                        type: string
+                        example: "My Awesome Shop"
+                      storeUrl:
+                        type: string
+                        example: "my-awesome-shop"
+                      country:
+                        type: string
+                        example: "United States"
+                      currency:
+                        type: string
+                        example: "USD"
+                      isLaunched:
+                        type: boolean
+                        example: true
+                      products:
+                        type: array
+                        description: All non-hidden products with pricings, categories, description details, and options
+                        items:
+                          type: object
+                      categories:
+                        type: array
+                        description: All categories with their associated products
+                        items:
+                          type: object
+                      brands:
+                        type: array
+                        description: All brands for the store
+                        items:
+                          type: object
+                      shipping:
+                        type: object
+                        nullable: true
+                        description: Shipping configuration if exists
+                      shippingMethods:
+                        type: array
+                        description: Available shipping methods
+                        items:
+                          type: object
+                      settings:
+                        type: object
+                        nullable: true
+                        description: General store settings if exists
+                      primaryLocation:
+                        type: object
+                        nullable: true
+                        description: Primary store location if exists
+        '400':
+          description: Bad request - store not launched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Store not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   # ==================== CUSTOMER ENDPOINTS ====================
 
   /api/stores/{storeId}/customers:
@@ -2471,7 +2566,250 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  # ==================== CATEGORY ENDPOINTS ====================
+  # ==================== NEWSLETTER ENDPOINTS ====================
+
+  /api/stores/{storeId}/newsletter/subscribe:
+    post:
+      tags:
+        - Newsletter
+      summary: Subscribe to newsletter
+      description: Subscribe an email address to the store's newsletter. Public endpoint, no authentication required.
+      security: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: subscriber@example.com
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+      responses:
+        '200':
+          description: Successfully subscribed to newsletter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successfully subscribed to newsletter"
+        '400':
+          description: Bad request - invalid email or already subscribed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/newsletter/unsubscribe:
+    post:
+      tags:
+        - Newsletter
+      summary: Unsubscribe from newsletter
+      description: Unsubscribe an email address from the store's newsletter. Public endpoint, no authentication required.
+      security: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: subscriber@example.com
+      responses:
+        '200':
+          description: Successfully unsubscribed from newsletter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successfully unsubscribed from newsletter"
+        '400':
+          description: Bad request - email not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/newsletter/subscribers:
+    get:
+      tags:
+        - Newsletter
+      summary: Get newsletter subscribers
+      description: Retrieve paginated list of newsletter subscribers for a specific store. Requires authentication.
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of subscribers per page
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search subscribers by email or name
+      responses:
+        '200':
+          description: Subscribers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      subscribers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            email:
+                              type: string
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            subscribedAt:
+                              type: string
+                              format: date-time
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/stores/{storeId}/newsletter/stats:
+    get:
+      tags:
+        - Newsletter
+      summary: Get newsletter statistics
+      description: Retrieve statistics about newsletter subscribers for a specific store. Requires authentication.
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      totalSubscribers:
+                        type: integer
+                        example: 150
+                      newSubscribersThisMonth:
+                        type: integer
+                        example: 25
+                      unsubscribedCount:
+                        type: integer
+                        example: 10
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/jso
 
   /api/categories/{storeId}:
     get:

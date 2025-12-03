@@ -82,20 +82,34 @@ export const warehouseService = {
     });
   },
 
-  async getWarehouseById(id: number) {
-    const warehouse = await prisma.warehouse.findUnique({ where: { id } });
-    if (!warehouse) throw new Error("Warehouse not found");
+  async getWarehouseById(id: number, storeId: number) {
+    const warehouse = await prisma.warehouse.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!warehouse) throw new Error("Warehouse not found or access denied");
     return warehouse;
   },
 
-  async updateWarehouse(id: number, data: UpdateWarehouseInput) {
+  async updateWarehouse(id: number, storeId: number, data: UpdateWarehouseInput) {
+    // Verify ownership first
+    const warehouse = await prisma.warehouse.findFirst({
+      where: { id, storeId }
+    });
+    if (!warehouse) throw new Error("Warehouse not found or access denied");
+
     return prisma.warehouse.update({
       where: { id },
       data,
     });
   },
 
-  async deleteWarehouse(id: number) {
+  async deleteWarehouse(id: number, storeId: number) {
+    // Verify ownership first
+    const warehouse = await prisma.warehouse.findFirst({
+      where: { id, storeId }
+    });
+    if (!warehouse) throw new Error("Warehouse not found or access denied");
+
     return prisma.warehouse.delete({ where: { id } });
   },
 };

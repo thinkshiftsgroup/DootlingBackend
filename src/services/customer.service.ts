@@ -115,18 +115,24 @@ export const customerService = {
     });
   },
 
-  async getCustomerById(id: number) {
-    const customer = await prisma.customer.findUnique({
-      where: { id },
+  async getCustomerById(id: number, storeId: number) {
+    const customer = await prisma.customer.findFirst({
+      where: { id, storeId },
       include: {
         customerGroup: true,
       },
     });
-    if (!customer) throw new Error("Customer not found");
+    if (!customer) throw new Error("Customer not found or access denied");
     return customer;
   },
 
-  async updateCustomer(id: number, data: UpdateCustomerInput) {
+  async updateCustomer(id: number, storeId: number, data: UpdateCustomerInput) {
+    // Verify ownership first
+    const customer = await prisma.customer.findFirst({
+      where: { id, storeId }
+    });
+    if (!customer) throw new Error("Customer not found or access denied");
+
     return prisma.customer.update({
       where: { id },
       data,
@@ -136,7 +142,13 @@ export const customerService = {
     });
   },
 
-  async deleteCustomer(id: number) {
+  async deleteCustomer(id: number, storeId: number) {
+    // Verify ownership first
+    const customer = await prisma.customer.findFirst({
+      where: { id, storeId }
+    });
+    if (!customer) throw new Error("Customer not found or access denied");
+
     return prisma.customer.delete({ where: { id } });
   },
 

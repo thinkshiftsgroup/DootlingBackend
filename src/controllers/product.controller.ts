@@ -48,8 +48,10 @@ export const updateProductController: RequestHandler = async (
       return;
     }
 
+    const storeId = req.store!.id;
     const updatedProduct = await productService.updateProduct(
       productId,
+      storeId,
       productData
     );
 
@@ -118,7 +120,8 @@ export const deleteProductController: RequestHandler = async (
       return;
     }
 
-    await productService.deleteProduct(productId);
+    const storeId = req.store!.id;
+    await productService.deleteProduct(productId, storeId);
 
     res.status(200).json({
       message: "Product deleted successfully.",

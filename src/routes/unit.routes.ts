@@ -8,6 +8,7 @@ import {
   exportUnitsCSV,
 } from "@controllers/unit.controller";
 import { protect } from "@middlewares/auth.middleware";
+import { verifyStoreAccess, verifyResourceOwnership } from "@middlewares/tenant.middleware";
 
 const router = Router();
 
@@ -15,11 +16,11 @@ const router = Router();
 router.use(protect);
 
 // Unit routes
-router.post("/stores/:storeId/units", createUnit);
-router.get("/stores/:storeId/units/export", exportUnitsCSV);
-router.get("/units/:id", getUnitById);
-router.get("/stores/:storeId/units", getUnits);
-router.put("/units/:id", updateUnit);
-router.delete("/units/:id", deleteUnit);
+router.post("/stores/:storeId/units", verifyStoreAccess, createUnit);
+router.get("/stores/:storeId/units/export", verifyStoreAccess, exportUnitsCSV);
+router.get("/units/:id", verifyResourceOwnership("unit"), getUnitById);
+router.get("/stores/:storeId/units", verifyStoreAccess, getUnits);
+router.put("/units/:id", verifyResourceOwnership("unit"), updateUnit);
+router.delete("/units/:id", verifyResourceOwnership("unit"), deleteUnit);
 
 export default router;

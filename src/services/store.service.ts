@@ -142,3 +142,73 @@ export const launchStore = async (userId: number) => {
     },
   };
 };
+
+export const getStorefrontByUrl = async (storeUrl: string) => {
+  const store = await prisma.store.findUnique({
+    where: { storeUrl: storeUrl.toLowerCase() },
+  });
+
+  if (!store) throw new Error("Store not found");
+  if (!store.isLaunched) throw new Error("Store is not launched yet");
+
+  // Fetch all related data
+  const [products, categories, brands, shipping, shippingMethods, settings, locations] = await Promise.all([
+    prisma.product.findMany({
+      where: { storeId: store.id, hideFromHomepage: false },
+      include: {
+        pricings: true,
+        categories: { include: { category: true } },
+        descriptionDetails: true,
+        options: true,
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.category.findMany({
+      where: { storeId: store.id },
+      include: {
+        products: {
+          include: {
+            product: {
+              include: {
+                pricings: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.brand.findMany({
+      where: { storeId: store.id },
+    }),
+    prisma.shipping.findUnique({
+      where: { storeId: store.id },
+    }).catch(() => null),
+    prisma.shippingMethod.findMany({
+      where: { storeId: store.id },
+    }).catch(() => []),
+    prisma.generalSettings.findUnique({
+      where: { storeId: store.id },
+    }).catch(() => null),
+    prisma.location.findMany({
+      where: { storeId: store.id, isPrimary: true },
+    }).catch(() => []),
+  ]);
+
+  return {
+    store: {
+      id: store.id,
+      businessName: store.businessName,
+      storeUrl: store.storeUrl,
+      country: store.country,
+      currency: store.currency,
+      isLaunched: store.isLaunched,
+      products,
+      categories,
+      brands,
+      shipping,
+      shippingMethods,
+      settings,
+      primaryLocation: locations[0] || null,
+    },
+  };
+};

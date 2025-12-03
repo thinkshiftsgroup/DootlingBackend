@@ -51,8 +51,9 @@ export class StaffController {
   async updateStaff(req: Request, res: Response) {
     try {
       const staffId = parseInt(req.params.id, 10);
+      const storeId = req.store!.id;
       const data: UpdateStaffPayload = req.body;
-      const updatedStaff = await staffService.updateStaff(staffId, data);
+      const updatedStaff = await staffService.updateStaff(staffId, storeId, data);
       res.status(200).json({
         message: "Staff member updated successfully",
         data: updatedStaff,
@@ -65,7 +66,8 @@ export class StaffController {
   async deleteStaff(req: Request, res: Response) {
     try {
       const staffId = parseInt(req.params.id, 10);
-      const deletedStaff = await staffService.deleteStaff(staffId);
+      const storeId = req.store!.id;
+      const deletedStaff = await staffService.deleteStaff(staffId, storeId);
       res.status(200).json({
         message: "Staff member deleted successfully",
         data: deletedStaff,

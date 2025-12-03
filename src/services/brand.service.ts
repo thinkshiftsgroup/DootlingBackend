@@ -70,13 +70,21 @@ export const brandService = {
     });
   },
 
-  async getBrandById(id: number) {
-    const brand = await prisma.brand.findUnique({ where: { id } });
-    if (!brand) throw new Error("Brand not found");
+  async getBrandById(id: number, storeId: number) {
+    const brand = await prisma.brand.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!brand) throw new Error("Brand not found or access denied");
     return brand;
   },
 
-  async updateBrand(id: number, data: UpdateBrandInput) {
+  async updateBrand(id: number, storeId: number, data: UpdateBrandInput) {
+    // Verify ownership first
+    const brand = await prisma.brand.findFirst({
+      where: { id, storeId }
+    });
+    if (!brand) throw new Error("Brand not found or access denied");
+
     return prisma.brand.update({
       where: { id },
       data: {
@@ -87,7 +95,13 @@ export const brandService = {
     });
   },
 
-  async deleteBrand(id: number) {
+  async deleteBrand(id: number, storeId: number) {
+    // Verify ownership first
+    const brand = await prisma.brand.findFirst({
+      where: { id, storeId }
+    });
+    if (!brand) throw new Error("Brand not found or access denied");
+
     return prisma.brand.delete({ where: { id } });
   },
 };

@@ -89,6 +89,7 @@ export const createProduct = async (
 
 export const updateProduct = async (
   productId: number,
+  storeId: number,
   data: ProductUpdateData
 ): Promise<Product> => {
   const {
@@ -101,14 +102,14 @@ export const updateProduct = async (
     ...productData
   } = data;
 
-  // Get the product to find its storeId
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
+  // Verify ownership first
+  const product = await prisma.product.findFirst({
+    where: { id: productId, storeId },
     select: { storeId: true },
   });
 
   if (!product) {
-    throw new Error("Product not found");
+    throw new Error("Product not found or access denied");
   }
 
   // Validate categories exist if provided
@@ -289,7 +290,13 @@ export const listProducts = async (
   };
 };
 
-export const deleteProduct = async (productId: number): Promise<void> => {
+export const deleteProduct = async (productId: number, storeId: number): Promise<void> => {
+  // Verify ownership first
+  const product = await prisma.product.findFirst({
+    where: { id: productId, storeId }
+  });
+  if (!product) throw new Error("Product not found or access denied");
+
   await prisma.productCategory.deleteMany({
     where: { productId: productId },
   });

@@ -186,9 +186,9 @@ export const invoiceService = {
     });
   },
 
-  async getInvoiceById(id: number) {
-    const invoice = await prisma.invoice.findUnique({
-      where: { id },
+  async getInvoiceById(id: number, storeId: number) {
+    const invoice = await prisma.invoice.findFirst({
+      where: { id, storeId },
       include: {
         warehouse: true,
         customer: true,
@@ -200,11 +200,16 @@ export const invoiceService = {
         },
       },
     });
-    if (!invoice) throw new Error("Invoice not found");
+    if (!invoice) throw new Error("Invoice not found or access denied");
     return invoice;
   },
 
-  async updateInvoice(id: number, data: UpdateInvoiceInput) {
+  async updateInvoice(id: number, storeId: number, data: UpdateInvoiceInput) {
+    // Verify ownership first
+    const existingInvoice = await prisma.invoice.findFirst({
+      where: { id, storeId }
+    });
+    if (!existingInvoice) throw new Error("Invoice not found or access denied");
     const { items, ...invoiceData } = data;
 
     return prisma.$transaction(async (tx) => {
@@ -274,7 +279,13 @@ export const invoiceService = {
     });
   },
 
-  async deleteInvoice(id: number) {
+  async deleteInvoice(id: number, storeId: number) {
+    // Verify ownership first
+    const invoice = await prisma.invoice.findFirst({
+      where: { id, storeId }
+    });
+    if (!invoice) throw new Error("Invoice not found or access denied");
+
     return prisma.invoice.delete({ where: { id } });
   },
 };

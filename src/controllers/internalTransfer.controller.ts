@@ -37,23 +37,26 @@ export const getAllInternalTransfers = asyncHandler(async (req: Request, res: Re
 
 export const getInternalTransferById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const transfer = await internalTransferService.getInternalTransferById(id);
+  const storeId = req.store!.id;
+  const transfer = await internalTransferService.getInternalTransferById(id, storeId);
   res.status(200).json({ success: true, data: transfer });
 });
 
 export const updateInternalTransfer = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const updateData = { ...req.body };
   if (req.body.transferDate) {
     updateData.transferDate = new Date(req.body.transferDate);
   }
-  const transfer = await internalTransferService.updateInternalTransfer(id, updateData);
+  const transfer = await internalTransferService.updateInternalTransfer(id, storeId, updateData);
   res.status(200).json({ success: true, data: transfer });
 });
 
 export const deleteInternalTransfer = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await internalTransferService.deleteInternalTransfer(id);
+  const storeId = req.store!.id;
+  await internalTransferService.deleteInternalTransfer(id, storeId);
   res.status(200).json({ success: true, message: "Internal transfer deleted successfully" });
 });
 

@@ -82,20 +82,26 @@ export const customerGroupService = {
     });
   },
 
-  async getCustomerGroupById(id: number) {
-    const customerGroup = await prisma.customerGroup.findUnique({
-      where: { id },
+  async getCustomerGroupById(id: number, storeId: number) {
+    const customerGroup = await prisma.customerGroup.findFirst({
+      where: { id, storeId },
       include: {
         _count: {
           select: { customers: true },
         },
       },
     });
-    if (!customerGroup) throw new Error("Customer group not found");
+    if (!customerGroup) throw new Error("Customer group not found or access denied");
     return customerGroup;
   },
 
-  async updateCustomerGroup(id: number, data: UpdateCustomerGroupInput) {
+  async updateCustomerGroup(id: number, storeId: number, data: UpdateCustomerGroupInput) {
+    // Verify ownership first
+    const customerGroup = await prisma.customerGroup.findFirst({
+      where: { id, storeId }
+    });
+    if (!customerGroup) throw new Error("Customer group not found or access denied");
+
     return prisma.customerGroup.update({
       where: { id },
       data: {
@@ -110,7 +116,13 @@ export const customerGroupService = {
     });
   },
 
-  async deleteCustomerGroup(id: number) {
+  async deleteCustomerGroup(id: number, storeId: number) {
+    // Verify ownership first
+    const customerGroup = await prisma.customerGroup.findFirst({
+      where: { id, storeId }
+    });
+    if (!customerGroup) throw new Error("Customer group not found or access denied");
+
     return prisma.customerGroup.delete({ where: { id } });
   },
 };

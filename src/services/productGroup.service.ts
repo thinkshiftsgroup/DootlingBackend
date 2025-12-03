@@ -70,13 +70,21 @@ export const productGroupService = {
     });
   },
 
-  async getProductGroupById(id: number) {
-    const group = await prisma.productGroup.findUnique({ where: { id } });
-    if (!group) throw new Error("Product group not found");
+  async getProductGroupById(id: number, storeId: number) {
+    const group = await prisma.productGroup.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!group) throw new Error("Product group not found or access denied");
     return group;
   },
 
-  async updateProductGroup(id: number, data: UpdateProductGroupInput) {
+  async updateProductGroup(id: number, storeId: number, data: UpdateProductGroupInput) {
+    // Verify ownership first
+    const group = await prisma.productGroup.findFirst({
+      where: { id, storeId }
+    });
+    if (!group) throw new Error("Product group not found or access denied");
+
     return prisma.productGroup.update({
       where: { id },
       data: {
@@ -87,7 +95,13 @@ export const productGroupService = {
     });
   },
 
-  async deleteProductGroup(id: number) {
+  async deleteProductGroup(id: number, storeId: number) {
+    // Verify ownership first
+    const group = await prisma.productGroup.findFirst({
+      where: { id, storeId }
+    });
+    if (!group) throw new Error("Product group not found or access denied");
+
     return prisma.productGroup.delete({ where: { id } });
   },
 };

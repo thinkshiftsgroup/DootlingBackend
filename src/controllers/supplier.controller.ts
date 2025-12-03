@@ -50,7 +50,8 @@ export const getAllSuppliers = asyncHandler(async (req: Request, res: Response) 
 
 export const getSupplierById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const supplier = await supplierService.getSupplierById(id);
+  const storeId = req.store!.id;
+  const supplier = await supplierService.getSupplierById(id, storeId);
   res.status(200).json({ success: true, data: supplier });
 });
 
@@ -75,13 +76,15 @@ export const updateSupplier = asyncHandler(async (req: Request, res: Response) =
   if (req.body.phones) updateData.phones = typeof req.body.phones === 'string' ? JSON.parse(req.body.phones) : req.body.phones;
   if (req.body.addresses) updateData.addresses = typeof req.body.addresses === 'string' ? JSON.parse(req.body.addresses) : req.body.addresses;
 
-  const supplier = await supplierService.updateSupplier(id, updateData);
+  const storeId = req.store!.id;
+  const supplier = await supplierService.updateSupplier(id, storeId, updateData);
   res.status(200).json({ success: true, data: supplier });
 });
 
 export const deleteSupplier = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await supplierService.deleteSupplier(id);
+  const storeId = req.store!.id;
+  await supplierService.deleteSupplier(id, storeId);
   res.status(200).json({ success: true, message: "Supplier deleted successfully" });
 });
 
