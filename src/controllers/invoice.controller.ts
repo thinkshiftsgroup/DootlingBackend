@@ -58,18 +58,18 @@ export const getInvoiceById = asyncHandler(
   }
 );
 
-// export const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   const updateData = { ...req.body };
-//   if (req.body.invoiceDate) {
-//     updateData.invoiceDate = new Date(req.body.invoiceDate);
-//   }
-//   if (req.body.dueDate) {
-//     updateData.dueDate = new Date(req.body.dueDate);
-//   }
-//   const invoice = await invoiceService.updateInvoice(id, updateData);
-//   res.status(200).json({ success: true, data: invoice });
-// });
+export const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const updateData = { ...req.body };
+  if (req.body.invoiceDate) {
+    updateData.invoiceDate = new Date(req.body.invoiceDate);
+  }
+  if (req.body.dueDate) {
+    updateData.dueDate = new Date(req.body.dueDate);
+  }
+  const invoice = await invoiceService.updateInvoice(id, updateData);
+  res.status(200).json({ success: true, data: invoice });
+});
 
 export const deleteInvoice = asyncHandler(
   async (req: Request, res: Response) => {

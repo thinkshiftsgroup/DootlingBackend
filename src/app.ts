@@ -31,6 +31,7 @@ import { stockRouter } from "@routes/stock.routes";
 import { internalTransferRouter } from "@routes/internalTransfer.routes";
 import { invoiceRouter } from "@routes/invoice.routes";
 import { barcodeRouter } from "@routes/barcode.routes";
+import { qrcodeRouter } from "@routes/qrcode.routes";
 import { staffRouter } from "@routes/staff.routes";
 import { locationRouter } from "@routes/location.route";
 const app = express();
@@ -139,6 +140,7 @@ app.use("/api/stocks", stockRouter);
 app.use("/api/internal-transfers", internalTransferRouter);
 app.use("/api/invoices", invoiceRouter);
 app.use("/api/barcodes", barcodeRouter);
+app.use("/api/qrcodes", qrcodeRouter);
 app.use("/api/staff", staffRouter);
 app.use("/api/locations", locationRouter);
 app.get("/health", async (req: Request, res: Response) => {

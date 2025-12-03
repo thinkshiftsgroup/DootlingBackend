@@ -6218,6 +6218,212 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
+  # ==================== QR CODE ENDPOINTS ====================
+
+  /api/qrcodes/lot/{lotId}:
+    get:
+      tags:
+        - QR Codes
+      summary: Generate QR code for a stock lot (display)
+      description: Generate a QR code for a stock lot containing lot details. Returns PNG image or base64 data URL for display in web pages.
+      parameters:
+        - name: lotId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [png, base64]
+            default: png
+          description: Response format - png returns image, base64 returns data URL
+        - name: pageStyle
+          in: query
+          schema:
+            type: string
+            default: A4
+          description: Page style for printing
+      responses:
+        '200':
+          description: QR code image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      qrCode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/qrcodes/lot/{lotId}/download:
+    get:
+      tags:
+        - QR Codes
+      summary: Download QR code image for a stock lot
+      description: Download a QR code image as a PNG file for printing or storage.
+      parameters:
+        - name: lotId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Stock lot not found
+
+  /api/qrcodes/product/{productId}:
+    get:
+      tags:
+        - QR Codes
+      summary: Generate QR code for a product (display)
+      description: Generate a QR code for a product containing product details. Returns PNG image or base64 data URL for display in web pages.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [png, base64]
+            default: png
+          description: Response format - png returns image, base64 returns data URL
+      responses:
+        '200':
+          description: QR code image or base64 data URL
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      qrCode:
+                        type: string
+                        description: Base64 encoded data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Product not found
+
+  /api/qrcodes/product/{productId}/download:
+    get:
+      tags:
+        - QR Codes
+      summary: Download QR code image for a product
+      description: Download a QR code image as a PNG file for printing or storage.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: PNG image file ready for download
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Product not found
+
+  /api/qrcodes/bulk:
+    post:
+      tags:
+        - QR Codes
+      summary: Generate QR codes in bulk
+      description: Generate multiple QR codes for stock lots from a supplier or warehouse. Returns JSON array with base64 encoded QR codes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                supplierId:
+                  type: integer
+                  description: Supplier ID to filter stock lots
+                warehouseId:
+                  type: integer
+                  description: Warehouse ID to filter stock lots
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [base64, png]
+            default: base64
+          description: Response format - base64 for data URLs, png for binary
+        - name: pageStyle
+          in: query
+          schema:
+            type: string
+            default: A4
+          description: Page style for printing
+      responses:
+        '200':
+          description: Array of QR code data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        lotId:
+                          type: integer
+                        lotReferenceNo:
+                          type: string
+                        productName:
+                          type: string
+                        qrCode:
+                          type: string
+                          description: Base64 encoded QR code or data URL
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
   # ==================== LOCATION ENDPOINTS ====================
 
   /api/locations:
