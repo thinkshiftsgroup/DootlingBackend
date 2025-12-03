@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { authenticate } from "@middlewares/auth.middleware";
 import { uploadSingle } from "@middlewares/upload.middleware";
+import { verifyStoreAccess, verifyResourceOwnership } from "@middlewares/tenant.middleware";
 import * as productGroupController from "@controllers/productGroup.controller";
 
 export const productGroupRouter = Router();
 
-productGroupRouter.post("/:storeId", authenticate, uploadSingle, productGroupController.createProductGroup);
-productGroupRouter.get("/:storeId/export", authenticate, productGroupController.exportProductGroupsCSV);
-productGroupRouter.get("/:storeId/:id", authenticate, productGroupController.getProductGroupById);
-productGroupRouter.get("/:storeId", authenticate, productGroupController.getProductGroups);
-productGroupRouter.put("/:id", authenticate, uploadSingle, productGroupController.updateProductGroup);
-productGroupRouter.delete("/:id", authenticate, productGroupController.deleteProductGroup);
+productGroupRouter.post("/:storeId", authenticate, verifyStoreAccess, uploadSingle, productGroupController.createProductGroup);
+productGroupRouter.get("/:storeId/export", authenticate, verifyStoreAccess, productGroupController.exportProductGroupsCSV);
+productGroupRouter.get("/:storeId/:id", authenticate, verifyStoreAccess, productGroupController.getProductGroupById);
+productGroupRouter.get("/:storeId", authenticate, verifyStoreAccess, productGroupController.getProductGroups);
+productGroupRouter.put("/:id", authenticate, verifyResourceOwnership("productGroup"), uploadSingle, productGroupController.updateProductGroup);
+productGroupRouter.delete("/:id", authenticate, verifyResourceOwnership("productGroup"), productGroupController.deleteProductGroup);

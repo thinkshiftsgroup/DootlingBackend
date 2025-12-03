@@ -42,3 +42,13 @@ export const launchStore = async (req: Request, res: Response) => {
   const result = await storeService.launchStore(Number(userId));
   res.status(200).json(result);
 };
+
+export const getStorefrontByUrl = async (req: Request, res: Response) => {
+  const { storeUrl } = req.params;
+  if (!storeUrl) {
+    res.status(400).json({ message: "Store URL is required" });
+    return;
+  }
+  const result = await storeService.getStorefrontByUrl(storeUrl);
+  res.status(200).json(result);
+};

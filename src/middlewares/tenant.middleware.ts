@@ -100,6 +100,66 @@ export const verifyResourceOwnership = (resourceType: string) => {
             where: { id: resourceId, storeId: userStore.id },
           });
           break;
+        case "supplier":
+          resource = await prisma.supplier.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "warehouse":
+          resource = await prisma.warehouse.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "invoice":
+          resource = await prisma.invoice.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "stockLot":
+          resource = await prisma.stockLot.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "stockAdjustment":
+          resource = await prisma.stockAdjustment.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "internalTransfer":
+          resource = await prisma.internalTransfer.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "productGroup":
+          resource = await prisma.productGroup.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "productVariant":
+          resource = await prisma.productVariant.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "unit":
+          resource = await prisma.unit.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "customerGroup":
+          resource = await prisma.customerGroup.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "staff":
+          resource = await prisma.staff.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
+        case "location":
+          resource = await prisma.location.findFirst({
+            where: { id: resourceId, storeId: userStore.id },
+          });
+          break;
         default:
           res.status(400).json({ success: false, message: "Invalid resource type" });
           return;
