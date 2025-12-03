@@ -204,73 +204,75 @@ export const invoiceService = {
     return invoice;
   },
 
-  // async updateInvoice(id: number, data: UpdateInvoiceInput) {
-  //   const { items, ...invoiceData } = data;
+  async updateInvoice(id: number, data: UpdateInvoiceInput) {
+    const { items, ...invoiceData } = data;
 
-  //   return prisma.$transaction(async (tx) => {
-  //     if (items) {
-  //       await tx.invoiceItem.deleteMany({ where: { invoiceId: id } });
+    return prisma.$transaction(async (tx) => {
+      const updateData: any = { ...invoiceData };
 
-  //       let totalAmount = 0;
-  //       let taxAmount = 0;
+      if (items) {
+        await tx.invoiceItem.deleteMany({ where: { invoiceId: id } });
 
-  //       const itemsWithCalculations = items.map((item) => {
-  //         const totalPrice = item.quantity * item.unitPrice;
-  //         const itemTaxAmount = totalPrice * (item.taxRate || 0) / 100;
-  //         totalAmount += totalPrice;
-  //         taxAmount += itemTaxAmount;
+        let totalAmount = 0;
+        let taxAmount = 0;
 
-  //         return {
-  //           invoiceId: id,
-  //           productId: item.productId,
-  //           quantity: item.quantity,
-  //           unitPrice: item.unitPrice,
-  //           totalPrice,
-  //           taxRate: item.taxRate || 0,
-  //           taxAmount: itemTaxAmount,
-  //         };
-  //       });
+        const itemsWithCalculations = items.map((item) => {
+          const totalPrice = item.quantity * item.unitPrice;
+          const itemTaxAmount = (totalPrice * (item.taxRate || 0)) / 100;
+          totalAmount += totalPrice;
+          taxAmount += itemTaxAmount;
 
-  //       await tx.invoiceItem.createMany({ data: itemsWithCalculations });
+          return {
+            invoiceId: id,
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            totalPrice,
+            taxRate: item.taxRate || 0,
+            taxAmount: itemTaxAmount,
+          };
+        });
 
-  //       const discountAmount = data.discountAmount || 0;
-  //       const finalTotal = totalAmount + taxAmount - discountAmount;
-  //       const paidAmount = data.paidAmount || 0;
-  //       const dueAmount = finalTotal - paidAmount;
+        await tx.invoiceItem.createMany({ data: itemsWithCalculations });
 
-  //       invoiceData.totalAmount = finalTotal;
-  //       invoiceData.taxAmount = taxAmount;
-  //       invoiceData.dueAmount = dueAmount;
-  //     }
+        const discountAmount = data.discountAmount || 0;
+        const finalTotal = totalAmount + taxAmount - discountAmount;
+        const paidAmount = data.paidAmount || 0;
+        const dueAmount = finalTotal - paidAmount;
 
-  //     if (data.paidAmount !== undefined) {
-  //       const invoice = await tx.invoice.findUnique({ where: { id } });
-  //       if (invoice) {
-  //         invoiceData.dueAmount = invoice.totalAmount - data.paidAmount;
-  //         if (data.paidAmount >= invoice.totalAmount) {
-  //           invoiceData.status = "PAID";
-  //         } else if (data.paidAmount > 0) {
-  //           invoiceData.status = "PARTIALLY_PAID";
-  //         }
-  //       }
-  //     }
+        updateData.totalAmount = finalTotal;
+        updateData.taxAmount = taxAmount;
+        updateData.dueAmount = dueAmount;
+      }
 
-  //     return tx.invoice.update({
-  //       where: { id },
-  //       data: invoiceData,
-  //       include: {
-  //         warehouse: true,
-  //         customer: true,
-  //         supplier: true,
-  //         items: {
-  //           include: {
-  //             product: true,
-  //           },
-  //         },
-  //       },
-  //     });
-  //   });
-  // },
+      if (data.paidAmount !== undefined) {
+        const invoice = await tx.invoice.findUnique({ where: { id } });
+        if (invoice) {
+          updateData.dueAmount = invoice.totalAmount - data.paidAmount;
+          if (data.paidAmount >= invoice.totalAmount) {
+            updateData.status = "PAID";
+          } else if (data.paidAmount > 0) {
+            updateData.status = "PARTIALLY_PAID";
+          }
+        }
+      }
+
+      return tx.invoice.update({
+        where: { id },
+        data: updateData,
+        include: {
+          warehouse: true,
+          customer: true,
+          supplier: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+    });
+  },
 
   async deleteInvoice(id: number) {
     return prisma.invoice.delete({ where: { id } });

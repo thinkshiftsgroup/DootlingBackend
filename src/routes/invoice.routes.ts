@@ -21,5 +21,5 @@ invoiceRouter.get(
   invoiceController.getInvoiceById
 );
 invoiceRouter.get("/:storeId", authenticate, invoiceController.getInvoices);
-// invoiceRouter.put("/:id", authenticate, invoiceController.updateInvoice);
+invoiceRouter.put("/:id", authenticate, invoiceController.updateInvoice);
 invoiceRouter.delete("/:id", authenticate, invoiceController.deleteInvoice);
