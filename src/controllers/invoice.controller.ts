@@ -53,7 +53,8 @@ export const getAllInvoices = asyncHandler(
 export const getInvoiceById = asyncHandler(
   async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const invoice = await invoiceService.getInvoiceById(id);
+    const storeId = req.store!.id;
+    const invoice = await invoiceService.getInvoiceById(id, storeId);
     res.status(200).json({ success: true, data: invoice });
   }
 );
@@ -67,14 +68,16 @@ export const updateInvoice = asyncHandler(async (req: Request, res: Response) =>
   if (req.body.dueDate) {
     updateData.dueDate = new Date(req.body.dueDate);
   }
-  const invoice = await invoiceService.updateInvoice(id, updateData);
+  const storeId = req.store!.id;
+  const invoice = await invoiceService.updateInvoice(id, storeId, updateData);
   res.status(200).json({ success: true, data: invoice });
 });
 
 export const deleteInvoice = asyncHandler(
   async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    await invoiceService.deleteInvoice(id);
+    const storeId = req.store!.id;
+    await invoiceService.deleteInvoice(id, storeId);
     res
       .status(200)
       .json({ success: true, message: "Invoice deleted successfully" });

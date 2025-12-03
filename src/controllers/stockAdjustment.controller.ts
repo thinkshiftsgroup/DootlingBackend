@@ -38,23 +38,26 @@ export const getAllStockAdjustments = asyncHandler(async (req: Request, res: Res
 
 export const getStockAdjustmentById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const adjustment = await stockAdjustmentService.getStockAdjustmentById(id);
+  const storeId = req.store!.id;
+  const adjustment = await stockAdjustmentService.getStockAdjustmentById(id, storeId);
   res.status(200).json({ success: true, data: adjustment });
 });
 
 export const updateStockAdjustment = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const updateData = { ...req.body };
   if (req.body.adjustmentDate) {
     updateData.adjustmentDate = new Date(req.body.adjustmentDate);
   }
-  const adjustment = await stockAdjustmentService.updateStockAdjustment(id, updateData);
+  const adjustment = await stockAdjustmentService.updateStockAdjustment(id, storeId, updateData);
   res.status(200).json({ success: true, data: adjustment });
 });
 
 export const deleteStockAdjustment = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await stockAdjustmentService.deleteStockAdjustment(id);
+  const storeId = req.store!.id;
+  await stockAdjustmentService.deleteStockAdjustment(id, storeId);
   res.status(200).json({ success: true, message: "Stock adjustment deleted successfully" });
 });
 

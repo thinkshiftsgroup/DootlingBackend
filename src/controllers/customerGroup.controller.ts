@@ -26,21 +26,24 @@ export const getCustomerGroups = asyncHandler(async (req: Request, res: Response
 
 export const getCustomerGroupById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const customerGroup = await customerGroupService.getCustomerGroupById(id);
+  const storeId = req.store!.id;
+  const customerGroup = await customerGroupService.getCustomerGroupById(id, storeId);
   res.status(200).json({ success: true, data: customerGroup });
 });
 
 export const updateCustomerGroup = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const { name, description } = req.body;
 
-  const customerGroup = await customerGroupService.updateCustomerGroup(id, { name, description });
+  const customerGroup = await customerGroupService.updateCustomerGroup(id, storeId, { name, description });
   res.status(200).json({ success: true, data: customerGroup });
 });
 
 export const deleteCustomerGroup = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await customerGroupService.deleteCustomerGroup(id);
+  const storeId = req.store!.id;
+  await customerGroupService.deleteCustomerGroup(id, storeId);
   res.status(200).json({ success: true, message: "Customer group deleted successfully" });
 });
 

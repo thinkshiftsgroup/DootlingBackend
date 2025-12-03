@@ -25,19 +25,22 @@ export const getCustomers = asyncHandler(async (req: Request, res: Response) => 
 
 export const getCustomerById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const customer = await customerService.getCustomerById(id);
+  const storeId = req.store!.id;
+  const customer = await customerService.getCustomerById(id, storeId);
   res.status(200).json({ success: true, data: customer });
 });
 
 export const updateCustomer = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const customer = await customerService.updateCustomer(id, req.body);
+  const storeId = req.store!.id;
+  const customer = await customerService.updateCustomer(id, storeId, req.body);
   res.status(200).json({ success: true, data: customer });
 });
 
 export const deleteCustomer = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await customerService.deleteCustomer(id);
+  const storeId = req.store!.id;
+  await customerService.deleteCustomer(id, storeId);
   res.status(200).json({ success: true, message: "Customer deleted successfully" });
 });
 

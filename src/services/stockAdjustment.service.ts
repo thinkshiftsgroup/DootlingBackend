@@ -132,19 +132,25 @@ export const stockAdjustmentService = {
     });
   },
 
-  async getStockAdjustmentById(id: number) {
-    const adjustment = await prisma.stockAdjustment.findUnique({
-      where: { id },
+  async getStockAdjustmentById(id: number, storeId: number) {
+    const adjustment = await prisma.stockAdjustment.findFirst({
+      where: { id, storeId },
       include: {
         warehouse: true,
         product: true,
       },
     });
-    if (!adjustment) throw new Error("Stock adjustment not found");
+    if (!adjustment) throw new Error("Stock adjustment not found or access denied");
     return adjustment;
   },
 
-  async updateStockAdjustment(id: number, data: UpdateStockAdjustmentInput) {
+  async updateStockAdjustment(id: number, storeId: number, data: UpdateStockAdjustmentInput) {
+    // Verify ownership first
+    const adjustment = await prisma.stockAdjustment.findFirst({
+      where: { id, storeId }
+    });
+    if (!adjustment) throw new Error("Stock adjustment not found or access denied");
+
     return prisma.stockAdjustment.update({
       where: { id },
       data,
@@ -155,7 +161,13 @@ export const stockAdjustmentService = {
     });
   },
 
-  async deleteStockAdjustment(id: number) {
+  async deleteStockAdjustment(id: number, storeId: number) {
+    // Verify ownership first
+    const adjustment = await prisma.stockAdjustment.findFirst({
+      where: { id, storeId }
+    });
+    if (!adjustment) throw new Error("Stock adjustment not found or access denied");
+
     return prisma.stockAdjustment.delete({ where: { id } });
   },
 };

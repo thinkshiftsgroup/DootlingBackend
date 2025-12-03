@@ -70,13 +70,21 @@ export const unitService = {
     });
   },
 
-  async getUnitById(id: number) {
-    const unit = await prisma.unit.findUnique({ where: { id } });
-    if (!unit) throw new Error("Unit not found");
+  async getUnitById(id: number, storeId: number) {
+    const unit = await prisma.unit.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!unit) throw new Error("Unit not found or access denied");
     return unit;
   },
 
-  async updateUnit(id: number, data: UpdateUnitInput) {
+  async updateUnit(id: number, storeId: number, data: UpdateUnitInput) {
+    // Verify ownership first
+    const unit = await prisma.unit.findFirst({
+      where: { id, storeId }
+    });
+    if (!unit) throw new Error("Unit not found or access denied");
+
     return prisma.unit.update({
       where: { id },
       data: {
@@ -86,7 +94,13 @@ export const unitService = {
     });
   },
 
-  async deleteUnit(id: number) {
+  async deleteUnit(id: number, storeId: number) {
+    // Verify ownership first
+    const unit = await prisma.unit.findFirst({
+      where: { id, storeId }
+    });
+    if (!unit) throw new Error("Unit not found or access denied");
+
     return prisma.unit.delete({ where: { id } });
   },
 };

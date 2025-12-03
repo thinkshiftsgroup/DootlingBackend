@@ -27,21 +27,24 @@ export const getUnits = asyncHandler(async (req: Request, res: Response) => {
 
 export const getUnitById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const unit = await unitService.getUnitById(id);
+  const storeId = req.store!.id;
+  const unit = await unitService.getUnitById(id, storeId);
   res.status(200).json({ success: true, data: unit });
 });
 
 export const updateUnit = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const { name, status } = req.body;
 
-  const unit = await unitService.updateUnit(id, { name, status });
+  const unit = await unitService.updateUnit(id, storeId, { name, status });
   res.status(200).json({ success: true, data: unit });
 });
 
 export const deleteUnit = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await unitService.deleteUnit(id);
+  const storeId = req.store!.id;
+  await unitService.deleteUnit(id, storeId);
   res.status(200).json({ success: true, message: "Unit deleted successfully" });
 });
 

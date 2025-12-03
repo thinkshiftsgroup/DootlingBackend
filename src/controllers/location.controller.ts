@@ -48,9 +48,11 @@ export class LocationController {
   async updateLocation(req: Request, res: Response) {
     try {
       const locationId = parseInt(req.params.id, 10);
+      const storeId = req.store!.id;
       const data: UpdateLocationPayload = req.body;
       const updatedLocation = await locationService.updateLocation(
         locationId,
+        storeId,
         data
       );
       res.status(200).json(updatedLocation);
@@ -62,7 +64,8 @@ export class LocationController {
   async deleteLocation(req: Request, res: Response) {
     try {
       const locationId = parseInt(req.params.id, 10);
-      const deletedLocation = await locationService.deleteLocation(locationId);
+      const storeId = req.store!.id;
+      const deletedLocation = await locationService.deleteLocation(locationId, storeId);
       res.status(200).json({
         message: "Location deleted successfully",
         location: deletedLocation,

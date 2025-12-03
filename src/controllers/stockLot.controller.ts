@@ -37,23 +37,26 @@ export const getAllStockLots = asyncHandler(async (req: Request, res: Response) 
 
 export const getStockLotById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const stockLot = await stockLotService.getStockLotById(id);
+  const storeId = req.store!.id;
+  const stockLot = await stockLotService.getStockLotById(id, storeId);
   res.status(200).json({ success: true, data: stockLot });
 });
 
 export const updateStockLot = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const updateData = { ...req.body };
   if (req.body.purchaseDate) {
     updateData.purchaseDate = new Date(req.body.purchaseDate);
   }
-  const stockLot = await stockLotService.updateStockLot(id, updateData);
+  const stockLot = await stockLotService.updateStockLot(id, storeId, updateData);
   res.status(200).json({ success: true, data: stockLot });
 });
 
 export const deleteStockLot = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await stockLotService.deleteStockLot(id);
+  const storeId = req.store!.id;
+  await stockLotService.deleteStockLot(id, storeId);
   res.status(200).json({ success: true, message: "Stock lot deleted successfully" });
 });
 

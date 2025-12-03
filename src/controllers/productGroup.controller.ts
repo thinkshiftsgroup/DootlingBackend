@@ -33,12 +33,14 @@ export const getProductGroups = asyncHandler(async (req: Request, res: Response)
 
 export const getProductGroupById = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const group = await productGroupService.getProductGroupById(id);
+  const storeId = req.store!.id;
+  const group = await productGroupService.getProductGroupById(id, storeId);
   res.status(200).json({ success: true, data: group });
 });
 
 export const updateProductGroup = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+  const storeId = req.store!.id;
   const { name, description } = req.body;
   const file = req.file;
 
@@ -47,13 +49,14 @@ export const updateProductGroup = asyncHandler(async (req: Request, res: Respons
     imageUrl = await uploadToCloudinary(file, "image");
   }
 
-  const group = await productGroupService.updateProductGroup(id, { name, description, imageUrl });
+  const group = await productGroupService.updateProductGroup(id, storeId, { name, description, imageUrl });
   res.status(200).json({ success: true, data: group });
 });
 
 export const deleteProductGroup = asyncHandler(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  await productGroupService.deleteProductGroup(id);
+  const storeId = req.store!.id;
+  await productGroupService.deleteProductGroup(id, storeId);
   res.status(200).json({ success: true, message: "Product group deleted successfully" });
 });
 

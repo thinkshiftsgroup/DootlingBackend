@@ -157,22 +157,24 @@ export const internalTransferService = {
     });
   },
 
-  async getInternalTransferById(id: number) {
-    const transfer = await prisma.internalTransfer.findUnique({
-      where: { id },
+  async getInternalTransferById(id: number, storeId: number) {
+    const transfer = await prisma.internalTransfer.findFirst({
+      where: { id, storeId },
       include: {
         fromWarehouse: true,
         toWarehouse: true,
         product: true,
       },
     });
-    if (!transfer) throw new Error("Internal transfer not found");
+    if (!transfer) throw new Error("Internal transfer not found or access denied");
     return transfer;
   },
 
-  async updateInternalTransfer(id: number, data: UpdateInternalTransferInput) {
-    const existingTransfer = await prisma.internalTransfer.findUnique({ where: { id } });
-    if (!existingTransfer) throw new Error("Internal transfer not found");
+  async updateInternalTransfer(id: number, storeId: number, data: UpdateInternalTransferInput) {
+    const existingTransfer = await prisma.internalTransfer.findFirst({ 
+      where: { id, storeId } 
+    });
+    if (!existingTransfer) throw new Error("Internal transfer not found or access denied");
 
     if (data.fromWarehouseId && data.toWarehouseId && data.fromWarehouseId === data.toWarehouseId) {
       throw new Error("Cannot transfer to the same warehouse");
@@ -244,7 +246,13 @@ export const internalTransferService = {
     });
   },
 
-  async deleteInternalTransfer(id: number) {
+  async deleteInternalTransfer(id: number, storeId: number) {
+    // Verify ownership first
+    const transfer = await prisma.internalTransfer.findFirst({
+      where: { id, storeId }
+    });
+    if (!transfer) throw new Error("Internal transfer not found or access denied");
+
     return prisma.internalTransfer.delete({ where: { id } });
   },
 };

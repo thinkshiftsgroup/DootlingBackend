@@ -26,9 +26,9 @@ export class StaffService {
     return newStaff;
   }
 
-  async fetchStaffById(staffId: number): Promise<StaffWithPermissions | null> {
-    const staff = await prisma.staff.findUnique({
-      where: { id: staffId },
+  async fetchStaffById(staffId: number, storeId: number): Promise<StaffWithPermissions | null> {
+    const staff = await prisma.staff.findFirst({
+      where: { id: staffId, storeId },
       include: { permissions: true },
     });
     return staff;
@@ -45,8 +45,15 @@ export class StaffService {
 
   async updateStaff(
     staffId: number,
+    storeId: number,
     data: UpdateStaffPayload
   ): Promise<StaffWithPermissions> {
+    // Verify ownership first
+    const staff = await prisma.staff.findFirst({
+      where: { id: staffId, storeId }
+    });
+    if (!staff) throw new Error("Staff not found or access denied");
+
     const { permissions, ...staffData } = data;
 
     const updatedStaff = await prisma.staff.update({
@@ -67,7 +74,13 @@ export class StaffService {
     return updatedStaff;
   }
 
-  async deleteStaff(staffId: number): Promise<Staff> {
+  async deleteStaff(staffId: number, storeId: number): Promise<Staff> {
+    // Verify ownership first
+    const staff = await prisma.staff.findFirst({
+      where: { id: staffId, storeId }
+    });
+    if (!staff) throw new Error("Staff not found or access denied");
+
     const deletedStaff = await prisma.staff.delete({
       where: { id: staffId },
     });

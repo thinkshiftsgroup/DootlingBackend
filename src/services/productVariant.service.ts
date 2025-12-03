@@ -72,16 +72,22 @@ export const productVariantService = {
     });
   },
 
-  async getProductVariantById(id: number) {
-    const variant = await prisma.productVariant.findUnique({
-      where: { id },
+  async getProductVariantById(id: number, storeId: number) {
+    const variant = await prisma.productVariant.findFirst({
+      where: { id, storeId },
       include: { options: true },
     });
-    if (!variant) throw new Error("Product variant not found");
+    if (!variant) throw new Error("Product variant not found or access denied");
     return variant;
   },
 
-  async updateProductVariant(id: number, data: UpdateProductVariantInput) {
+  async updateProductVariant(id: number, storeId: number, data: UpdateProductVariantInput) {
+    // Verify ownership first
+    const variant = await prisma.productVariant.findFirst({
+      where: { id, storeId }
+    });
+    if (!variant) throw new Error("Product variant not found or access denied");
+
     const updateData: any = {};
     if (data.name) updateData.name = data.name;
     if (data.hasMultipleOptions !== undefined) updateData.hasMultipleOptions = data.hasMultipleOptions;
@@ -100,7 +106,13 @@ export const productVariantService = {
     });
   },
 
-  async deleteProductVariant(id: number) {
+  async deleteProductVariant(id: number, storeId: number) {
+    // Verify ownership first
+    const variant = await prisma.productVariant.findFirst({
+      where: { id, storeId }
+    });
+    if (!variant) throw new Error("Product variant not found or access denied");
+
     return prisma.productVariant.delete({ where: { id } });
   },
 };
