@@ -42,8 +42,9 @@ export const generateProductBarcode = asyncHandler(async (req: Request, res: Res
 export const generateLotBarcode = asyncHandler(async (req: Request, res: Response) => {
   const { lotId } = req.params;
   const { format = "png", type = "code128", pageStyle = "A4" } = req.query;
+  const storeId = req.store!.id;
 
-  const lot = await stockLotService.getStockLotById(parseInt(lotId));
+  const lot = await stockLotService.getStockLotById(parseInt(lotId), storeId);
 
   if (!lot) {
     return res.status(404).json({ success: false, message: "Stock lot not found" });
@@ -72,11 +73,12 @@ export const generateLotBarcode = asyncHandler(async (req: Request, res: Respons
 export const generateBulkBarcodes = asyncHandler(async (req: Request, res: Response) => {
   const { lotId, supplierId } = req.body;
   const { format = "base64", download = "false" } = req.query;
+  const storeId = req.store!.id;
 
   let products: any[] = [];
 
   if (lotId) {
-    const lot = await stockLotService.getStockLotById(parseInt(lotId));
+    const lot = await stockLotService.getStockLotById(parseInt(lotId), storeId);
     products = [
       {
         id: lot.product.id,
@@ -215,8 +217,9 @@ export const downloadBarcodeImage = asyncHandler(async (req: Request, res: Respo
 export const downloadLotBarcodeImage = asyncHandler(async (req: Request, res: Response) => {
   const { lotId } = req.params;
   const { type = "code128" } = req.query;
+  const storeId = req.store!.id;
 
-  const lot = await stockLotService.getStockLotById(parseInt(lotId));
+  const lot = await stockLotService.getStockLotById(parseInt(lotId), storeId);
 
   if (!lot) {
     return res.status(404).json({ success: false, message: "Stock lot not found" });

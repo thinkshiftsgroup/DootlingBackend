@@ -21,7 +21,8 @@ export class StaffController {
   async getStaffById(req: Request, res: Response) {
     try {
       const staffId = parseInt(req.params.id, 10);
-      const staff = await staffService.fetchStaffById(staffId);
+      const storeId = req.store!.id;
+      const staff = await staffService.fetchStaffById(staffId, storeId);
 
       if (!staff) {
         return res.status(404).json({ message: "Staff not found" });

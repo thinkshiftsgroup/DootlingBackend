@@ -22,7 +22,8 @@ export class LocationController {
   async getLocationById(req: Request, res: Response) {
     try {
       const locationId = parseInt(req.params.id, 10);
-      const location = await locationService.fetchLocationById(locationId);
+      const storeId = req.store!.id;
+      const location = await locationService.fetchLocationById(locationId, storeId);
 
       if (!location) {
         return res.status(404).json({ message: "Location not found" });
