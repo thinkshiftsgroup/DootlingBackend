@@ -94,20 +94,13 @@ export const createProduct = async (
 
 export const isCustomProductUrlTaken = async (
   storeId: number,
-  customProductUrl: string,
-  excludeProductId?: number
+  customProductUrl: string
 ): Promise<boolean> => {
-  const whereCondition: any = {
-    storeId: storeId,
-    customProductUrl: customProductUrl,
-  };
-
-  if (excludeProductId) {
-    whereCondition.id = { not: excludeProductId };
-  }
-
   const count = await prisma.product.count({
-    where: whereCondition,
+    where: {
+      storeId: storeId,
+      customProductUrl: customProductUrl,
+    },
   });
 
   return count > 0;

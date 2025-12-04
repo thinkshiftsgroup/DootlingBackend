@@ -35,6 +35,42 @@ export const createProductController: RequestHandler = async (
   }
 };
 
+export const validateProductUrlController: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const storeId = getStoreIdFromParams(req);
+    const { customProductUrl } = req.body as Pick<
+      ProductCreationData,
+      "customProductUrl"
+    >;
+
+    if (!customProductUrl) {
+      res.status(400).json({
+        message: "customProductUrl is required for validation.",
+        isTaken: null,
+      });
+      return;
+    }
+
+    const isTaken = await productService.isCustomProductUrlTaken(
+      storeId,
+      customProductUrl
+    );
+
+    res.status(200).json({
+      message: isTaken ? "URL is already taken." : "URL is available.",
+      isTaken: isTaken,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: (error as Error).message,
+      isTaken: null,
+    });
+  }
+};
+
 export const updateProductController: RequestHandler = async (
   req: Request,
   res: Response
