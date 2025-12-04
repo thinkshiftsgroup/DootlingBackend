@@ -1461,32 +1461,66 @@ paths:
       tags:
         - Store
       summary: Setup store
-      description: Create a new store for the authenticated user. Each user can have only one store.
+      description: Create a new store for the authenticated user. Each user can have only one store. Supports logo upload via multipart/form-data.
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               required:
-                - businessName
                 - storeUrl
-                - country
               properties:
+                storeName:
+                  type: string
+                  example: "My Store"
+                  description: "Display name for the store"
                 businessName:
                   type: string
                   example: "My Awesome Shop"
+                  description: "Legal business name"
                 storeUrl:
                   type: string
                   example: "my-awesome-shop"
                   description: "3-63 characters, lowercase alphanumeric and hyphens only"
-                country:
+                file:
                   type: string
-                  example: "United States"
+                  format: binary
+                  description: "Store logo image (JPEG, PNG, or PDF). Uploaded to Cloudinary."
+                businessSector:
+                  type: string
+                  example: "Retail"
+                tagLine:
+                  type: string
+                  example: "Your one-stop shop"
+                description:
+                  type: string
+                  example: "We sell amazing products"
+                timezone:
+                  type: string
+                  example: "America/New_York"
                 currency:
                   type: string
                   default: USD
-                  example: USD
+                  example: "USD"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                address:
+                  type: string
+                  example: "123 Main St"
+                country:
+                  type: string
+                  example: "United States"
+                state:
+                  type: string
+                  example: "New York"
+                city:
+                  type: string
+                  example: "New York"
+                zipCode:
+                  type: string
+                  example: "10001"
       responses:
         '201':
           description: Store created successfully
@@ -1503,13 +1537,36 @@ paths:
                     properties:
                       id:
                         type: integer
+                      storeName:
+                        type: string
                       businessName:
                         type: string
                       storeUrl:
                         type: string
-                      country:
+                      logoUrl:
+                        type: string
+                        example: "https://res.cloudinary.com/..."
+                      businessSector:
+                        type: string
+                      tagLine:
+                        type: string
+                      description:
+                        type: string
+                      timezone:
                         type: string
                       currency:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      country:
+                        type: string
+                      state:
+                        type: string
+                      city:
+                        type: string
+                      zipCode:
                         type: string
                       isLaunched:
                         type: boolean
@@ -1551,20 +1608,40 @@ paths:
                     properties:
                       id:
                         type: integer
+                      storeName:
+                        type: string
                       businessName:
                         type: string
                       storeUrl:
                         type: string
-                      country:
+                      logoUrl:
+                        type: string
+                        example: "https://res.cloudinary.com/..."
+                      businessSector:
+                        type: string
+                      tagLine:
+                        type: string
+                      description:
+                        type: string
+                      timezone:
                         type: string
                       currency:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      country:
+                        type: string
+                      state:
+                        type: string
+                      city:
+                        type: string
+                      zipCode:
                         type: string
                       isLaunched:
                         type: boolean
                       createdAt:
-                        type: string
-                        format: date-time
-                      updatedAt:
                         type: string
                         format: date-time
         '401':
@@ -1590,23 +1667,57 @@ paths:
       tags:
         - Store
       summary: Update store
-      description: Update the authenticated user's store details. Store URL cannot be changed.
+      description: Update the authenticated user's store details. Store URL cannot be changed. Supports logo upload via multipart/form-data.
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
+                storeName:
+                  type: string
+                  example: "Updated Store Name"
                 businessName:
                   type: string
                   example: "Updated Shop Name"
-                country:
+                file:
                   type: string
-                  example: "Canada"
+                  format: binary
+                  description: "Store logo image (JPEG, PNG, or PDF). Uploaded to Cloudinary."
+                businessSector:
+                  type: string
+                  example: "E-commerce"
+                tagLine:
+                  type: string
+                  example: "New tagline"
+                description:
+                  type: string
+                  example: "Updated description"
+                timezone:
+                  type: string
+                  example: "America/Los_Angeles"
                 currency:
                   type: string
                   example: "CAD"
+                phone:
+                  type: string
+                  example: "+1987654321"
+                address:
+                  type: string
+                  example: "456 Oak Ave"
+                country:
+                  type: string
+                  example: "Canada"
+                state:
+                  type: string
+                  example: "Ontario"
+                city:
+                  type: string
+                  example: "Toronto"
+                zipCode:
+                  type: string
+                  example: "M5H 2N2"
       responses:
         '200':
           description: Store updated successfully
@@ -1623,13 +1734,36 @@ paths:
                     properties:
                       id:
                         type: integer
+                      storeName:
+                        type: string
                       businessName:
                         type: string
                       storeUrl:
                         type: string
-                      country:
+                      logoUrl:
+                        type: string
+                        example: "https://res.cloudinary.com/..."
+                      businessSector:
+                        type: string
+                      tagLine:
+                        type: string
+                      description:
+                        type: string
+                      timezone:
                         type: string
                       currency:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      country:
+                        type: string
+                      state:
+                        type: string
+                      city:
+                        type: string
+                      zipCode:
                         type: string
                       isLaunched:
                         type: boolean
@@ -1680,13 +1814,36 @@ paths:
                     properties:
                       id:
                         type: integer
+                      storeName:
+                        type: string
                       businessName:
                         type: string
                       storeUrl:
                         type: string
-                      country:
+                      logoUrl:
+                        type: string
+                        example: "https://res.cloudinary.com/..."
+                      businessSector:
+                        type: string
+                      tagLine:
+                        type: string
+                      description:
+                        type: string
+                      timezone:
                         type: string
                       currency:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      country:
+                        type: string
+                      state:
+                        type: string
+                      city:
+                        type: string
+                      zipCode:
                         type: string
                       isLaunched:
                         type: boolean
@@ -3926,6 +4083,140 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /api/product-variants/{storeId}:
+    post:
+      tags:
+        - Product Variants
+      summary: Create product variant
+      description: Create a new product variant for a store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                  example:
+                    - name: "Small"
+                    - name: "Medium"
+                    - name: "Large"
+      responses:
+        '201':
+          description: Product variant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Product Variants
+      summary: Get product variants
+      description: Get all product variants for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by variant name
+          example: "Size"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product variants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductVariant'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /api/product-variants/{storeId}/export:
     get:
       tags:
@@ -3984,7 +4275,134 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductVariant'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-variants/{id}:
+    put:
+      tags:
+        - Product Variants
+      summary: Update product variant
+      description: Update a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                  example:
+                    - name: "Small"
+                    - name: "Medium"
+                    - name: "Large"
+                    - name: "Extra Large"
+      responses:
+        '200':
+          description: Product variant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Product Variants
+      summary: Delete product variant
+      description: Delete a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product variant deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product variant deleted successfully"
         '401':
           description: Unauthorized
           content:

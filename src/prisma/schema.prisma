@@ -40,10 +40,21 @@ model Store {
   id               Int                @id @default(autoincrement())
   userId           Int
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName     String
+  storeName        String?
+  businessName     String?
   storeUrl         String             @unique
-  country          String
+  logoUrl          String?
+  businessSector   String?
+  tagLine          String?
+  description      String?
+  timezone         String?
   currency         String             @default("USD")
+  phone            String?
+  address          String?
+  country          String?
+  state            String?
+  city             String?
+  zipCode          String?
   isLaunched       Boolean            @default(false)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
