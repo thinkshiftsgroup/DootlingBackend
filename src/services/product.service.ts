@@ -303,6 +303,14 @@ export const listProducts = async (
     );
   }
 
+  const totalOutOfStock = allProducts.reduce((count, product) => {
+    const stock = product.stockQuantity ?? 0;
+    if (stock <= 0) {
+      return count + 1;
+    }
+    return count;
+  }, 0);
+
   const totalCount = sortedProducts.length;
   const skip = (page - 1) * pageSize;
   const products = sortedProducts.slice(skip, skip + pageSize);
@@ -314,6 +322,7 @@ export const listProducts = async (
       page,
       pageSize,
       totalPages: Math.ceil(totalCount / pageSize),
+      totalOutOfStock: totalOutOfStock,
     },
   };
 };
