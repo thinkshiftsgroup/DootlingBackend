@@ -15,7 +15,6 @@ export const createProduct = async (
     ...productData
   } = data;
 
-  // Validate categories exist if provided
   if (categories && categories.length > 0) {
     const existingCategories = await prisma.category.findMany({
       where: {
@@ -34,7 +33,11 @@ export const createProduct = async (
   const product = await prisma.product.create({
     data: {
       ...productData,
-      storeId: storeId,
+      store: {
+        connect: {
+          id: storeId,
+        },
+      },
 
       pricings: {
         create: pricings.map((p) => ({
@@ -91,6 +94,7 @@ export const createProduct = async (
 
   return product;
 };
+
 export const isCustomProductUrlTaken = async (
   storeId: number,
   customProductUrl: string
