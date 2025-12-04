@@ -4147,6 +4147,334 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  # ==================== PRODUCT GROUPS ENDPOINTS ====================
+
+  /api/product-groups/{storeId}:
+    post:
+      tags:
+        - Product Groups
+      summary: Create product group
+      description: Create a new product group for a store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Electronics"
+                description:
+                  type: string
+                  example: "Electronic devices and accessories"
+                image:
+                  type: string
+                  format: binary
+                  description: Product group image file
+      responses:
+        '201':
+          description: Product group created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Product Groups
+      summary: Get product groups
+      description: Get all product groups for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by group name
+          example: "Electronics"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductGroup'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{storeId}/export:
+    get:
+      tags:
+        - Product Groups
+      summary: Export product groups to CSV
+      description: Export all product groups for a store as CSV file
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: CSV file generated successfully
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{storeId}/{id}:
+    get:
+      tags:
+        - Product Groups
+      summary: Get product group by ID
+      description: Get a specific product group by ID
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product group retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-groups/{id}:
+    put:
+      tags:
+        - Product Groups
+      summary: Update product group
+      description: Update a product group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Electronics"
+                description:
+                  type: string
+                  example: "Electronic devices and accessories"
+                image:
+                  type: string
+                  format: binary
+                  description: Product group image file
+      responses:
+        '200':
+          description: Product group updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductGroup'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Product Groups
+      summary: Delete product group
+      description: Delete a product group by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product group deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product group deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ==================== PRODUCT VARIANTS ENDPOINTS ====================
+
   /api/product-variants/{storeId}:
     post:
       tags:
@@ -4171,21 +4499,48 @@ paths:
               properties:
                 name:
                   type: string
-                  example: "Size"
+                  example: "Living Room Furniture"
+                  description: "Variant name (e.g., product category or variant group)"
                 hasMultipleOptions:
                   type: boolean
                   example: true
+                  description: "This product has multiple variants (options), like different tiers, packages, add-ons, sizes or color"
                 options:
                   type: array
                   items:
                     type: object
+                    required:
+                      - name
                     properties:
                       name:
                         type: string
+                        description: "Name of the variation option"
+                      isRequired:
+                        type: boolean
+                        default: false
+                        description: "Required variants (buyer must select one option on checkout)"
+                      affectsPrice:
+                        type: boolean
+                        default: false
+                        description: "The variants affects the price"
+                      additionalPrice:
+                        type: number
+                        format: float
+                        default: 0
+                        description: "Additional price (NGN) - Any price added here would be included in the product price at checkout"
                   example:
-                    - name: "Small"
-                    - name: "Medium"
-                    - name: "Large"
+                    - name: "nano/500"
+                      isRequired: true
+                      affectsPrice: true
+                      additionalPrice: 500
+                    - name: "micro"
+                      isRequired: false
+                      affectsPrice: true
+                      additionalPrice: 1000
+                    - name: "macro"
+                      isRequired: false
+                      affectsPrice: false
+                      additionalPrice: 0
       responses:
         "201":
           description: Product variant created successfully
@@ -4387,22 +4742,48 @@ paths:
               properties:
                 name:
                   type: string
-                  example: "Size"
+                  example: "Living Room Furniture"
+                  description: "Variant name (e.g., product category or variant group)"
                 hasMultipleOptions:
                   type: boolean
                   example: true
+                  description: "This product has multiple variants (options), like different tiers, packages, add-ons, sizes or color"
                 options:
                   type: array
                   items:
                     type: object
+                    required:
+                      - name
                     properties:
                       name:
                         type: string
+                        description: "Name of the variation option"
+                      isRequired:
+                        type: boolean
+                        default: false
+                        description: "Required variants (buyer must select one option on checkout)"
+                      affectsPrice:
+                        type: boolean
+                        default: false
+                        description: "The variants affects the price"
+                      additionalPrice:
+                        type: number
+                        format: float
+                        default: 0
+                        description: "Additional price (NGN) - Any price added here would be included in the product price at checkout"
                   example:
-                    - name: "Small"
-                    - name: "Medium"
-                    - name: "Large"
-                    - name: "Extra Large"
+                    - name: "nano/500"
+                      isRequired: true
+                      affectsPrice: true
+                      additionalPrice: 500
+                    - name: "micro"
+                      isRequired: false
+                      affectsPrice: true
+                      additionalPrice: 1000
+                    - name: "macro"
+                      isRequired: false
+                      affectsPrice: false
+                      additionalPrice: 0
       responses:
         "200":
           description: Product variant updated successfully
@@ -8400,14 +8781,17 @@ components:
           example: 1
         name:
           type: string
-          example: "Size"
+          example: "Living Room Furniture"
+          description: "Variant name (e.g., product category or variant group)"
         hasMultipleOptions:
           type: boolean
           example: true
+          description: "This product has multiple variants (options), like different tiers, packages, add-ons, sizes or color"
         options:
           type: array
           items:
-            $ref: "#/components/schemas/ProductVariantOption"
+            $ref: '#/components/schemas/ProductVariantOption'
+          description: "List of variation options with pricing details"
         createdAt:
           type: string
           format: date-time
@@ -8428,7 +8812,21 @@ components:
           example: 1
         name:
           type: string
-          example: "Small"
+          example: "nano/500"
+          description: "Name of the variation option"
+        isRequired:
+          type: boolean
+          example: true
+          description: "Required variants (buyer must select one option on checkout)"
+        affectsPrice:
+          type: boolean
+          example: true
+          description: "The variants affects the price"
+        additionalPrice:
+          type: number
+          format: float
+          example: 500
+          description: "Additional price (NGN) - Any price added here would be included in the product price at checkout"
         createdAt:
           type: string
           format: date-time

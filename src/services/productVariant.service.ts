@@ -1,15 +1,22 @@
 import { prisma } from "../prisma";
 
+interface VariantOption {
+  name: string;
+  isRequired?: boolean;
+  affectsPrice?: boolean;
+  additionalPrice?: number;
+}
+
 interface CreateProductVariantInput {
   name: string;
   hasMultipleOptions: boolean;
-  options: string[];
+  options: VariantOption[];
 }
 
 interface UpdateProductVariantInput {
   name?: string;
   hasMultipleOptions?: boolean;
-  options?: string[];
+  options?: VariantOption[];
 }
 
 interface GetProductVariantsQuery {
@@ -26,7 +33,12 @@ export const productVariantService = {
         name: data.name,
         hasMultipleOptions: data.hasMultipleOptions,
         options: {
-          create: data.options.map((optionName) => ({ name: optionName })),
+          create: data.options.map((option) => ({
+            name: option.name,
+            isRequired: option.isRequired || false,
+            affectsPrice: option.affectsPrice || false,
+            additionalPrice: option.additionalPrice || 0,
+          })),
         },
       },
       include: { options: true },
@@ -95,7 +107,12 @@ export const productVariantService = {
     if (data.options) {
       await prisma.productVariantOption.deleteMany({ where: { variantId: id } });
       updateData.options = {
-        create: data.options.map((optionName) => ({ name: optionName })),
+        create: data.options.map((option) => ({
+          name: option.name,
+          isRequired: option.isRequired || false,
+          affectsPrice: option.affectsPrice || false,
+          additionalPrice: option.additionalPrice || 0,
+        })),
       };
     }
 
