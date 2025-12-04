@@ -231,7 +231,6 @@ export const updateProduct = async (
 
   return updatedProduct;
 };
-
 export const listProducts = async (
   storeId: number,
   page: number = 1,
@@ -242,14 +241,11 @@ export const listProducts = async (
     productName?: string;
   } = {}
 ) => {
-  const skip = (page - 1) * pageSize;
   const { sortByPrice, categoryId, productName } = filters;
 
   const whereConditions: any = {
     storeId: storeId,
   };
-
-  const orderByConditions: any = [];
 
   if (productName) {
     whereConditions.name = {
@@ -266,28 +262,8 @@ export const listProducts = async (
     };
   }
 
-  if (sortByPrice) {
-    const direction = sortByPrice === "highest" ? "desc" : "asc";
-    orderByConditions.push({
-      pricings: {
-        _max: {
-          sellingPrice: direction,
-        },
-      },
-    });
-    orderByConditions.push({ id: direction });
-  } else {
-    orderByConditions.push({
-      createdAt: "desc",
-    });
-  }
-
-  const products = await prisma.product.findMany({
+  const allProducts = await prisma.product.findMany({
     where: whereConditions,
-    take: pageSize,
-    skip: skip,
-    orderBy: orderByConditions,
-
     include: {
       pricings: true,
       categories: {
@@ -297,9 +273,35 @@ export const listProducts = async (
     },
   });
 
-  const totalCount = await prisma.product.count({
-    where: whereConditions,
-  });
+  let sortedProducts = allProducts;
+
+  if (sortByPrice) {
+    const direction = sortByPrice === "highest" ? -1 : 1;
+
+    sortedProducts.sort((a, b) => {
+      const priceA =
+        a.pricings.length > 0
+          ? Math.max(...a.pricings.map((p) => p.sellingPrice))
+          : 0;
+      const priceB =
+        b.pricings.length > 0
+          ? Math.max(...b.pricings.map((p) => p.sellingPrice))
+          : 0;
+
+      if (priceA > priceB) return direction * -1;
+      if (priceA < priceB) return direction * 1;
+
+      return b.id - a.id;
+    });
+  } else {
+    sortedProducts.sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  const totalCount = sortedProducts.length;
+  const skip = (page - 1) * pageSize;
+  const products = sortedProducts.slice(skip, skip + pageSize);
 
   return {
     products: products,
