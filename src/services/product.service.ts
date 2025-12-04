@@ -25,7 +25,9 @@ export const createProduct = async (
     });
 
     if (existingCategories.length !== categories.length) {
-      throw new Error("One or more category IDs do not exist or do not belong to this store");
+      throw new Error(
+        "One or more category IDs do not exist or do not belong to this store"
+      );
     }
   }
 
@@ -54,11 +56,14 @@ export const createProduct = async (
         })),
       },
 
-      categories: categories && categories.length > 0 ? {
-        create: categories.map((categoryId) => ({
-          categoryId: categoryId,
-        })),
-      } : undefined,
+      categories:
+        categories && categories.length > 0
+          ? {
+              create: categories.map((categoryId) => ({
+                categoryId: categoryId,
+              })),
+            }
+          : undefined,
       upsellProducts: {
         create: upsellProductIds.map((upsellProductId) => ({
           upsellProduct: {
@@ -85,6 +90,27 @@ export const createProduct = async (
   });
 
   return product;
+};
+
+export const isCustomProductUrlTaken = async (
+  storeId: number,
+  customProductUrl: string,
+  excludeProductId?: number
+): Promise<boolean> => {
+  const whereCondition: any = {
+    storeId: storeId,
+    customProductUrl: customProductUrl,
+  };
+
+  if (excludeProductId) {
+    whereCondition.id = { not: excludeProductId };
+  }
+
+  const count = await prisma.product.count({
+    where: whereCondition,
+  });
+
+  return count > 0;
 };
 
 export const updateProduct = async (
@@ -122,7 +148,9 @@ export const updateProduct = async (
     });
 
     if (existingCategories.length !== categories.length) {
-      throw new Error("One or more category IDs do not exist or do not belong to this store");
+      throw new Error(
+        "One or more category IDs do not exist or do not belong to this store"
+      );
     }
   }
 
@@ -290,10 +318,13 @@ export const listProducts = async (
   };
 };
 
-export const deleteProduct = async (productId: number, storeId: number): Promise<void> => {
+export const deleteProduct = async (
+  productId: number,
+  storeId: number
+): Promise<void> => {
   // Verify ownership first
   const product = await prisma.product.findFirst({
-    where: { id: productId, storeId }
+    where: { id: productId, storeId },
   });
   if (!product) throw new Error("Product not found or access denied");
 
