@@ -5,7 +5,25 @@ const validateStoreUrl = (url: string): boolean => {
   return urlRegex.test(url) && url.length >= 3 && url.length <= 63;
 };
 
-export const setupStore = async (userId: number, businessName: string, storeUrl: string, country: string, currency: string = "USD") => {
+interface SetupStoreData {
+  storeName?: string;
+  businessName?: string;
+  storeUrl: string;
+  logoUrl?: string;
+  businessSector?: string;
+  tagLine?: string;
+  description?: string;
+  timezone?: string;
+  currency?: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+}
+
+export const setupStore = async (userId: number, data: SetupStoreData) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
@@ -14,30 +32,32 @@ export const setupStore = async (userId: number, businessName: string, storeUrl:
   if (existingUserStore) throw new Error("User already has a store");
 
   // Validate store URL format
-  if (!validateStoreUrl(storeUrl)) {
+  if (!validateStoreUrl(data.storeUrl)) {
     throw new Error("Invalid store URL. Must be 3-63 characters, lowercase alphanumeric and hyphens only");
   }
 
   // Check if store URL is unique
-  const existingStore = await prisma.store.findUnique({ where: { storeUrl } });
+  const existingStore = await prisma.store.findUnique({ where: { storeUrl: data.storeUrl } });
   if (existingStore) throw new Error("Store URL already taken");
-
-  // Validate business name
-  if (!businessName || businessName.trim().length === 0) {
-    throw new Error("Business name is required");
-  }
-
-  if (!country || country.trim().length === 0) {
-    throw new Error("Country is required");
-  }
 
   const store = await prisma.store.create({
     data: {
       userId,
-      businessName: businessName.trim(),
-      storeUrl: storeUrl.toLowerCase(),
-      country,
-      currency: currency.toUpperCase(),
+      storeName: data.storeName?.trim() || null,
+      businessName: data.businessName?.trim() || null,
+      storeUrl: data.storeUrl.toLowerCase(),
+      logoUrl: data.logoUrl || null,
+      businessSector: data.businessSector || null,
+      tagLine: data.tagLine || null,
+      description: data.description || null,
+      timezone: data.timezone || null,
+      currency: data.currency?.toUpperCase() || "USD",
+      phone: data.phone || null,
+      address: data.address || null,
+      country: data.country || null,
+      state: data.state || null,
+      city: data.city || null,
+      zipCode: data.zipCode || null,
     },
   });
 
@@ -45,10 +65,21 @@ export const setupStore = async (userId: number, businessName: string, storeUrl:
     message: "Store setup successful",
     store: {
       id: store.id,
+      storeName: store.storeName,
       businessName: store.businessName,
       storeUrl: store.storeUrl,
-      country: store.country,
+      logoUrl: store.logoUrl,
+      businessSector: store.businessSector,
+      tagLine: store.tagLine,
+      description: store.description,
+      timezone: store.timezone,
       currency: store.currency,
+      phone: store.phone,
+      address: store.address,
+      country: store.country,
+      state: store.state,
+      city: store.city,
+      zipCode: store.zipCode,
       isLaunched: store.isLaunched,
     },
   };
@@ -64,17 +95,45 @@ export const getStore = async (userId: number) => {
   return {
     store: {
       id: store.id,
+      storeName: store.storeName,
       businessName: store.businessName,
       storeUrl: store.storeUrl,
-      country: store.country,
+      logoUrl: store.logoUrl,
+      businessSector: store.businessSector,
+      tagLine: store.tagLine,
+      description: store.description,
+      timezone: store.timezone,
       currency: store.currency,
+      phone: store.phone,
+      address: store.address,
+      country: store.country,
+      state: store.state,
+      city: store.city,
+      zipCode: store.zipCode,
       isLaunched: store.isLaunched,
       createdAt: store.createdAt,
     },
   };
 };
 
-export const updateStore = async (userId: number, businessName?: string, country?: string, currency?: string) => {
+interface UpdateStoreData {
+  storeName?: string;
+  businessName?: string;
+  logoUrl?: string;
+  businessSector?: string;
+  tagLine?: string;
+  description?: string;
+  timezone?: string;
+  currency?: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+}
+
+export const updateStore = async (userId: number, data: UpdateStoreData) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
@@ -83,19 +142,60 @@ export const updateStore = async (userId: number, businessName?: string, country
 
   const updateData: any = {};
   
-  if (businessName !== undefined) {
-    if (businessName.trim().length === 0) throw new Error("Business name cannot be empty");
-    updateData.businessName = businessName.trim();
+  if (data.storeName !== undefined) {
+    updateData.storeName = data.storeName?.trim() || null;
   }
   
-  if (country !== undefined) {
-    if (country.trim().length === 0) throw new Error("Country cannot be empty");
-    updateData.country = country;
+  if (data.businessName !== undefined) {
+    updateData.businessName = data.businessName?.trim() || null;
   }
   
-  if (currency !== undefined) {
-    if (currency.trim().length === 0) throw new Error("Currency cannot be empty");
-    updateData.currency = currency.toUpperCase();
+  if (data.logoUrl !== undefined) {
+    updateData.logoUrl = data.logoUrl || null;
+  }
+  
+  if (data.businessSector !== undefined) {
+    updateData.businessSector = data.businessSector || null;
+  }
+  
+  if (data.tagLine !== undefined) {
+    updateData.tagLine = data.tagLine || null;
+  }
+  
+  if (data.description !== undefined) {
+    updateData.description = data.description || null;
+  }
+  
+  if (data.timezone !== undefined) {
+    updateData.timezone = data.timezone || null;
+  }
+  
+  if (data.currency !== undefined) {
+    updateData.currency = data.currency?.toUpperCase() || "USD";
+  }
+  
+  if (data.phone !== undefined) {
+    updateData.phone = data.phone || null;
+  }
+  
+  if (data.address !== undefined) {
+    updateData.address = data.address || null;
+  }
+  
+  if (data.country !== undefined) {
+    updateData.country = data.country || null;
+  }
+  
+  if (data.state !== undefined) {
+    updateData.state = data.state || null;
+  }
+  
+  if (data.city !== undefined) {
+    updateData.city = data.city || null;
+  }
+  
+  if (data.zipCode !== undefined) {
+    updateData.zipCode = data.zipCode || null;
   }
 
   const updatedStore = await prisma.store.update({
@@ -107,10 +207,21 @@ export const updateStore = async (userId: number, businessName?: string, country
     message: "Store updated successfully",
     store: {
       id: updatedStore.id,
+      storeName: updatedStore.storeName,
       businessName: updatedStore.businessName,
       storeUrl: updatedStore.storeUrl,
-      country: updatedStore.country,
+      logoUrl: updatedStore.logoUrl,
+      businessSector: updatedStore.businessSector,
+      tagLine: updatedStore.tagLine,
+      description: updatedStore.description,
+      timezone: updatedStore.timezone,
       currency: updatedStore.currency,
+      phone: updatedStore.phone,
+      address: updatedStore.address,
+      country: updatedStore.country,
+      state: updatedStore.state,
+      city: updatedStore.city,
+      zipCode: updatedStore.zipCode,
       isLaunched: updatedStore.isLaunched,
     },
   };
@@ -134,10 +245,21 @@ export const launchStore = async (userId: number) => {
     message: "Store launched successfully",
     store: {
       id: launchedStore.id,
+      storeName: launchedStore.storeName,
       businessName: launchedStore.businessName,
       storeUrl: launchedStore.storeUrl,
-      country: launchedStore.country,
+      logoUrl: launchedStore.logoUrl,
+      businessSector: launchedStore.businessSector,
+      tagLine: launchedStore.tagLine,
+      description: launchedStore.description,
+      timezone: launchedStore.timezone,
       currency: launchedStore.currency,
+      phone: launchedStore.phone,
+      address: launchedStore.address,
+      country: launchedStore.country,
+      state: launchedStore.state,
+      city: launchedStore.city,
+      zipCode: launchedStore.zipCode,
       isLaunched: launchedStore.isLaunched,
     },
   };
@@ -197,10 +319,21 @@ export const getStorefrontByUrl = async (storeUrl: string) => {
   return {
     store: {
       id: store.id,
+      storeName: store.storeName,
       businessName: store.businessName,
       storeUrl: store.storeUrl,
-      country: store.country,
+      logoUrl: store.logoUrl,
+      businessSector: store.businessSector,
+      tagLine: store.tagLine,
+      description: store.description,
+      timezone: store.timezone,
       currency: store.currency,
+      phone: store.phone,
+      address: store.address,
+      country: store.country,
+      state: store.state,
+      city: store.city,
+      zipCode: store.zipCode,
       isLaunched: store.isLaunched,
       products,
       categories,
