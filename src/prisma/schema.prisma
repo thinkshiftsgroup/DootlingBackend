@@ -286,6 +286,7 @@ model Product {
   minOrderQuantity            Int                          @default(1)
   maxOrderQuantity            Int?
   isPreOrder                  Boolean                      @default(false)
+  sizeChartImageUrl           String?
   preOrderReleaseDate         DateTime?
   showStrikedOutOriginalPrice Boolean                      @default(false)
   pricings                    ProductPricing[]

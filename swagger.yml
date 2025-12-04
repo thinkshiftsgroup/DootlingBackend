@@ -25,7 +25,7 @@ paths:
       description: Check if the service is running
       security: []
       responses:
-        '200':
+        "200":
           description: Service is healthy
           content:
             application/json:
@@ -82,7 +82,7 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '201':
+        "201":
           description: User registered successfully. Verification code sent to email.
           content:
             application/json:
@@ -95,18 +95,18 @@ paths:
                   userId:
                     type: integer
                     example: 1
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/verify-email:
     post:
@@ -133,7 +133,7 @@ paths:
                   type: string
                   example: "123456"
       responses:
-        '200':
+        "200":
           description: Email verified successfully. User is now authenticated.
           content:
             application/json:
@@ -157,24 +157,24 @@ paths:
                         type: string
                       isVerified:
                         type: boolean
-        '400':
+        "400":
           description: Bad request - invalid code or code expired
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/resend-verification:
     post:
@@ -196,7 +196,7 @@ paths:
                   type: string
                   format: email
       responses:
-        '200':
+        "200":
           description: Verification code resent
           content:
             application/json:
@@ -231,7 +231,7 @@ paths:
                   type: string
                   example: password123
       responses:
-        '200':
+        "200":
           description: Login successful. Returns access and refresh tokens.
           content:
             application/json:
@@ -255,18 +255,18 @@ paths:
                         type: string
                       username:
                         type: string
-        '400':
+        "400":
           description: Bad request - invalid credentials or email not verified
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/refresh-token:
     post:
@@ -288,7 +288,7 @@ paths:
                   type: string
                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
-        '200':
+        "200":
           description: Token refreshed successfully
           content:
             application/json:
@@ -298,18 +298,18 @@ paths:
                   accessToken:
                     type: string
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '400':
+        "400":
           description: Bad request - invalid or expired refresh token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/forgot-password:
     post:
@@ -332,7 +332,7 @@ paths:
                   format: email
                   example: user@example.com
       responses:
-        '200':
+        "200":
           description: Reset code sent to email
           content:
             application/json:
@@ -342,24 +342,24 @@ paths:
                   message:
                     type: string
                     example: "Password reset code sent to your email"
-        '400':
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/verify-reset-code:
     post:
@@ -386,7 +386,7 @@ paths:
                   type: string
                   example: "123456"
       responses:
-        '200':
+        "200":
           description: Reset code verified successfully
           content:
             application/json:
@@ -399,24 +399,24 @@ paths:
                   email:
                     type: string
                     example: user@example.com
-        '400':
+        "400":
           description: Bad request - invalid or expired code
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/reset-password:
     post:
@@ -448,7 +448,7 @@ paths:
                   minLength: 8
                   example: newpassword123
       responses:
-        '200':
+        "200":
           description: Password reset successful
           content:
             application/json:
@@ -458,24 +458,24 @@ paths:
                   message:
                     type: string
                     example: "Password reset successful"
-        '400':
+        "400":
           description: Bad request - invalid code or password too short
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/set-password:
     post:
@@ -497,7 +497,7 @@ paths:
                   minLength: 8
                   example: newpassword123
       responses:
-        '200':
+        "200":
           description: Password changed successfully
           content:
             application/json:
@@ -507,30 +507,30 @@ paths:
                   message:
                     type: string
                     example: "Password changed successfully"
-        '400':
+        "400":
           description: Bad request - password too short
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/auth/logout:
     post:
@@ -539,7 +539,7 @@ paths:
       summary: Logout user
       description: Logout and invalidate refresh token
       responses:
-        '200':
+        "200":
           description: Logged out successfully
           content:
             application/json:
@@ -549,18 +549,18 @@ paths:
                   message:
                     type: string
                     example: "Logged out successfully"
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== USER PROFILE ENDPOINTS ====================
 
@@ -571,7 +571,7 @@ paths:
       summary: Get user profile
       description: Retrieve the authenticated user's complete profile including personal and identification details
       responses:
-        '200':
+        "200":
           description: Profile retrieved successfully
           content:
             application/json:
@@ -634,24 +634,24 @@ paths:
                       isVerified:
                         type: boolean
                         example: true
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -687,7 +687,8 @@ paths:
                   example: "+1234567890"
                 meansOfIdentification:
                   type: string
-                  enum: [NIN, VOTERS_CARD, DRIVERS_LICENSE, INTERNATIONAL_PASSPORT]
+                  enum:
+                    [NIN, VOTERS_CARD, DRIVERS_LICENSE, INTERNATIONAL_PASSPORT]
                   example: INTERNATIONAL_PASSPORT
                 identificationNumber:
                   type: string
@@ -703,7 +704,7 @@ paths:
                   type: string
                   example: "123 Main Street, New York, NY 10001"
       responses:
-        '200':
+        "200":
           description: Profile updated successfully
           content:
             application/json:
@@ -744,30 +745,30 @@ paths:
                         type: string
                       contactAddress:
                         type: string
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/user/profile/photo:
     post:
@@ -789,7 +790,7 @@ paths:
                   format: binary
                   description: Profile photo file (JPEG, PNG, or PDF)
       responses:
-        '200':
+        "200":
           description: Photo uploaded successfully
           content:
             application/json:
@@ -802,24 +803,24 @@ paths:
                   profilePhotoUrl:
                     type: string
                     example: "https://res.cloudinary.com/..."
-        '400':
+        "400":
           description: No file provided or invalid file type
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== KYC PERSONAL ENDPOINTS ====================
 
@@ -830,7 +831,7 @@ paths:
       summary: Get personal KYC profile
       description: Retrieve personal KYC information for the authenticated user
       responses:
-        '200':
+        "200":
           description: Personal KYC retrieved successfully
           content:
             application/json:
@@ -864,19 +865,26 @@ paths:
                         type: string
                       status:
                         type: string
-                        enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
-        '401':
+                        enum:
+                          [
+                            NOT_STARTED,
+                            IN_PROGRESS,
+                            SUBMITTED,
+                            APPROVED,
+                            REJECTED,
+                          ]
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -917,7 +925,7 @@ paths:
                   type: string
                   example: "123 Main Street, New York, NY 10001"
       responses:
-        '200':
+        "200":
           description: Personal KYC updated successfully
           content:
             application/json:
@@ -929,18 +937,18 @@ paths:
                     example: "Personal KYC profile created"
                   profile:
                     type: object
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== KYC BUSINESS ENDPOINTS ====================
 
@@ -951,7 +959,7 @@ paths:
       summary: Get business KYC profile
       description: Retrieve business KYC information for the authenticated user
       responses:
-        '200':
+        "200":
           description: Business KYC retrieved successfully
           content:
             application/json:
@@ -990,18 +998,18 @@ paths:
                         type: string
                       companyWebsite:
                         type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -1055,7 +1063,7 @@ paths:
                   type: string
                   example: "https://testbusiness.com"
       responses:
-        '200':
+        "200":
           description: Business KYC updated successfully
           content:
             application/json:
@@ -1067,24 +1075,24 @@ paths:
                     example: "Business KYC created"
                   profile:
                     type: object
-        '400':
+        "400":
           description: Bad request - business name required or empty
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== KYC DOCUMENTS ENDPOINTS ====================
 
@@ -1095,7 +1103,7 @@ paths:
       summary: Get KYC documents
       description: List all uploaded KYC documents for the authenticated user
       responses:
-        '200':
+        "200":
           description: Documents retrieved successfully
           content:
             application/json:
@@ -1126,18 +1134,18 @@ paths:
                         uploadedAt:
                           type: string
                           format: date-time
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -1177,7 +1185,7 @@ paths:
                         type: string
                         example: "https://res.cloudinary.com/..."
       responses:
-        '200':
+        "200":
           description: Documents saved successfully
           content:
             application/json:
@@ -1190,24 +1198,24 @@ paths:
                   count:
                     type: integer
                     example: 2
-        '400':
+        "400":
           description: Bad request - no documents provided
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/kyc/documents/upload:
     post:
@@ -1253,7 +1261,7 @@ paths:
                     format: binary
                   description: Additional documents (max 5)
       responses:
-        '200':
+        "200":
           description: Documents uploaded successfully
           content:
             application/json:
@@ -1272,24 +1280,24 @@ paths:
                           type: string
                         url:
                           type: string
-        '400':
+        "400":
           description: No files provided or invalid file type
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== KYC PEPS ENDPOINTS ====================
 
@@ -1300,7 +1308,7 @@ paths:
       summary: Get PEPs
       description: List all Politically Exposed Persons for the authenticated user
       responses:
-        '200':
+        "200":
           description: PEPs retrieved successfully
           content:
             application/json:
@@ -1328,18 +1336,18 @@ paths:
                         updatedAt:
                           type: string
                           format: date-time
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -1373,7 +1381,7 @@ paths:
                         type: string
                         example: "Senior government official"
       responses:
-        '200':
+        "200":
           description: PEPs saved successfully
           content:
             application/json:
@@ -1386,18 +1394,18 @@ paths:
                   count:
                     type: integer
                     example: 1
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== KYC SUBMISSION ENDPOINTS ====================
 
@@ -1408,7 +1416,7 @@ paths:
       summary: Submit KYC for approval
       description: Submit complete KYC for review and approval. Personal KYC must be complete.
       responses:
-        '200':
+        "200":
           description: KYC submitted successfully
           content:
             application/json:
@@ -1427,32 +1435,39 @@ paths:
                         type: integer
                       status:
                         type: string
-                        enum: [NOT_STARTED, IN_PROGRESS, SUBMITTED, APPROVED, REJECTED]
+                        enum:
+                          [
+                            NOT_STARTED,
+                            IN_PROGRESS,
+                            SUBMITTED,
+                            APPROVED,
+                            REJECTED,
+                          ]
                         example: SUBMITTED
-        '400':
+        "400":
           description: Bad request - incomplete KYC information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: KYC profile not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== STORE ENDPOINTS ====================
 
@@ -1522,7 +1537,7 @@ paths:
                   type: string
                   example: "10001"
       responses:
-        '201':
+        "201":
           description: Store created successfully
           content:
             application/json:
@@ -1570,24 +1585,24 @@ paths:
                         type: string
                       isLaunched:
                         type: boolean
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/store:
     get:
@@ -1596,7 +1611,7 @@ paths:
       summary: Get store
       description: Retrieve the authenticated user's store details
       responses:
-        '200':
+        "200":
           description: Store retrieved successfully
           content:
             application/json:
@@ -1644,24 +1659,24 @@ paths:
                       createdAt:
                         type: string
                         format: date-time
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Store not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -1719,7 +1734,7 @@ paths:
                   type: string
                   example: "M5H 2N2"
       responses:
-        '200':
+        "200":
           description: Store updated successfully
           content:
             application/json:
@@ -1767,30 +1782,30 @@ paths:
                         type: string
                       isLaunched:
                         type: boolean
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Store not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/store/launch:
     post:
@@ -1799,7 +1814,7 @@ paths:
       summary: Launch store
       description: Launch the authenticated user's store. Once launched, the store becomes publicly accessible.
       responses:
-        '200':
+        "200":
           description: Store launched successfully
           content:
             application/json:
@@ -1848,30 +1863,30 @@ paths:
                       isLaunched:
                         type: boolean
                         example: true
-        '400':
+        "400":
           description: Bad request - store already launched
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Store not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/store/storefront/{storeUrl}:
     get:
@@ -1889,7 +1904,7 @@ paths:
           example: "my-awesome-shop"
           description: Store URL slug
       responses:
-        '200':
+        "200":
           description: Storefront data retrieved successfully
           content:
             application/json:
@@ -1949,24 +1964,24 @@ paths:
                         type: object
                         nullable: true
                         description: Primary store location if exists
-        '400':
+        "400":
           description: Bad request - store not launched
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Store not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== CUSTOMER ENDPOINTS ====================
 
@@ -2011,7 +2026,7 @@ paths:
             type: integer
           description: Filter customers by customer group ID
       responses:
-        '200':
+        "200":
           description: Customers retrieved successfully
           content:
             application/json:
@@ -2027,21 +2042,21 @@ paths:
                       customers:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Customer'
+                          $ref: "#/components/schemas/Customer"
                       pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
+                        $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     post:
       tags:
         - Customers
@@ -2128,7 +2143,7 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '201':
+        "201":
           description: Customer created successfully
           content:
             application/json:
@@ -2138,25 +2153,25 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/Customer'
-        '400':
+                    $ref: "#/components/schemas/Customer"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/customers/stats:
     get:
@@ -2173,7 +2188,7 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: Statistics retrieved successfully
           content:
             application/json:
@@ -2183,19 +2198,19 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/CustomerStats'
-        '401':
+                    $ref: "#/components/schemas/CustomerStats"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/customers/export:
     get:
@@ -2212,24 +2227,24 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: CSV file generated successfully
           content:
             text/csv:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/customers/{id}:
     get:
@@ -2246,7 +2261,7 @@ paths:
           example: 1
           description: Customer ID
       responses:
-        '200':
+        "200":
           description: Customer retrieved successfully
           content:
             application/json:
@@ -2256,25 +2271,25 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/Customer'
-        '401':
+                    $ref: "#/components/schemas/Customer"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     put:
       tags:
         - Customers
@@ -2334,7 +2349,7 @@ paths:
                 subscribedToNewsletter:
                   type: boolean
       responses:
-        '200':
+        "200":
           description: Customer updated successfully
           content:
             application/json:
@@ -2344,31 +2359,31 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/Customer'
-        '400':
+                    $ref: "#/components/schemas/Customer"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Customers
@@ -2383,7 +2398,7 @@ paths:
           example: 1
           description: Customer ID
       responses:
-        '200':
+        "200":
           description: Customer deleted successfully
           content:
             application/json:
@@ -2395,26 +2410,26 @@ paths:
                   message:
                     type: string
                     example: Customer deleted successfully
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
-# ==================== CUSTOMER GROUP ENDPOINTS ====================
+  # ==================== CUSTOMER GROUP ENDPOINTS ====================
 
   /api/stores/{storeId}/customer-groups:
     get:
@@ -2451,7 +2466,7 @@ paths:
             type: string
           description: Search groups by name or description
       responses:
-        '200':
+        "200":
           description: Customer groups retrieved successfully
           content:
             application/json:
@@ -2466,21 +2481,21 @@ paths:
                       customerGroups:
                         type: array
                         items:
-                          $ref: '#/components/schemas/CustomerGroup'
+                          $ref: "#/components/schemas/CustomerGroup"
                       pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
+                        $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     post:
       tags:
         - Customer Groups
@@ -2510,7 +2525,7 @@ paths:
                   type: string
                   example: High-value customers with special privileges
       responses:
-        '201':
+        "201":
           description: Customer group created successfully
           content:
             application/json:
@@ -2520,25 +2535,25 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/CustomerGroup'
-        '400':
+                    $ref: "#/components/schemas/CustomerGroup"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/customer-groups/export:
     get:
@@ -2555,24 +2570,24 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: CSV file generated successfully
           content:
             text/csv:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/customer-groups/{id}:
     get:
@@ -2589,7 +2604,7 @@ paths:
           example: 1
           description: Customer Group ID
       responses:
-        '200':
+        "200":
           description: Customer group retrieved successfully
           content:
             application/json:
@@ -2599,25 +2614,25 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/CustomerGroup'
-        '401':
+                    $ref: "#/components/schemas/CustomerGroup"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer group not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     put:
       tags:
         - Customer Groups
@@ -2643,7 +2658,7 @@ paths:
                 description:
                   type: string
       responses:
-        '200':
+        "200":
           description: Customer group updated successfully
           content:
             application/json:
@@ -2653,31 +2668,31 @@ paths:
                   success:
                     type: boolean
                   data:
-                    $ref: '#/components/schemas/CustomerGroup'
-        '400':
+                    $ref: "#/components/schemas/CustomerGroup"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer group not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Customer Groups
@@ -2692,7 +2707,7 @@ paths:
           example: 1
           description: Customer Group ID
       responses:
-        '200':
+        "200":
           description: Customer group deleted successfully
           content:
             application/json:
@@ -2704,24 +2719,24 @@ paths:
                   message:
                     type: string
                     example: Customer group deleted successfully
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer group not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== NEWSLETTER ENDPOINTS ====================
 
@@ -2760,7 +2775,7 @@ paths:
                   type: string
                   example: Doe
       responses:
-        '200':
+        "200":
           description: Successfully subscribed to newsletter
           content:
             application/json:
@@ -2773,18 +2788,18 @@ paths:
                   message:
                     type: string
                     example: "Successfully subscribed to newsletter"
-        '400':
+        "400":
           description: Bad request - invalid email or already subscribed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/newsletter/unsubscribe:
     post:
@@ -2815,7 +2830,7 @@ paths:
                   format: email
                   example: subscriber@example.com
       responses:
-        '200':
+        "200":
           description: Successfully unsubscribed from newsletter
           content:
             application/json:
@@ -2828,18 +2843,18 @@ paths:
                   message:
                     type: string
                     example: "Successfully unsubscribed from newsletter"
-        '400':
+        "400":
           description: Bad request - email not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/newsletter/subscribers:
     get:
@@ -2876,7 +2891,7 @@ paths:
             type: string
           description: Search subscribers by email or name
       responses:
-        '200':
+        "200":
           description: Subscribers retrieved successfully
           content:
             application/json:
@@ -2906,19 +2921,19 @@ paths:
                               type: string
                               format: date-time
                       pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
+                        $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/newsletter/stats:
     get:
@@ -2935,7 +2950,7 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: Statistics retrieved successfully
           content:
             application/json:
@@ -2957,16 +2972,15 @@ paths:
                       unsubscribedCount:
                         type: integer
                         example: 10
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
-          content:
-            application/jso
+          content: application/jso
 
   /api/categories/{storeId}:
     get:
@@ -3003,7 +3017,7 @@ paths:
             type: string
           description: Filter categories by name
       responses:
-        '200':
+        "200":
           description: Categories retrieved successfully
           content:
             application/json:
@@ -3016,21 +3030,21 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Category'
+                      $ref: "#/components/schemas/Category"
                   meta:
-                    $ref: '#/components/schemas/Pagination'
-        '401':
+                    $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     post:
       tags:
@@ -3064,7 +3078,7 @@ paths:
                   type: string
                   example: "https://example.com/category-image.jpg"
       responses:
-        '201':
+        "201":
           description: Category created successfully
           content:
             application/json:
@@ -3075,25 +3089,25 @@ paths:
                     type: string
                     example: "Category created successfully."
                   data:
-                    $ref: '#/components/schemas/Category'
-        '400':
+                    $ref: "#/components/schemas/Category"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/categories/{storeId}/{categoryId}:
     get:
@@ -3117,7 +3131,7 @@ paths:
           example: 1
           description: Category ID
       responses:
-        '200':
+        "200":
           description: Category retrieved successfully
           content:
             application/json:
@@ -3128,25 +3142,25 @@ paths:
                     type: string
                     example: "Category retrieved successfully."
                   data:
-                    $ref: '#/components/schemas/Category'
-        '404':
+                    $ref: "#/components/schemas/Category"
+        "404":
           description: Category not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -3185,7 +3199,7 @@ paths:
                   type: string
                   example: "https://example.com/updated-image.jpg"
       responses:
-        '200':
+        "200":
           description: Category updated successfully
           content:
             application/json:
@@ -3196,25 +3210,25 @@ paths:
                     type: string
                     example: "Category updated successfully."
                   data:
-                    $ref: '#/components/schemas/Category'
-        '404':
+                    $ref: "#/components/schemas/Category"
+        "404":
           description: Category not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -3237,7 +3251,7 @@ paths:
           example: 1
           description: Category ID
       responses:
-        '200':
+        "200":
           description: Category deleted successfully
           content:
             application/json:
@@ -3250,24 +3264,24 @@ paths:
                   data:
                     type: object
                     nullable: true
-        '404':
+        "404":
           description: Category not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== PRODUCT ENDPOINTS ====================
 
@@ -3319,7 +3333,7 @@ paths:
             enum: [highest, lowest]
           description: Sort products by price
       responses:
-        '200':
+        "200":
           description: Products retrieved successfully
           content:
             application/json:
@@ -3332,21 +3346,21 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Product'
+                      $ref: "#/components/schemas/Product"
                   meta:
-                    $ref: '#/components/schemas/Pagination'
-        '401':
+                    $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     post:
       tags:
@@ -3384,7 +3398,11 @@ paths:
                   type: array
                   items:
                     type: string
-                  example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
+                  example:
+                    [
+                      "https://example.com/product1.jpg",
+                      "https://example.com/product2.jpg",
+                    ]
                 shortDescription:
                   type: string
                   example: "High-quality wireless headphones with noise cancellation"
@@ -3455,15 +3473,15 @@ paths:
                 pricings:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductPricingInput'
+                    $ref: "#/components/schemas/ProductPricingInput"
                 descriptionDetails:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductDescriptionDetailInput'
+                    $ref: "#/components/schemas/ProductDescriptionDetailInput"
                 options:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductOptionInput'
+                    $ref: "#/components/schemas/ProductOptionInput"
                 categories:
                   type: array
                   items:
@@ -3480,7 +3498,7 @@ paths:
                     type: integer
                   example: [7, 8]
       responses:
-        '201':
+        "201":
           description: Product created successfully
           content:
             application/json:
@@ -3491,25 +3509,71 @@ paths:
                     type: string
                     example: "Product created successfully."
                   data:
-                    $ref: '#/components/schemas/Product'
-        '400':
+                    $ref: "#/components/schemas/Product"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
+
+  /api/products/{storeId}/validate-url:
+  post:
+    tags:
+      - Products
+    summary: Validate if a custom product URL is already taken
+    description: Checks the uniqueness of a custom product URL for a given store.
+    parameters:
+      - name: storeId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+        description: Store ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customProductUrl:
+                type: string
+                example: "my-awesome-product-name"
+                description: The custom URL to check.
+    responses:
+      "200":
+        description: Validation result
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "URL is available."
+                isTaken:
+                  type: boolean
+                  example: false
+      "400":
+        description: Bad Request (e.g., customProductUrl missing)
+      "401":
+        description: Unauthorized
+      "500":
+        description: Internal server error
 
   /api/products/{productId}:
     get:
@@ -3526,7 +3590,7 @@ paths:
           example: 1
           description: Product ID
       responses:
-        '200':
+        "200":
           description: Product retrieved successfully
           content:
             application/json:
@@ -3537,25 +3601,25 @@ paths:
                     type: string
                     example: "Product retrieved successfully."
                   data:
-                    $ref: '#/components/schemas/Product'
-        '404':
+                    $ref: "#/components/schemas/Product"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -3648,15 +3712,15 @@ paths:
                 pricings:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductPricingInput'
+                    $ref: "#/components/schemas/ProductPricingInput"
                 descriptionDetails:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductDescriptionDetailInput'
+                    $ref: "#/components/schemas/ProductDescriptionDetailInput"
                 options:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ProductOptionInput'
+                    $ref: "#/components/schemas/ProductOptionInput"
                 categories:
                   type: array
                   items:
@@ -3673,7 +3737,7 @@ paths:
                     type: integer
                   example: [7, 8]
       responses:
-        '200':
+        "200":
           description: Product updated successfully
 
           content:
@@ -3685,25 +3749,25 @@ paths:
                     type: string
                     example: "Product updated successfully."
                   data:
-                    $ref: '#/components/schemas/Product'
-        '404':
+                    $ref: "#/components/schemas/Product"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -3719,7 +3783,7 @@ paths:
           example: 1
           description: Product ID
       responses:
-        '200':
+        "200":
           description: Product deleted successfully
           content:
             application/json:
@@ -3732,24 +3796,24 @@ paths:
                   data:
                     type: object
                     nullable: true
-        '404':
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== BRAND ENDPOINTS ====================
 
@@ -3786,7 +3850,7 @@ paths:
                   format: binary
                   description: Brand image (JPEG, PNG, or PDF)
       responses:
-        '201':
+        "201":
           description: Brand created successfully
           content:
             application/json:
@@ -3797,31 +3861,31 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/Brand'
-        '400':
+                    $ref: "#/components/schemas/Brand"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '409':
+                $ref: "#/components/schemas/Error"
+        "409":
           description: Conflict - brand name already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     get:
       tags:
@@ -3854,7 +3918,7 @@ paths:
             default: 10
           example: 10
       responses:
-        '200':
+        "200":
           description: Product variants retrieved successfully
           content:
             application/json:
@@ -3870,21 +3934,21 @@ paths:
                       brands:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Brand'
+                          $ref: "#/components/schemas/Brand"
                       pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
+                        $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/brands/{storeId}/export:
     get:
@@ -3900,24 +3964,24 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: CSV file generated successfully
           content:
             text/csv:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/brands/{storeId}/{id}:
     get:
@@ -3939,7 +4003,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Brand retrieved successfully
           content:
             application/json:
@@ -3950,25 +4014,25 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/Brand'
-        '401':
+                    $ref: "#/components/schemas/Brand"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Brand not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/brands/{id}:
     put:
@@ -4001,7 +4065,7 @@ paths:
                   format: binary
                   description: Brand image (JPEG, PNG, or PDF)
       responses:
-        '200':
+        "200":
           description: Brand updated successfully
           content:
             application/json:
@@ -4012,31 +4076,31 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/Brand'
-        '400':
+                    $ref: "#/components/schemas/Brand"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Brand not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -4051,7 +4115,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Brand deleted successfully
           content:
             application/json:
@@ -4064,24 +4128,24 @@ paths:
                   message:
                     type: string
                     example: "Brand deleted successfully"
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Brand not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== PRODUCT GROUPS ENDPOINTS ====================
 
@@ -4478,7 +4542,7 @@ paths:
                       affectsPrice: false
                       additionalPrice: 0
       responses:
-        '201':
+        "201":
           description: Product variant created successfully
           content:
             application/json:
@@ -4489,25 +4553,25 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '400':
+                    $ref: "#/components/schemas/ProductVariant"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     get:
       tags:
@@ -4540,7 +4604,7 @@ paths:
             default: 10
           example: 10
       responses:
-        '200':
+        "200":
           description: Product variants retrieved successfully
           content:
             application/json:
@@ -4556,21 +4620,21 @@ paths:
                       variants:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ProductVariant'
+                          $ref: "#/components/schemas/ProductVariant"
                       pagination:
-                        $ref: '#/components/schemas/Pagination'
-        '401':
+                        $ref: "#/components/schemas/Pagination"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/product-variants/{storeId}/export:
     get:
@@ -4586,24 +4650,24 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: CSV file generated successfully
           content:
             text/csv:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/product-variants/{storeId}/{id}:
     get:
@@ -4625,7 +4689,7 @@ paths:
             type: integer
             example: 1
       responses:
-        '200':
+        "200":
           description: Product variant retrieved successfully
           content:
             application/json:
@@ -4636,25 +4700,25 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '401':
+                    $ref: "#/components/schemas/ProductVariant"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Product variant not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/product-variants/{id}:
     put:
@@ -4721,7 +4785,7 @@ paths:
                       affectsPrice: false
                       additionalPrice: 0
       responses:
-        '200':
+        "200":
           description: Product variant updated successfully
           content:
             application/json:
@@ -4732,31 +4796,31 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/ProductVariant'
-        '400':
+                    $ref: "#/components/schemas/ProductVariant"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Product variant not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -4771,7 +4835,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Product variant deleted successfully
           content:
             application/json:
@@ -4784,24 +4848,24 @@ paths:
                   message:
                     type: string
                     example: "Product variant deleted successfully"
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Product variant not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/stores/{storeId}/units:
     post:
@@ -4969,25 +5033,25 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: CSV file generated successfully
           content:
             text/csv:
               schema:
                 type: string
                 format: binary
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/units/{id}:
     get:
@@ -5003,7 +5067,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Unit retrieved successfully
           content:
             application/json:
@@ -5014,25 +5078,25 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/Unit'
-        '401':
+                    $ref: "#/components/schemas/Unit"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Unit not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -5061,7 +5125,7 @@ paths:
                   enum: [active, inactive]
                   example: "active"
       responses:
-        '200':
+        "200":
           description: Unit updated successfully
           content:
             application/json:
@@ -5072,37 +5136,37 @@ paths:
                     type: boolean
                     example: true
                   data:
-                    $ref: '#/components/schemas/Unit'
-        '400':
+                    $ref: "#/components/schemas/Unit"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Unit not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '409':
+                $ref: "#/components/schemas/Error"
+        "409":
           description: Conflict - unit name already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -5117,7 +5181,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Unit deleted successfully
           content:
             application/json:
@@ -5130,24 +5194,24 @@ paths:
                   message:
                     type: string
                     example: "Unit deleted successfully"
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Unit not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== CUSTOMER AUTHENTICATION ENDPOINTS ====================
 
@@ -5192,7 +5256,7 @@ paths:
                   minLength: 8
                   example: password123
       responses:
-        '201':
+        "201":
           description: Customer registered successfully. Verification code sent to email.
           content:
             application/json:
@@ -5205,18 +5269,18 @@ paths:
                   customerId:
                     type: integer
                     example: 1
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/verify-email:
     post:
@@ -5250,7 +5314,7 @@ paths:
                   type: string
                   example: "123456"
       responses:
-        '200':
+        "200":
           description: Email verified successfully. Customer is now authenticated.
           content:
             application/json:
@@ -5276,24 +5340,24 @@ paths:
                         type: string
                       isVerified:
                         type: boolean
-        '400':
+        "400":
           description: Bad request - invalid code or code expired
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/resend-verification:
     post:
@@ -5323,7 +5387,7 @@ paths:
                   format: email
                   example: customer@example.com
       responses:
-        '200':
+        "200":
           description: Verification code resent
           content:
             application/json:
@@ -5333,18 +5397,18 @@ paths:
                   message:
                     type: string
                     example: "Verification code resent successfully"
-        '400':
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/login:
     post:
@@ -5378,7 +5442,7 @@ paths:
                   type: string
                   example: password123
       responses:
-        '200':
+        "200":
           description: Login successful. Returns access and refresh tokens.
           content:
             application/json:
@@ -5402,18 +5466,18 @@ paths:
                         type: string
                       lastName:
                         type: string
-        '400':
+        "400":
           description: Bad request - invalid credentials or email not verified
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/refresh-token:
     post:
@@ -5435,7 +5499,7 @@ paths:
                   type: string
                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
-        '200':
+        "200":
           description: Token refreshed successfully
           content:
             application/json:
@@ -5445,18 +5509,18 @@ paths:
                   accessToken:
                     type: string
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '400':
+        "400":
           description: Bad request - invalid or expired refresh token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/forgot-password:
     post:
@@ -5486,7 +5550,7 @@ paths:
                   format: email
                   example: customer@example.com
       responses:
-        '200':
+        "200":
           description: Reset code sent to email
           content:
             application/json:
@@ -5496,24 +5560,24 @@ paths:
                   message:
                     type: string
                     example: "Password reset code sent to your email"
-        '400':
+        "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/verify-reset-code:
     post:
@@ -5547,7 +5611,7 @@ paths:
                   type: string
                   example: "123456"
       responses:
-        '200':
+        "200":
           description: Reset code verified successfully
           content:
             application/json:
@@ -5560,24 +5624,24 @@ paths:
                   email:
                     type: string
                     example: customer@example.com
-        '400':
+        "400":
           description: Bad request - invalid or expired code
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/reset-password:
     post:
@@ -5616,7 +5680,7 @@ paths:
                   minLength: 8
                   example: newpassword123
       responses:
-        '200':
+        "200":
           description: Password reset successful
           content:
             application/json:
@@ -5626,24 +5690,24 @@ paths:
                   message:
                     type: string
                     example: "Password reset successful"
-        '400':
+        "400":
           description: Bad request - invalid code or password too short
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/auth/logout:
     post:
@@ -5661,7 +5725,7 @@ paths:
             type: string
           example: "my-store"
       responses:
-        '200':
+        "200":
           description: Logged out successfully
           content:
             application/json:
@@ -5671,18 +5735,18 @@ paths:
                   message:
                     type: string
                     example: "Logged out successfully"
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /storefront/{storeUrl}/customer/profile:
     put:
@@ -5755,7 +5819,7 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '200':
+        "200":
           description: Profile updated successfully
           content:
             application/json:
@@ -5766,25 +5830,25 @@ paths:
                     type: string
                     example: "Profile updated successfully"
                   customer:
-                    $ref: '#/components/schemas/Customer'
-        '400':
+                    $ref: "#/components/schemas/Customer"
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== WAREHOUSE ENDPOINTS ====================
 
@@ -5825,10 +5889,10 @@ paths:
                 isActive:
                   type: boolean
       responses:
-        '201':
+        "201":
           description: Warehouse created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Warehouses
@@ -5858,10 +5922,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of warehouses
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/warehouses/{storeId}/all:
     get:
@@ -5875,10 +5939,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all active warehouses
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/warehouses/{storeId}/export:
     get:
@@ -5892,14 +5956,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/warehouses/{storeId}/{id}:
     get:
@@ -5918,11 +5982,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Warehouse details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Warehouse not found
 
   /api/warehouses/{id}:
@@ -5960,10 +6024,10 @@ paths:
                 isActive:
                   type: boolean
       responses:
-        '200':
+        "200":
           description: Warehouse updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Warehouses
@@ -5975,10 +6039,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Warehouse deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== SUPPLIER ENDPOINTS ====================
 
@@ -6025,10 +6089,10 @@ paths:
                 isActive:
                   type: boolean
       responses:
-        '201':
+        "201":
           description: Supplier created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Suppliers
@@ -6058,10 +6122,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of suppliers
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/suppliers/{storeId}/all:
     get:
@@ -6075,10 +6139,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all active suppliers
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/suppliers/{storeId}/export:
     get:
@@ -6092,14 +6156,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/suppliers/{storeId}/{id}:
     get:
@@ -6118,11 +6182,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Supplier details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Supplier not found
 
   /api/suppliers/{id}:
@@ -6166,10 +6230,10 @@ paths:
                 isActive:
                   type: boolean
       responses:
-        '200':
+        "200":
           description: Supplier updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Suppliers
@@ -6181,10 +6245,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Supplier deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== STOCK LOT ENDPOINTS ====================
 
@@ -6241,10 +6305,10 @@ paths:
                 createdBy:
                   type: string
       responses:
-        '201':
+        "201":
           description: Stock lot created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Stock Lots
@@ -6283,10 +6347,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of stock lots
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-lots/{storeId}/all:
     get:
@@ -6300,10 +6364,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all stock lots
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-lots/{storeId}/import:
     post:
@@ -6328,10 +6392,10 @@ paths:
                   items:
                     type: object
       responses:
-        '200':
+        "200":
           description: Import results
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-lots/{storeId}/export:
     get:
@@ -6345,14 +6409,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-lots/{storeId}/{id}:
     get:
@@ -6371,11 +6435,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Stock lot details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock lot not found
 
   /api/stock-lots/{id}:
@@ -6419,10 +6483,10 @@ paths:
                 notes:
                   type: string
       responses:
-        '200':
+        "200":
           description: Stock lot updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Stock Lots
@@ -6434,10 +6498,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Stock lot deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== STOCK ADJUSTMENT ENDPOINTS ====================
 
@@ -6484,10 +6548,10 @@ paths:
                 createdBy:
                   type: string
       responses:
-        '201':
+        "201":
           description: Stock adjustment created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Stock Adjustments
@@ -6530,10 +6594,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of stock adjustments
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-adjustments/{storeId}/all:
     get:
@@ -6547,10 +6611,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all stock adjustments
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-adjustments/{storeId}/export:
     get:
@@ -6564,14 +6628,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stock-adjustments/{storeId}/{id}:
     get:
@@ -6590,11 +6654,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Stock adjustment details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock adjustment not found
 
   /api/stock-adjustments/{id}:
@@ -6632,10 +6696,10 @@ paths:
                 notes:
                   type: string
       responses:
-        '200':
+        "200":
           description: Stock adjustment updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Stock Adjustments
@@ -6647,10 +6711,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Stock adjustment deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== STOCK ENDPOINTS ====================
 
@@ -6692,10 +6756,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of stocks
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stocks/{storeId}/all:
     get:
@@ -6709,10 +6773,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all stocks
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stocks/{storeId}/export:
     get:
@@ -6726,14 +6790,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stocks/{storeId}/product/{productId}:
     get:
@@ -6752,10 +6816,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of stocks for the product
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/stocks/{storeId}/product/{productId}/warehouse/{warehouseId}:
     get:
@@ -6779,11 +6843,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Stock details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock not found
 
   # ==================== INTERNAL TRANSFER ENDPOINTS ====================
@@ -6835,10 +6899,10 @@ paths:
                 createdBy:
                   type: string
       responses:
-        '201':
+        "201":
           description: Internal transfer created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Internal Transfers
@@ -6877,10 +6941,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of internal transfers
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/internal-transfers/{storeId}/all:
     get:
@@ -6894,10 +6958,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all internal transfers
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/internal-transfers/{storeId}/export:
     get:
@@ -6911,14 +6975,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/internal-transfers/{storeId}/{id}:
     get:
@@ -6937,11 +7001,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Internal transfer details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Internal transfer not found
 
   /api/internal-transfers/{id}:
@@ -6983,10 +7047,10 @@ paths:
                 notes:
                   type: string
       responses:
-        '200':
+        "200":
           description: Internal transfer updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Internal Transfers
@@ -6998,10 +7062,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Internal transfer deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== INVOICE ENDPOINTS ====================
 
@@ -7047,7 +7111,15 @@ paths:
                   format: date
                 paymentMethod:
                   type: string
-                  enum: [CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, OTHER]
+                  enum:
+                    [
+                      CASH,
+                      BANK_TRANSFER,
+                      CREDIT_CARD,
+                      DEBIT_CARD,
+                      CHEQUE,
+                      OTHER,
+                    ]
                 paymentNote:
                   type: string
                 discountAmount:
@@ -7073,10 +7145,10 @@ paths:
                       taxRate:
                         type: number
       responses:
-        '201':
+        "201":
           description: Invoice created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       tags:
         - Invoices
@@ -7123,10 +7195,10 @@ paths:
             type: integer
             default: 10
       responses:
-        '200':
+        "200":
           description: List of invoices
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/invoices/{storeId}/all:
     get:
@@ -7140,10 +7212,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of all invoices
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/invoices/{storeId}/export:
     get:
@@ -7157,14 +7229,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: CSV file
           content:
             text/csv:
               schema:
                 type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /api/invoices/{storeId}/{id}:
     get:
@@ -7183,11 +7255,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Invoice details
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Invoice not found
 
   /api/invoices/{id}:
@@ -7226,7 +7298,15 @@ paths:
                   type: number
                 paymentMethod:
                   type: string
-                  enum: [CASH, BANK_TRANSFER, CREDIT_CARD, DEBIT_CARD, CHEQUE, OTHER]
+                  enum:
+                    [
+                      CASH,
+                      BANK_TRANSFER,
+                      CREDIT_CARD,
+                      DEBIT_CARD,
+                      CHEQUE,
+                      OTHER,
+                    ]
                 paymentNote:
                   type: string
                 discountAmount:
@@ -7250,10 +7330,10 @@ paths:
                       taxRate:
                         type: number
       responses:
-        '200':
+        "200":
           description: Invoice updated successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       tags:
         - Invoices
@@ -7265,10 +7345,10 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Invoice deleted successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== BARCODE ENDPOINTS ====================
 
@@ -7298,7 +7378,7 @@ paths:
             default: code128
           description: Barcode type (code128, code39, ean13, etc.)
       responses:
-        '200':
+        "200":
           description: Barcode image or base64 data URL
           content:
             image/png:
@@ -7317,9 +7397,9 @@ paths:
                       barcode:
                         type: string
                         description: Base64 encoded data URL
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Product not found
 
   /api/barcodes/product/{productId}/download:
@@ -7341,16 +7421,16 @@ paths:
             default: code128
           description: Barcode type (code128, code39, ean13, etc.)
       responses:
-        '200':
+        "200":
           description: PNG image file ready for download
           content:
             image/png:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Product not found
 
   /api/barcodes/lot/{lotId}:
@@ -7385,7 +7465,7 @@ paths:
             default: A4
           description: Page style for printing
       responses:
-        '200':
+        "200":
           description: Barcode image or base64 data URL
           content:
             image/png:
@@ -7404,9 +7484,9 @@ paths:
                       barcode:
                         type: string
                         description: Base64 encoded data URL
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock lot not found
 
   /api/barcodes/lot/{lotId}/download:
@@ -7428,16 +7508,16 @@ paths:
             default: code128
           description: Barcode type (code128, code39, ean13, etc.)
       responses:
-        '200':
+        "200":
           description: PNG image file ready for download
           content:
             image/png:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock lot not found
 
   /api/barcodes/bulk:
@@ -7471,11 +7551,11 @@ paths:
           in: query
           schema:
             type: string
-            enum: ['true', 'false']
-            default: 'false'
+            enum: ["true", "false"]
+            default: "false"
           description: Set to 'true' to download as HTML file with embedded images
       responses:
-        '200':
+        "200":
           description: Array of barcode data or HTML file
           content:
             application/json:
@@ -7504,8 +7584,8 @@ paths:
               schema:
                 type: string
                 description: HTML file with embedded barcode images
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== QR CODE ENDPOINTS ====================
 
@@ -7535,7 +7615,7 @@ paths:
             default: A4
           description: Page style for printing
       responses:
-        '200':
+        "200":
           description: QR code image or base64 data URL
           content:
             image/png:
@@ -7554,9 +7634,9 @@ paths:
                       qrCode:
                         type: string
                         description: Base64 encoded data URL
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock lot not found
 
   /api/qrcodes/lot/{lotId}/download:
@@ -7572,16 +7652,16 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: PNG image file ready for download
           content:
             image/png:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Stock lot not found
 
   /api/qrcodes/product/{productId}:
@@ -7604,7 +7684,7 @@ paths:
             default: png
           description: Response format - png returns image, base64 returns data URL
       responses:
-        '200':
+        "200":
           description: QR code image or base64 data URL
           content:
             image/png:
@@ -7623,9 +7703,9 @@ paths:
                       qrCode:
                         type: string
                         description: Base64 encoded data URL
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Product not found
 
   /api/qrcodes/product/{productId}/download:
@@ -7641,16 +7721,16 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: PNG image file ready for download
           content:
             image/png:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
           description: Product not found
 
   /api/qrcodes/bulk:
@@ -7687,7 +7767,7 @@ paths:
             default: A4
           description: Page style for printing
       responses:
-        '200':
+        "200":
           description: Array of QR code data
           content:
             application/json:
@@ -7710,8 +7790,8 @@ paths:
                         qrCode:
                           type: string
                           description: Base64 encoded QR code or data URL
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # ==================== LOCATION ENDPOINTS ====================
 
@@ -7758,7 +7838,7 @@ paths:
                   type: boolean
                   example: false
       responses:
-        '201':
+        "201":
           description: Location created successfully
           content:
             application/json:
@@ -7795,24 +7875,24 @@ paths:
                   updatedAt:
                     type: string
                     format: date-time
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/locations/store/{storeId}:
     get:
@@ -7829,7 +7909,7 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: Locations retrieved successfully
           content:
             application/json:
@@ -7868,18 +7948,18 @@ paths:
                     updatedAt:
                       type: string
                       format: date-time
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/locations/{id}:
     get:
@@ -7896,7 +7976,7 @@ paths:
           example: 1
           description: Location ID
       responses:
-        '200':
+        "200":
           description: Location retrieved successfully
           content:
             application/json:
@@ -7933,24 +8013,24 @@ paths:
                   updatedAt:
                     type: string
                     format: date-time
-        '404':
+        "404":
           description: Location not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -7991,7 +8071,7 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '200':
+        "200":
           description: Location updated successfully
           content:
             application/json:
@@ -8028,30 +8108,30 @@ paths:
                   updatedAt:
                     type: string
                     format: date-time
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Location not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -8067,7 +8147,7 @@ paths:
           example: 1
           description: Location ID
       responses:
-        '200':
+        "200":
           description: Location deleted successfully
           content:
             application/json:
@@ -8083,24 +8163,24 @@ paths:
                       id:
                         type: integer
                         example: 1
-        '404':
+        "404":
           description: Location not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   # ==================== STAFF ENDPOINTS ====================
 
@@ -8174,7 +8254,7 @@ paths:
                       type: boolean
                       example: false
       responses:
-        '201':
+        "201":
           description: Staff member created successfully
           content:
             application/json:
@@ -8222,24 +8302,24 @@ paths:
                       updatedAt:
                         type: string
                         format: date-time
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/staff/store/{storeId}:
     get:
@@ -8256,7 +8336,7 @@ paths:
           example: 1
           description: Store ID
       responses:
-        '200':
+        "200":
           description: Staff list retrieved successfully
           content:
             application/json:
@@ -8306,18 +8386,18 @@ paths:
                         updatedAt:
                           type: string
                           format: date-time
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /api/staff/{id}:
     get:
@@ -8334,7 +8414,7 @@ paths:
           example: 1
           description: Staff ID
       responses:
-        '200':
+        "200":
           description: Staff member retrieved successfully
           content:
             application/json:
@@ -8382,24 +8462,24 @@ paths:
                       updatedAt:
                         type: string
                         format: date-time
-        '404':
+        "404":
           description: Staff not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     put:
       tags:
@@ -8437,7 +8517,8 @@ paths:
                   type: array
                   items:
                     type: string
-                  example: ["Main Warehouse", "Secondary Location", "New Location"]
+                  example:
+                    ["Main Warehouse", "Secondary Location", "New Location"]
                 permissions:
                   type: object
                   properties:
@@ -8457,7 +8538,7 @@ paths:
                       type: boolean
                       example: true
       responses:
-        '200':
+        "200":
           description: Staff member updated successfully
           content:
             application/json:
@@ -8495,7 +8576,12 @@ paths:
                         type: array
                         items:
                           type: string
-                        example: ["Main Warehouse", "Secondary Location", "New Location"]
+                        example:
+                          [
+                            "Main Warehouse",
+                            "Secondary Location",
+                            "New Location",
+                          ]
                       isActive:
                         type: boolean
                         example: true
@@ -8505,30 +8591,30 @@ paths:
                       updatedAt:
                         type: string
                         format: date-time
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '404':
+                $ref: "#/components/schemas/Error"
+        "404":
           description: Staff not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
     delete:
       tags:
@@ -8544,7 +8630,7 @@ paths:
           example: 1
           description: Staff ID
       responses:
-        '200':
+        "200":
           description: Staff member deleted successfully
           content:
             application/json:
@@ -8560,24 +8646,24 @@ paths:
                       id:
                         type: integer
                         example: 1
-        '404':
+        "404":
           description: Staff not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
 components:
   securitySchemes:
@@ -8857,7 +8943,11 @@ components:
           type: array
           items:
             type: string
-          example: ["https://example.com/product1.jpg", "https://example.com/product2.jpg"]
+          example:
+            [
+              "https://example.com/product1.jpg",
+              "https://example.com/product2.jpg",
+            ]
         shortDescription:
           type: string
           example: "High-quality wireless headphones with noise cancellation"
@@ -8921,19 +9011,19 @@ components:
         pricings:
           type: array
           items:
-            $ref: '#/components/schemas/ProductPricing'
+            $ref: "#/components/schemas/ProductPricing"
         descriptionDetails:
           type: array
           items:
-            $ref: '#/components/schemas/ProductDescriptionDetail'
+            $ref: "#/components/schemas/ProductDescriptionDetail"
         options:
           type: array
           items:
-            $ref: '#/components/schemas/ProductOption'
+            $ref: "#/components/schemas/ProductOption"
         categories:
           type: array
           items:
-            $ref: '#/components/schemas/Category'
+            $ref: "#/components/schemas/Category"
         createdAt:
           type: string
           format: date-time
@@ -9140,4 +9230,3 @@ components:
               count:
                 type: integer
                 example: 300
-

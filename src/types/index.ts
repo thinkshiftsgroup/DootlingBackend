@@ -21,6 +21,11 @@ export interface ProductCreationData {
   stockQuantity: number;
   type: "REGULAR" | "VARIANT";
 
+  embedVideoPlatform?: string;
+  location?: string;
+  brands?: string[];
+  affilated?: boolean;
+  sizeChartImageUrl?: string;
   longDescription?: string;
   customProductUrl?: string;
   seoDescription?: string;
@@ -56,6 +61,11 @@ export interface ProductUpdateData {
   stockQuantity?: number;
   type?: "REGULAR" | "VARIANT";
 
+  embedVideoPlatform?: string;
+  location?: string;
+  brands?: string[];
+  affilated?: boolean;
+  sizeChartImageUrl: string;
   customProductUrl?: string;
   seoDescription?: string;
   checkoutButtonCta?: string;
