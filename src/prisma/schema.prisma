@@ -278,8 +278,12 @@ model Product {
   preOrderReleaseDate         DateTime?
   showStrikedOutOriginalPrice Boolean                      @default(false)
   pricings                    ProductPricing[]
+  embedVideoPlatform              String?
   embedVideoPath              String?
+  location                    String?
+  brands                      String[]                    
   discoveryCategories         String[]
+  affilated                   Boolean                      @default(false)
   commissionPercentage        Float?
   autoRedirectAfterPurchase   Boolean                      @default(false)
   redirectUrl                 String?
@@ -327,6 +331,7 @@ model ProductPricing {
   currencyCode  String
   sellingPrice  Float
   originalPrice Float?
+  costPrice     Float?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
