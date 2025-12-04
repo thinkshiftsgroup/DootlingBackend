@@ -22,37 +22,56 @@ Authorization: Bearer <accessToken>
 ### 1. Setup Store
 **POST** `/setup`
 
-Create a new store for the authenticated user. Each user can have only one store.
+Create a new store for the authenticated user. Each user can have only one store. Supports logo upload.
 
 **Headers:**
 ```
 Authorization: Bearer <accessToken>
-Content-Type: application/json
+Content-Type: multipart/form-data
 ```
 
-**Request Body:**
-```json
-{
-  "businessName": "My Awesome Shop",
-  "storeUrl": "my-awesome-shop",
-  "country": "United States",
-  "currency": "USD"
-}
+**Request Body (multipart/form-data):**
+```
+storeName: "My Store"
+businessName: "My Awesome Shop"
+storeUrl: "my-awesome-shop"
+file: [logo image file]
+businessSector: "Retail"
+tagLine: "Your one-stop shop"
+description: "We sell amazing products"
+timezone: "America/New_York"
+currency: "USD"
+phone: "+1234567890"
+address: "123 Main St"
+country: "United States"
+state: "New York"
+city: "New York"
+zipCode: "10001"
 ```
 
 **Parameters:**
-- `businessName` (required): Name of the business (1-255 characters, non-empty)
 - `storeUrl` (required): Unique store URL (3-63 characters, lowercase alphanumeric and hyphens only)
-- `country` (required): Country name (any country supported, non-empty)
+- `storeName` (optional): Display name for the store
+- `businessName` (optional): Legal business name
+- `file` (optional): Store logo image (JPEG, PNG, or PDF) - uploaded to Cloudinary
+- `businessSector` (optional): Business sector/industry
+- `tagLine` (optional): Store tagline
+- `description` (optional): Store description
+- `timezone` (optional): Store timezone
 - `currency` (optional): Currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc. Defaults to USD)
+- `phone` (optional): Contact phone number
+- `address` (optional): Store address
+- `country` (optional): Country name
+- `state` (optional): State/province
+- `city` (optional): City
+- `zipCode` (optional): ZIP/postal code
 
 **Validation Rules:**
-- Business name cannot be empty
 - Store URL must be 3-63 characters
 - Store URL can only contain lowercase letters, numbers, and hyphens
 - Store URL must be unique across the platform
-- Country cannot be empty
 - User can only have one store
+- Logo file must be JPEG, PNG, or PDF (max 50MB)
 
 **Response (201):**
 ```json
@@ -60,10 +79,21 @@ Content-Type: application/json
   "message": "Store setup successful",
   "store": {
     "id": 1,
+    "storeName": "My Store",
     "businessName": "My Awesome Shop",
     "storeUrl": "my-awesome-shop",
-    "country": "United States",
+    "logoUrl": "https://res.cloudinary.com/...",
+    "businessSector": "Retail",
+    "tagLine": "Your one-stop shop",
+    "description": "We sell amazing products",
+    "timezone": "America/New_York",
     "currency": "USD",
+    "phone": "+1234567890",
+    "address": "123 Main St",
+    "country": "United States",
+    "state": "New York",
+    "city": "New York",
+    "zipCode": "10001",
     "isLaunched": false
   }
 }
@@ -103,16 +133,25 @@ Authorization: Bearer <accessToken>
 **Response (200):**
 ```json
 {
-  "message": "Store retrieved successfully",
   "store": {
     "id": 1,
+    "storeName": "My Store",
     "businessName": "My Awesome Shop",
     "storeUrl": "my-awesome-shop",
-    "country": "United States",
+    "logoUrl": "https://res.cloudinary.com/...",
+    "businessSector": "Retail",
+    "tagLine": "Your one-stop shop",
+    "description": "We sell amazing products",
+    "timezone": "America/New_York",
     "currency": "USD",
+    "phone": "+1234567890",
+    "address": "123 Main St",
+    "country": "United States",
+    "state": "New York",
+    "city": "New York",
+    "zipCode": "10001",
     "isLaunched": false,
-    "createdAt": "2025-11-26T10:00:00Z",
-    "updatedAt": "2025-11-26T10:00:00Z"
+    "createdAt": "2025-11-26T10:00:00Z"
   }
 }
 ```
@@ -133,27 +172,49 @@ curl -X GET http://localhost:8000/api/store/ \
 ### 3. Update Store
 **PUT** `/`
 
-Update the authenticated user's store details. Only businessName, country, and currency can be updated. storeUrl is immutable.
+Update the authenticated user's store details. All fields except storeUrl can be updated. Supports logo upload.
 
 **Headers:**
 ```
 Authorization: Bearer <accessToken>
-Content-Type: application/json
+Content-Type: multipart/form-data
 ```
 
-**Request Body:**
-```json
-{
-  "businessName": "Updated Shop Name",
-  "country": "Canada",
-  "currency": "CAD"
-}
+**Request Body (multipart/form-data):**
+```
+storeName: "Updated Store Name"
+businessName: "Updated Shop Name"
+file: [new logo image file]
+businessSector: "E-commerce"
+tagLine: "New tagline"
+description: "Updated description"
+timezone: "America/Los_Angeles"
+currency: "CAD"
+phone: "+1987654321"
+address: "456 Oak Ave"
+country: "Canada"
+state: "Ontario"
+city: "Toronto"
+zipCode: "M5H 2N2"
 ```
 
-**Parameters:**
-- `businessName` (optional): New business name (1-255 characters, non-empty if provided)
-- `country` (optional): New country name (non-empty if provided)
-- `currency` (optional): New currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
+**Parameters (all optional):**
+- `storeName`: Display name for the store
+- `businessName`: Legal business name
+- `file`: New store logo image (JPEG, PNG, or PDF) - uploaded to Cloudinary
+- `businessSector`: Business sector/industry
+- `tagLine`: Store tagline
+- `description`: Store description
+- `timezone`: Store timezone
+- `currency`: Currency code (e.g., USD, EUR, GBP, INR, JPY, AUD, CAD, etc.)
+- `phone`: Contact phone number
+- `address`: Store address
+- `country`: Country name
+- `state`: State/province
+- `city`: City
+- `zipCode`: ZIP/postal code
+
+**Note:** storeUrl is immutable and cannot be changed after creation.
 
 **Response (200):**
 ```json
@@ -161,13 +222,22 @@ Content-Type: application/json
   "message": "Store updated successfully",
   "store": {
     "id": 1,
+    "storeName": "Updated Store Name",
     "businessName": "Updated Shop Name",
     "storeUrl": "my-awesome-shop",
-    "country": "Canada",
+    "logoUrl": "https://res.cloudinary.com/...",
+    "businessSector": "E-commerce",
+    "tagLine": "New tagline",
+    "description": "Updated description",
+    "timezone": "America/Los_Angeles",
     "currency": "CAD",
-    "isLaunched": false,
-    "createdAt": "2025-11-26T10:00:00Z",
-    "updatedAt": "2025-11-26T10:15:00Z"
+    "phone": "+1987654321",
+    "address": "456 Oak Ave",
+    "country": "Canada",
+    "state": "Ontario",
+    "city": "Toronto",
+    "zipCode": "M5H 2N2",
+    "isLaunched": false
   }
 }
 ```
@@ -208,13 +278,22 @@ Authorization: Bearer <accessToken>
   "message": "Store launched successfully",
   "store": {
     "id": 1,
+    "storeName": "My Store",
     "businessName": "My Awesome Shop",
     "storeUrl": "my-awesome-shop",
-    "country": "United States",
+    "logoUrl": "https://res.cloudinary.com/...",
+    "businessSector": "Retail",
+    "tagLine": "Your one-stop shop",
+    "description": "We sell amazing products",
+    "timezone": "America/New_York",
     "currency": "USD",
-    "isLaunched": true,
-    "createdAt": "2025-11-26T10:00:00Z",
-    "updatedAt": "2025-11-26T10:20:00Z"
+    "phone": "+1234567890",
+    "address": "123 Main St",
+    "country": "United States",
+    "state": "New York",
+    "city": "New York",
+    "zipCode": "10001",
+    "isLaunched": true
   }
 }
 ```

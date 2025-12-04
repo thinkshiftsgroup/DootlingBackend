@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as storeService from "../services/store.service";
+import { uploadToCloudinary } from "../utils/cloudinary";
 
 export const setupStore = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -7,8 +8,16 @@ export const setupStore = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
-  const { businessName, storeUrl, country, currency } = req.body;
-  const result = await storeService.setupStore(Number(userId), businessName, storeUrl, country, currency);
+  
+  const data = req.body;
+  const file = req.file;
+
+  let logoUrl: string | undefined;
+  if (file) {
+    logoUrl = await uploadToCloudinary(file, "image");
+  }
+
+  const result = await storeService.setupStore(Number(userId), { ...data, logoUrl });
   res.status(201).json(result);
 };
 
@@ -28,8 +37,16 @@ export const updateStore = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
-  const { businessName, country, currency } = req.body;
-  const result = await storeService.updateStore(Number(userId), businessName, country, currency);
+  
+  const data = req.body;
+  const file = req.file;
+
+  let logoUrl: string | undefined;
+  if (file) {
+    logoUrl = await uploadToCloudinary(file, "image");
+  }
+
+  const result = await storeService.updateStore(Number(userId), { ...data, logoUrl });
   res.status(200).json(result);
 };
 
