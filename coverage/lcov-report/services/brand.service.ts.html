@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -156,7 +156,21 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,21 +244,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -321,13 +349,21 @@ export const <span class="cstat-no" title="statement not covered" >brandService 
     });
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  async </span>getBrandById(id: number) {
-    const brand = <span class="cstat-no" title="statement not covered" >await prisma.brand.findUnique({ where: { id } });</span>
-<span class="cstat-no" title="statement not covered" >    if (!brand) <span class="cstat-no" title="statement not covered" >throw new Error("Brand not found");</span></span>
+<span class="fstat-no" title="function not covered" >  async </span>getBrandById(id: number, storeId: number) {
+    const brand = <span class="cstat-no" title="statement not covered" >await prisma.brand.findFirst({ </span>
+      where: { id, storeId } 
+    });
+<span class="cstat-no" title="statement not covered" >    if (!brand) <span class="cstat-no" title="statement not covered" >throw new Error("Brand not found or access denied");</span></span>
 <span class="cstat-no" title="statement not covered" >    return brand;</span>
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  async </span>updateBrand(id: number, data: UpdateBrandInput) {
+<span class="fstat-no" title="function not covered" >  async </span>updateBrand(id: number, storeId: number, data: UpdateBrandInput) {
+    // Verify ownership first
+    const brand = <span class="cstat-no" title="statement not covered" >await prisma.brand.findFirst({</span>
+      where: { id, storeId }
+    });
+<span class="cstat-no" title="statement not covered" >    if (!brand) <span class="cstat-no" title="statement not covered" >throw new Error("Brand not found or access denied");</span></span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return prisma.brand.update({</span>
       where: { id },
       data: {
@@ -338,7 +374,13 @@ export const <span class="cstat-no" title="statement not covered" >brandService 
     });
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  async </span>deleteBrand(id: number) {
+<span class="fstat-no" title="function not covered" >  async </span>deleteBrand(id: number, storeId: number) {
+    // Verify ownership first
+    const brand = <span class="cstat-no" title="statement not covered" >await prisma.brand.findFirst({</span>
+      where: { id, storeId }
+    });
+<span class="cstat-no" title="statement not covered" >    if (!brand) <span class="cstat-no" title="statement not covered" >throw new Error("Brand not found or access denied");</span></span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return prisma.brand.delete({ where: { id } });</span>
   },
 };
@@ -349,7 +391,7 @@ export const <span class="cstat-no" title="statement not covered" >brandService 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-01T18:02:27.602Z
+                at 2025-12-04T20:01:40.649Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -26,6 +26,7 @@ const upload = multer({
 });
 
 export const uploadSingle = upload.single("file");
+export const uploadSingleImage = upload.single("image");
 export const uploadMultiple = upload.array("files", 5);
 export const uploadFields = upload.fields([
   { name: "governmentId", maxCount: 1 },

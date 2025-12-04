@@ -16,68 +16,6 @@ servers:
 security:
   - bearerAuth: []
 
-tags:
-  - name: Health
-    description: Health check endpoints
-  - name: Authentication
-    description: User authentication and authorization
-  - name: Customer Authentication
-    description: Customer authentication and authorization
-  - name: User Profile
-    description: User profile management
-  - name: KYC Personal
-    description: Personal KYC verification
-  - name: KYC Business
-    description: Business KYC verification
-  - name: KYC Documents
-    description: KYC document management
-  - name: KYC PEPS
-    description: KYC PEPs screening
-  - name: KYC Submission
-    description: KYC submission management
-  - name: Store
-    description: Store management
-  - name: Categories
-    description: Product categories management
-  - name: Products
-    description: Product management
-  - name: Product Variants
-    description: Product variant management
-  - name: Product Groups
-    description: Product group management
-  - name: Brands
-    description: Brand management
-  - name: Units
-    description: Unit management
-  - name: Customers
-    description: Customer management
-  - name: Customer Groups
-    description: Customer group management
-  - name: Newsletter
-    description: Newsletter management
-  - name: Locations
-    description: Location management
-  - name: Staff
-    description: Staff management
-  - name: Warehouses
-    description: Warehouse management
-  - name: Suppliers
-    description: Supplier management
-  - name: Stock Lots
-    description: Stock lot management
-  - name: Stock Adjustments
-    description: Stock adjustment management
-  - name: Stocks
-    description: Stock management
-  - name: Internal Transfers
-    description: Internal stock transfer management
-  - name: Invoices
-    description: Invoice management
-  - name: Barcodes
-    description: Barcode generation and management
-  - name: QR Codes
-    description: QR code generation and management
-
 paths:
   /health:
     get:
@@ -3592,52 +3530,50 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /api/products/{storeId}/validate-url:
-    post:
-      tags:
-        - Products
-      summary:
-        Validate if a custom product URL is already taken
-      description:
-        Checks the uniqueness of a custom product URL for a given store.
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 1
-          description: Store ID
-      requestBody:
+  post:
+    tags:
+      - Products
+    summary: Validate if a custom product URL is already taken
+    description: Checks the uniqueness of a custom product URL for a given store.
+    parameters:
+      - name: storeId
+        in: path
         required: true
+        schema:
+          type: integer
+        example: 1
+        description: Store ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customProductUrl:
+                type: string
+                example: "my-awesome-product-name"
+                description: The custom URL to check.
+    responses:
+      "200":
+        description: Validation result
         content:
           application/json:
             schema:
               type: object
               properties:
-                customProductUrl:
+                message:
                   type: string
-                  example: "my-awesome-product-name"
-                  description: The custom URL to check.
-      responses:
-        "200":
-          description: Validation result
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "URL is available."
-                  isTaken:
-                    type: boolean
-                    example: false
-        "400":
-          description: Bad Request (e.g., customProductUrl missing)
-        "401":
-          description: Unauthorized
-        "500":
-          description: Internal server error
+                  example: "URL is available."
+                isTaken:
+                  type: boolean
+                  example: false
+      "400":
+        description: Bad Request (e.g., customProductUrl missing)
+      "401":
+        description: Unauthorized
+      "500":
+        description: Internal server error
 
   /api/products/{productId}:
     get:
