@@ -7,6 +7,7 @@ export interface ProductPricingInput {
   currencyCode: string;
   sellingPrice: number;
   originalPrice?: number;
+  costPrice?: string;
 }
 
 export interface ProductDescriptionDetailInput {

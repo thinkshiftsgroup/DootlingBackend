@@ -13,6 +13,18 @@ const getStoreIdFromParams = (req: Request): number => {
   return id;
 };
 
+const getProductIdFromParams = (req: Request): number => {
+  const productId = req.params.productId;
+  if (!productId) {
+    throw new Error("Product ID is required from request parameters.");
+  }
+  const id = parseInt(productId, 10);
+  if (isNaN(id)) {
+    throw new Error("Invalid Product ID format.");
+  }
+  return id;
+};
+
 export const createProductController: RequestHandler = async (
   req: Request,
   res: Response
@@ -26,6 +38,36 @@ export const createProductController: RequestHandler = async (
     res.status(201).json({
       message: "Product created successfully.",
       data: newProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: (error as Error).message,
+      data: null,
+    });
+  }
+};
+
+export const getProductByIdController: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const storeId = getStoreIdFromParams(req);
+    const productId = getProductIdFromParams(req);
+
+    const product = await productService.getProductById(storeId, productId);
+
+    if (!product) {
+      res.status(404).json({
+        message: "Product not found.",
+        data: null,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Product retrieved successfully.",
+      data: product,
     });
   } catch (error) {
     res.status(500).json({

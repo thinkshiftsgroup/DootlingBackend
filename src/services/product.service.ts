@@ -271,7 +271,9 @@ export const listProducts = async (
     const direction = sortByPrice === "highest" ? "desc" : "asc";
     orderByConditions.push({
       pricings: {
-        sellingPrice: direction,
+        _max: {
+          sellingPrice: direction,
+        },
       },
     });
     orderByConditions.push({ id: direction });
@@ -310,7 +312,34 @@ export const listProducts = async (
     },
   };
 };
+export const getProductById = async (
+  storeId: number,
+  productId: number
+): Promise<Product | null> => {
+  const product = await prisma.product.findFirst({
+    where: {
+      id: productId,
+      storeId: storeId,
+    },
+    include: {
+      pricings: true,
+      descriptionDetails: true,
+      options: true,
+      categories: {
+        include: { category: true },
+      },
+      stockLots: true,
+      stockAdjustments: true,
+      stocks: true,
+      internalTransfers: true,
+      invoiceItems: true,
+      upsellProducts: true,
+      crossSellProducts: true,
+    },
+  });
 
+  return product;
+};
 export const deleteProduct = async (
   productId: number,
   storeId: number

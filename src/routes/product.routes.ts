@@ -5,6 +5,7 @@ import {
   listProductsController,
   deleteProductController,
   validateProductUrlController,
+  getProductByIdController,
 } from "@controllers/product.controller";
 import { protect } from "@middlewares/auth.middleware";
 import {
@@ -22,6 +23,7 @@ router.post(
 );
 router.post("/:storeId", verifyStoreAccess, createProductController);
 router.get("/:storeId", verifyStoreAccess, listProductsController);
+router.get("/:storeId/:productId", verifyStoreAccess, getProductByIdController);
 router.put(
   "/:productId",
   verifyResourceOwnership("product"),
