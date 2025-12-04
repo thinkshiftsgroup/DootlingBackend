@@ -91,7 +91,6 @@ export const createProduct = async (
 
   return product;
 };
-
 export const isCustomProductUrlTaken = async (
   storeId: number,
   customProductUrl: string
