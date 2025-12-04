@@ -4083,6 +4083,140 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /api/product-variants/{storeId}:
+    post:
+      tags:
+        - Product Variants
+      summary: Create product variant
+      description: Create a new product variant for a store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                  example:
+                    - name: "Small"
+                    - name: "Medium"
+                    - name: "Large"
+      responses:
+        '201':
+          description: Product variant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Product Variants
+      summary: Get product variants
+      description: Get all product variants for a store with pagination and search
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by variant name
+          example: "Size"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Product variants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      variants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductVariant'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /api/product-variants/{storeId}/export:
     get:
       tags:
@@ -4141,7 +4275,134 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductVariant'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/product-variants/{id}:
+    put:
+      tags:
+        - Product Variants
+      summary: Update product variant
+      description: Update a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Size"
+                hasMultipleOptions:
+                  type: boolean
+                  example: true
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                  example:
+                    - name: "Small"
+                    - name: "Medium"
+                    - name: "Large"
+                    - name: "Extra Large"
+      responses:
+        '200':
+          description: Product variant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProductVariant'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product variant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Product Variants
+      summary: Delete product variant
+      description: Delete a product variant by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Product variant deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product variant deleted successfully"
         '401':
           description: Unauthorized
           content:
