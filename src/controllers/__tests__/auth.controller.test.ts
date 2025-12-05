@@ -247,6 +247,8 @@ describe("Auth Controller", () => {
         accessToken: "access-token",
         refreshToken: "refresh-token",
         user: { id: 1, email: "test@example.com", fullName: "John Doe", username: "johndoe1234" },
+        hasStore: false,
+        store: null,
       };
 
       mockAuthService.login.mockResolvedValue(expectedResult);
@@ -266,6 +268,8 @@ describe("Auth Controller", () => {
         accessToken: "access-token",
         refreshToken: "refresh-token",
         user: { id: 1, email: "test@example.com", fullName: "John Doe", username: "johndoe1234" },
+        hasStore: false,
+        store: null,
       };
 
       mockAuthService.login.mockResolvedValue(expectedResult);

@@ -421,9 +421,10 @@ describe("Auth Service", () => {
       password: "hashedPassword",
       isVerified: true,
       refreshToken: null,
+      stores: [],
     };
 
-    it("should login successfully", async () => {
+    it("should login successfully without store", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser);
       mockBcrypt.compare.mockResolvedValue(true);
       mockPrisma.user.update.mockResolvedValue(mockUser);
@@ -443,6 +444,32 @@ describe("Auth Service", () => {
         accessToken: "access-token",
         refreshToken: "refresh-token",
         user: { id: 1, email: "test@example.com", fullName: "John Doe", username: "johndoe1234" },
+        hasStore: false,
+        store: null,
+      });
+    });
+
+    it("should login successfully with store", async () => {
+      const mockUserWithStore = {
+        ...mockUser,
+        stores: [{ id: 1, storeUrl: "test-store.myshop.com" }],
+      };
+      
+      mockPrisma.user.findUnique.mockResolvedValue(mockUserWithStore);
+      mockBcrypt.compare.mockResolvedValue(true);
+      mockPrisma.user.update.mockResolvedValue(mockUserWithStore);
+      mockJwt.sign
+        .mockReturnValueOnce("access-token")
+        .mockReturnValueOnce("refresh-token");
+
+      const result = await login("test@example.com", "password123");
+
+      expect(result).toEqual({
+        accessToken: "access-token",
+        refreshToken: "refresh-token",
+        user: { id: 1, email: "test@example.com", fullName: "John Doe", username: "johndoe1234" },
+        hasStore: true,
+        store: { storeId: 1, storeUrl: "test-store.myshop.com" },
       });
     });
 
