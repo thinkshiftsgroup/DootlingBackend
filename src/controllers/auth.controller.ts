@@ -65,7 +65,7 @@ export const setPassword = async (req: Request, res: Response) => {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
-  const { password } = req.body || {};
-  const result = await authService.setPassword(Number(userId), password);
+  const { oldPassword, newPassword, confirmPassword } = req.body || {};
+  const result = await authService.setPassword(Number(userId), oldPassword, newPassword, confirmPassword);
   res.status(200).json(result);
 };

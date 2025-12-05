@@ -574,7 +574,11 @@ describe("Auth Controller", () => {
 
   describe("setPassword", () => {
     it("should set password successfully", async () => {
-      const req = mockRequest({ password: "newPassword123" }, { id: 1 });
+      const req = mockRequest({ 
+        oldPassword: "oldPassword123", 
+        newPassword: "newPassword123",
+        confirmPassword: "newPassword123"
+      }, { id: 1 });
       const res = mockResponse();
 
       const expectedResult = {
@@ -585,13 +589,17 @@ describe("Auth Controller", () => {
 
       await authController.setPassword(req as Request, res as Response);
 
-      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "newPassword123");
+      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "oldPassword123", "newPassword123", "newPassword123");
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(expectedResult);
     });
 
     it("should return 401 when user is not authenticated", async () => {
-      const req = mockRequest({ password: "newPassword123" });
+      const req = mockRequest({ 
+        oldPassword: "oldPassword123", 
+        newPassword: "newPassword123",
+        confirmPassword: "newPassword123"
+      });
       const res = mockResponse();
 
       await authController.setPassword(req as Request, res as Response);
@@ -613,25 +621,33 @@ describe("Auth Controller", () => {
 
       await authController.setPassword(req as Request, res as Response);
 
-      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, undefined);
+      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, undefined, undefined, undefined);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(expectedResult);
     });
 
     it("should handle set password errors", async () => {
-      const req = mockRequest({ password: "newPassword123" }, { id: 1 });
+      const req = mockRequest({ 
+        oldPassword: "oldPassword123", 
+        newPassword: "short",
+        confirmPassword: "short"
+      }, { id: 1 });
       const res = mockResponse();
 
-      const error = new Error("Password too short");
+      const error = new Error("Password must be at least 8 characters long");
       mockAuthService.setPassword.mockRejectedValue(error);
 
-      await expect(authController.setPassword(req as Request, res as Response)).rejects.toThrow("Password too short");
+      await expect(authController.setPassword(req as Request, res as Response)).rejects.toThrow("Password must be at least 8 characters long");
 
-      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "newPassword123");
+      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "oldPassword123", "short", "short");
     });
 
     it("should handle string userId", async () => {
-      const req = mockRequest({ password: "newPassword123" }, { id: "1" });
+      const req = mockRequest({ 
+        oldPassword: "oldPassword123", 
+        newPassword: "newPassword123",
+        confirmPassword: "newPassword123"
+      }, { id: "1" });
       const res = mockResponse();
 
       const expectedResult = {
@@ -642,7 +658,7 @@ describe("Auth Controller", () => {
 
       await authController.setPassword(req as Request, res as Response);
 
-      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "newPassword123");
+      expect(mockAuthService.setPassword).toHaveBeenCalledWith(1, "oldPassword123", "newPassword123", "newPassword123");
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(expectedResult);
     });

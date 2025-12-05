@@ -749,15 +749,18 @@ describe("Auth Service", () => {
   describe("setPassword", () => {
     const mockUser = {
       id: 1,
+      password: "oldHashedPassword",
     };
 
     it("should set password successfully", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser);
       mockPrisma.user.update.mockResolvedValue(mockUser);
+      mockBcrypt.compare.mockResolvedValue(true);
       mockBcrypt.hash.mockResolvedValue("newHashedPassword");
 
-      const result = await setPassword(1, "newPassword123");
+      const result = await setPassword(1, "oldPassword123", "newPassword123", "newPassword123");
 
+      expect(mockBcrypt.compare).toHaveBeenCalledWith("oldPassword123", "oldHashedPassword");
       expect(mockBcrypt.hash).toHaveBeenCalledWith("newPassword123", 10);
       expect(mockPrisma.user.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -769,19 +772,47 @@ describe("Auth Service", () => {
       });
     });
 
-    it("should throw error when password is empty", async () => {
-      await expect(setPassword(1, "")).rejects.toThrow("Password is required");
-      await expect(setPassword(1, "   ")).rejects.toThrow("Password is required");
+    it("should throw error when old password is empty", async () => {
+      await expect(setPassword(1, "", "newPassword123", "newPassword123")).rejects.toThrow("Old password is required");
+      await expect(setPassword(1, "   ", "newPassword123", "newPassword123")).rejects.toThrow("Old password is required");
     });
 
-    it("should throw error when password is too short", async () => {
-      await expect(setPassword(1, "123")).rejects.toThrow("Password must be at least 8 characters long");
+    it("should throw error when new password is empty", async () => {
+      await expect(setPassword(1, "oldPassword123", "", "newPassword123")).rejects.toThrow("New password is required");
+      await expect(setPassword(1, "oldPassword123", "   ", "newPassword123")).rejects.toThrow("New password is required");
+    });
+
+    it("should throw error when confirm password is empty", async () => {
+      await expect(setPassword(1, "oldPassword123", "newPassword123", "")).rejects.toThrow("Password confirmation is required");
+      await expect(setPassword(1, "oldPassword123", "newPassword123", "   ")).rejects.toThrow("Password confirmation is required");
+    });
+
+    it("should throw error when passwords don't match", async () => {
+      await expect(setPassword(1, "oldPassword123", "newPassword123", "differentPassword")).rejects.toThrow("New password and confirmation do not match");
+    });
+
+    it("should throw error when new password is too short", async () => {
+      await expect(setPassword(1, "oldPassword123", "123", "123")).rejects.toThrow("Password must be at least 8 characters long");
     });
 
     it("should throw error when user not found", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null);
 
-      await expect(setPassword(1, "newPassword123")).rejects.toThrow("User not found");
+      await expect(setPassword(1, "oldPassword123", "newPassword123", "newPassword123")).rejects.toThrow("User not found");
+    });
+
+    it("should throw error when old password is incorrect", async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      mockBcrypt.compare.mockResolvedValue(false);
+
+      await expect(setPassword(1, "wrongOldPassword", "newPassword123", "newPassword123")).rejects.toThrow("Old password is incorrect");
+    });
+
+    it("should throw error when user has no password set", async () => {
+      const userWithoutPassword = { id: 1, password: null };
+      mockPrisma.user.findUnique.mockResolvedValue(userWithoutPassword);
+
+      await expect(setPassword(1, "oldPassword123", "newPassword123", "newPassword123")).rejects.toThrow("No password set for this account");
     });
   });
 });

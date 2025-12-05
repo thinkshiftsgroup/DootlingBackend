@@ -560,8 +560,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: Set password for authenticated user
-      description: Change password for authenticated user
+      summary: Change password for authenticated user
+      description: Change password for authenticated user. Requires old password verification and new password confirmation.
       requestBody:
         required: true
         content:
@@ -569,11 +569,23 @@ paths:
             schema:
               type: object
               required:
-                - password
+                - oldPassword
+                - newPassword
+                - confirmPassword
               properties:
-                password:
+                oldPassword:
+                  type: string
+                  description: Current password
+                  example: oldpassword123
+                newPassword:
                   type: string
                   minLength: 8
+                  description: New password (minimum 8 characters)
+                  example: newpassword123
+                confirmPassword:
+                  type: string
+                  minLength: 8
+                  description: Confirm new password (must match newPassword)
                   example: newpassword123
       responses:
         "200":
@@ -587,13 +599,13 @@ paths:
                     type: string
                     example: "Password changed successfully"
         "400":
-          description: Bad request - password too short
+          description: Bad request - validation error (password too short, passwords don't match, etc.)
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
         "401":
-          description: Unauthorized
+          description: Unauthorized or old password is incorrect
           content:
             application/json:
               schema:
@@ -8265,12 +8277,20 @@ paths:
 
   # ==================== STAFF ENDPOINTS ====================
 
-  /api/staff:
+  /api/staff/store/{storeId}:
     post:
       tags:
         - Staff
       summary: Create a new staff member
       description: Create a new staff member for a store
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: Store ID
       requestBody:
         required: true
         content:
@@ -8278,7 +8298,6 @@ paths:
             schema:
               type: object
               required:
-                - storeId
                 - staffRole
                 - firstname
                 - lastname
@@ -8286,9 +8305,6 @@ paths:
                 - assignedLocations
                 - permissions
               properties:
-                storeId:
-                  type: integer
-                  example: 1
                 staffRole:
                   type: string
                   example: "Manager"
@@ -8318,22 +8334,132 @@ paths:
                     - deleteProduct
                     - viewCostPrice
                     - manageCostPrice
+                    - viewOrder
+                    - manageOrder
+                    - deleteOrder
+                    - viewTransaction
+                    - manageTransaction
+                    - viewMessaging
+                    - manageMessaging
+                    - viewExpense
+                    - manageExpense
+                    - viewPointOfSale
+                    - managePointOfSale
+                    - viewStoreCustomization
+                    - manageStoreCustomization
+                    - viewDiscountCoupon
+                    - manageDiscountCoupon
+                    - viewLocation
+                    - manageLocation
+                    - viewSettings
+                    - manageSettings
+                    - viewExportData
+                    - viewAnalytics
                   properties:
                     viewProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: true
                     manageProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: true
                     deleteProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: false
                     viewCostPrice:
                       type: boolean
+                      description: Staff can view and update product cost prices
                       example: true
                     manageCostPrice:
                       type: boolean
+                      description: Staff can view and update product cost prices
                       example: false
+                    viewOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: true
+                    manageOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: true
+                    deleteOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: false
+                    viewTransaction:
+                      type: boolean
+                      description: Staff can view and manage transactions
+                      example: true
+                    manageTransaction:
+                      type: boolean
+                      description: Staff can view and manage transactions
+                      example: false
+                    viewMessaging:
+                      type: boolean
+                      description: Staff can view, send, and receive messages
+                      example: true
+                    manageMessaging:
+                      type: boolean
+                      description: Staff can view, send, and receive messages
+                      example: false
+                    viewExpense:
+                      type: boolean
+                      description: Staff can view, add, and edit business expenses
+                      example: true
+                    manageExpense:
+                      type: boolean
+                      description: Staff can view, add, and edit business expenses
+                      example: false
+                    viewPointOfSale:
+                      type: boolean
+                      description: Staff can view and manage the point of sale
+                      example: true
+                    managePointOfSale:
+                      type: boolean
+                      description: Staff can view and manage the point of sale
+                      example: false
+                    viewStoreCustomization:
+                      type: boolean
+                      description: Staff can view and update store themes
+                      example: true
+                    manageStoreCustomization:
+                      type: boolean
+                      description: Staff can view and update store themes
+                      example: false
+                    viewDiscountCoupon:
+                      type: boolean
+                      description: Staff can view, create and manage discounts and coupons
+                      example: true
+                    manageDiscountCoupon:
+                      type: boolean
+                      description: Staff can view, create and manage discounts and coupons
+                      example: false
+                    viewLocation:
+                      type: boolean
+                      description: Staff can view, add, and manage store locations
+                      example: true
+                    manageLocation:
+                      type: boolean
+                      description: Staff can view, add, and manage store locations
+                      example: false
+                    viewSettings:
+                      type: boolean
+                      description: Staff can view and manage the store settings
+                      example: true
+                    manageSettings:
+                      type: boolean
+                      description: Staff can view and manage the store settings
+                      example: false
+                    viewExportData:
+                      type: boolean
+                      description: Staff can export store data, such as products or customers
+                      example: true
+                    viewAnalytics:
+                      type: boolean
+                      description: Staff can view store performance and analytics
+                      example: true
       responses:
         "201":
           description: Staff member created successfully
@@ -8402,7 +8528,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/staff/store/{storeId}:
     get:
       tags:
         - Staff
@@ -8605,18 +8730,107 @@ paths:
                   properties:
                     viewProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: true
                     manageProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: true
                     deleteProduct:
                       type: boolean
+                      description: Staff can view, add, edit, and delete products
                       example: true
                     viewCostPrice:
                       type: boolean
+                      description: Staff can view and update product cost prices
                       example: true
                     manageCostPrice:
                       type: boolean
+                      description: Staff can view and update product cost prices
+                      example: true
+                    viewOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: true
+                    manageOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: true
+                    deleteOrder:
+                      type: boolean
+                      description: Staff can view, create, edit, and delete orders
+                      example: true
+                    viewTransaction:
+                      type: boolean
+                      description: Staff can view and manage transactions
+                      example: true
+                    manageTransaction:
+                      type: boolean
+                      description: Staff can view and manage transactions
+                      example: true
+                    viewMessaging:
+                      type: boolean
+                      description: Staff can view, send, and receive messages
+                      example: true
+                    manageMessaging:
+                      type: boolean
+                      description: Staff can view, send, and receive messages
+                      example: true
+                    viewExpense:
+                      type: boolean
+                      description: Staff can view, add, and edit business expenses
+                      example: true
+                    manageExpense:
+                      type: boolean
+                      description: Staff can view, add, and edit business expenses
+                      example: true
+                    viewPointOfSale:
+                      type: boolean
+                      description: Staff can view and manage the point of sale
+                      example: true
+                    managePointOfSale:
+                      type: boolean
+                      description: Staff can view and manage the point of sale
+                      example: true
+                    viewStoreCustomization:
+                      type: boolean
+                      description: Staff can view and update store themes
+                      example: true
+                    manageStoreCustomization:
+                      type: boolean
+                      description: Staff can view and update store themes
+                      example: true
+                    viewDiscountCoupon:
+                      type: boolean
+                      description: Staff can view, create and manage discounts and coupons
+                      example: true
+                    manageDiscountCoupon:
+                      type: boolean
+                      description: Staff can view, create and manage discounts and coupons
+                      example: true
+                    viewLocation:
+                      type: boolean
+                      description: Staff can view, add, and manage store locations
+                      example: true
+                    manageLocation:
+                      type: boolean
+                      description: Staff can view, add, and manage store locations
+                      example: true
+                    viewSettings:
+                      type: boolean
+                      description: Staff can view and manage the store settings
+                      example: true
+                    manageSettings:
+                      type: boolean
+                      description: Staff can view and manage the store settings
+                      example: true
+                    viewExportData:
+                      type: boolean
+                      description: Staff can export store data, such as products or customers
+                      example: true
+                    viewAnalytics:
+                      type: boolean
+                      description: Staff can view store performance and analytics
                       example: true
       responses:
         "200":

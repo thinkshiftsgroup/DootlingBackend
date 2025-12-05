@@ -14,6 +14,27 @@ export interface CreateStaffPayload {
     deleteProduct: boolean;
     viewCostPrice: boolean;
     manageCostPrice: boolean;
+    viewOrder: boolean;
+    manageOrder: boolean;
+    deleteOrder: boolean;
+    viewTransaction: boolean;
+    manageTransaction: boolean;
+    viewMessaging: boolean;
+    manageMessaging: boolean;
+    viewExpense: boolean;
+    manageExpense: boolean;
+    viewPointOfSale: boolean;
+    managePointOfSale: boolean;
+    viewStoreCustomization: boolean;
+    manageStoreCustomization: boolean;
+    viewDiscountCoupon: boolean;
+    manageDiscountCoupon: boolean;
+    viewLocation: boolean;
+    manageLocation: boolean;
+    viewSettings: boolean;
+    manageSettings: boolean;
+    viewExportData: boolean;
+    viewAnalytics: boolean;
   };
 }
 
@@ -29,6 +50,27 @@ export interface UpdateStaffPayload {
     deleteProduct?: boolean;
     viewCostPrice?: boolean;
     manageCostPrice?: boolean;
+    viewOrder?: boolean;
+    manageOrder?: boolean;
+    deleteOrder?: boolean;
+    viewTransaction?: boolean;
+    manageTransaction?: boolean;
+    viewMessaging?: boolean;
+    manageMessaging?: boolean;
+    viewExpense?: boolean;
+    manageExpense?: boolean;
+    viewPointOfSale?: boolean;
+    managePointOfSale?: boolean;
+    viewStoreCustomization?: boolean;
+    manageStoreCustomization?: boolean;
+    viewDiscountCoupon?: boolean;
+    manageDiscountCoupon?: boolean;
+    viewLocation?: boolean;
+    manageLocation?: boolean;
+    viewSettings?: boolean;
+    manageSettings?: boolean;
+    viewExportData?: boolean;
+    viewAnalytics?: boolean;
   };
 }
 

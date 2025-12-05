@@ -243,17 +243,28 @@ export const logout = async (userId: number) => {
   return { message: "Logged out successfully" };
 };
 
-export const setPassword = async (userId: number, password: string) => {
+export const setPassword = async (userId: number, oldPassword: string, newPassword: string, confirmPassword: string) => {
   // Validate required fields
-  if (!password || !password.trim()) throw new Error("Password is required");
+  if (!oldPassword || !oldPassword.trim()) throw new Error("Old password is required");
+  if (!newPassword || !newPassword.trim()) throw new Error("New password is required");
+  if (!confirmPassword || !confirmPassword.trim()) throw new Error("Password confirmation is required");
+
+  // Validate password match
+  if (newPassword !== confirmPassword) throw new Error("New password and confirmation do not match");
 
   // Validate password strength
-  if (!validatePassword(password)) throw new Error("Password must be at least 8 characters long");
+  if (!validatePassword(newPassword)) throw new Error("Password must be at least 8 characters long");
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // Verify old password
+  if (!user.password) throw new Error("No password set for this account");
+  const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+  if (!isValidPassword) throw new Error("Old password is incorrect");
+
+  // Hash and update new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   await prisma.user.update({
     where: { id: userId },

@@ -8,26 +8,26 @@ datasource db {
 }
 
 model User {
-  id                      Int       @id @default(autoincrement())
-  email                   String    @unique
-  username                String    @unique
+  id                      Int             @id @default(autoincrement())
+  email                   String          @unique
+  username                String          @unique
   fullName                String
   firstname               String?
   lastname                String?
   phone                   String?
   howDidYouFindUs         String?
-  userType                String    @default("user")
+  userType                String          @default("user")
   password                String
   profilePhotoUrl         String?
-  isVerified              Boolean   @default(false)
+  isVerified              Boolean         @default(false)
   verificationCode        String?
   verificationCodeExpires DateTime?
   resetPasswordToken      String?
   resetPasswordExpires    DateTime?
   refreshToken            String?
-  subscribeToMarketing    Boolean   @default(false)
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  subscribeToMarketing    Boolean         @default(false)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
   lastActive              DateTime?
   stores                  Store[]
   kycProfile              UserKycProfile?
@@ -37,152 +37,173 @@ model User {
 }
 
 model Store {
-  id               Int                @id @default(autoincrement())
-  userId           Int
-  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  storeName        String?
-  businessName     String?
-  storeUrl         String             @unique
-  logoUrl          String?
-  businessSector   String?
-  tagLine          String?
-  description      String?
-  timezone         String?
-  currency         String             @default("USD")
-  phone            String?
-  address          String?
-  country          String?
-  state            String?
-  city             String?
-  zipCode          String?
-  isLaunched       Boolean            @default(false)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  products         Product[]
-  categories       Category[]
-  brands           Brand[]
-  productGroups    ProductGroup[]
-  productVariants  ProductVariant[]
-  units            Unit[]
-  customers        Customer[]
-  customerGroups   CustomerGroup[]
-  warehouses       Warehouse[]
-  suppliers        Supplier[]
-  stockLots        StockLot[]
-  stockAdjustments StockAdjustment[]
-  stocks           Stock[]
+  id                Int                @id @default(autoincrement())
+  userId            Int
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeName         String?
+  businessName      String?
+  storeUrl          String             @unique
+  logoUrl           String?
+  businessSector    String?
+  tagLine           String?
+  description       String?
+  timezone          String?
+  currency          String             @default("USD")
+  phone             String?
+  address           String?
+  country           String?
+  state             String?
+  city              String?
+  zipCode           String?
+  isLaunched        Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  products          Product[]
+  categories        Category[]
+  brands            Brand[]
+  productGroups     ProductGroup[]
+  productVariants   ProductVariant[]
+  units             Unit[]
+  customers         Customer[]
+  customerGroups    CustomerGroup[]
+  warehouses        Warehouse[]
+  suppliers         Supplier[]
+  stockLots         StockLot[]
+  stockAdjustments  StockAdjustment[]
+  stocks            Stock[]
   internalTransfers InternalTransfer[]
-  invoices         Invoice[]
- 
-  shipping          Shipping?
-  shippingMethods   ShippingMethod[]
-  staff             Staff[]
-  generalSettings   GeneralSettings?
-  locations         Location[]
+  invoices          Invoice[]
+
+  shipping        Shipping?
+  shippingMethods ShippingMethod[]
+  staff           Staff[]
+  generalSettings GeneralSettings?
+  locations       Location[]
 }
 
 model Location {
-  id                Int       @id @default(autoincrement())
-  storeId           Int
-  store             Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  locationName      String
-  address           String
-  country           String
-  state             String
-  city              String
-  isPrimary         Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id           Int      @id @default(autoincrement())
+  storeId      Int
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  locationName String
+  address      String
+  country      String
+  state        String
+  city         String
+  isPrimary    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([storeId, locationName])
 }
 
 model GeneralSettings {
-  id                                    Int       @id @default(autoincrement())
-  storeId                               Int       @unique
-  store                                 Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  isReverseInventory                    Boolean   @default(false)
-  cancelOrderTimeDays                   Int       @default(0)
-  cancelOrderTimeHours                  Int       @default(0)
-  cancelOrderTimeMinutes                Int       @default(0)
-  lowStockThreshold                     Int       @default(10)
-  showOutOfStockItems                   Boolean   @default(true)
-  showStockCount                        Boolean   @default(true)
-  productNotePlaceholder                String?
-  productNote                           String?
-  sizeChartImageUrl                     String?
-  additionalImageTitle                  String?
-  additionalImageUrl                    String?
-  abandonedOrderRecovery                Boolean   @default(false)
-  abandonedOrderReminderNote            String?
-  abandonedOrderReminderTimeDays        Int       @default(0)
-  abandonedOrderReminderTimeHours       Int       @default(0)
-  abandonedOrderReminderTimeMinutes     Int       @default(0)
-  automatedEmailReminder                Boolean   @default(false)
-  automatedSmsReminder                  Boolean   @default(false)
-  deliveryTimelineCalendar              String[]
-  deliveryTimelineDays                  String[]
-  timelineWindow                        String    @default("no same day delivery")
-  processingDays                        Int       @default(1)
-  reminderFrame                         String?
-  displayStorePickupCheckout            Boolean   @default(false)
-  sendWelcomeEmail                      Boolean   @default(true)
-  createdAt                             DateTime  @default(now())
-  updatedAt                             DateTime  @updatedAt
+  id                                Int      @id @default(autoincrement())
+  storeId                           Int      @unique
+  store                             Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  isReverseInventory                Boolean  @default(false)
+  cancelOrderTimeDays               Int      @default(0)
+  cancelOrderTimeHours              Int      @default(0)
+  cancelOrderTimeMinutes            Int      @default(0)
+  lowStockThreshold                 Int      @default(10)
+  showOutOfStockItems               Boolean  @default(true)
+  showStockCount                    Boolean  @default(true)
+  productNotePlaceholder            String?
+  productNote                       String?
+  sizeChartImageUrl                 String?
+  additionalImageTitle              String?
+  additionalImageUrl                String?
+  abandonedOrderRecovery            Boolean  @default(false)
+  abandonedOrderReminderNote        String?
+  abandonedOrderReminderTimeDays    Int      @default(0)
+  abandonedOrderReminderTimeHours   Int      @default(0)
+  abandonedOrderReminderTimeMinutes Int      @default(0)
+  automatedEmailReminder            Boolean  @default(false)
+  automatedSmsReminder              Boolean  @default(false)
+  deliveryTimelineCalendar          String[]
+  deliveryTimelineDays              String[]
+  timelineWindow                    String   @default("no same day delivery")
+  processingDays                    Int      @default(1)
+  reminderFrame                     String?
+  displayStorePickupCheckout        Boolean  @default(false)
+  sendWelcomeEmail                  Boolean  @default(true)
+  createdAt                         DateTime @default(now())
+  updatedAt                         DateTime @updatedAt
 }
 
 model Staff {
-  id                      Int             @id @default(autoincrement())
-  storeId                 Int
-  store                   Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  staffRole               String
-  firstname               String
-  lastname                String
-  email                   String          @unique
-  phone                   String?
-  assignedLocations       String[]
-  createdAt               DateTime        @default(now())
-  updatedAt               DateTime        @updatedAt
-  permissions             StaffPermission?
+  id                Int              @id @default(autoincrement())
+  storeId           Int
+  store             Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  staffRole         String
+  firstname         String
+  lastname          String
+  email             String           @unique
+  phone             String?
+  assignedLocations String[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  permissions       StaffPermission?
 }
 
 model StaffPermission {
-  id                      Int       @id @default(autoincrement())
-  staffId                 Int       @unique
-  staff                   Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
-  viewProduct             Boolean   @default(false)
-  manageProduct           Boolean   @default(false)
-  deleteProduct           Boolean   @default(false)
-  viewCostPrice           Boolean   @default(false)
-  manageCostPrice         Boolean   @default(false)
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                       Int      @id @default(autoincrement())
+  staffId                  Int      @unique
+  staff                    Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  viewProduct              Boolean  @default(false)
+  manageProduct            Boolean  @default(false)
+  deleteProduct            Boolean  @default(false)
+  viewCostPrice            Boolean  @default(false)
+  manageCostPrice          Boolean  @default(false)
+  viewOrder                Boolean  @default(false)
+  manageOrder              Boolean  @default(false)
+  deleteOrder              Boolean  @default(false)
+  viewTransaction          Boolean  @default(false)
+  manageTransaction        Boolean  @default(false)
+  viewMessaging            Boolean  @default(false)
+  manageMessaging          Boolean  @default(false)
+  viewExpense              Boolean  @default(false)
+  manageExpense            Boolean  @default(false)
+  viewPointOfSale          Boolean  @default(false)
+  managePointOfSale        Boolean  @default(false)
+  viewStoreCustomization   Boolean  @default(false)
+  manageStoreCustomization Boolean  @default(false)
+  viewDiscountCoupon       Boolean  @default(false)
+  manageDiscountCoupon     Boolean  @default(false)
+  viewLocation             Boolean  @default(false)
+  manageLocation           Boolean  @default(false)
+  viewSettings             Boolean  @default(false)
+  manageSettings           Boolean  @default(false)
+  viewExportData           Boolean  @default(false)
+  viewAnalytics            Boolean  @default(false)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 }
 
 model Shipping {
-  id                      Int       @id @default(autoincrement())
-  storeId                 Int       @unique
-  store                   Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  minimumCartItems        Int?
-  maximumCartItems        Int?
-  eligibleCurrencies      String[]
-  shippingDescription     String?
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                  Int      @id @default(autoincrement())
+  storeId             Int      @unique
+  store               Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  minimumCartItems    Int?
+  maximumCartItems    Int?
+  eligibleCurrencies  String[]
+  shippingDescription String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model ShippingMethod {
-  id                          Int       @id @default(autoincrement())
+  id                          Int      @id @default(autoincrement())
   storeId                     Int
-  store                       Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  store                       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   name                        String
   shippingFee                 Float
   eligibleLocations           String[]
   shippingDescription         String?
-  showStrikedOutOriginalPrice Boolean   @default(false)
+  showStrikedOutOriginalPrice Boolean  @default(false)
   originalPrice               Float?
-  createdAt                   DateTime  @default(now())
-  updatedAt                   DateTime  @updatedAt
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
 
   @@unique([storeId, name])
 }
@@ -206,60 +227,60 @@ enum KycDocumentType {
 }
 
 model UserKycProfile {
-  id                      Int       @id @default(autoincrement())
-  userId                  Int       @unique
-  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  middleName              String?
-  gender                  String?
-  dateOfBirth             DateTime?
-  meansOfIdentification   String?
-  identificationNumber    String?
-  identificationExpiry    DateTime?
-  countryOfResidency      String?
-  contactAddress          String?
-  status                  KycStatus @default(NOT_STARTED)
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                    Int       @id @default(autoincrement())
+  userId                Int       @unique
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  middleName            String?
+  gender                String?
+  dateOfBirth           DateTime?
+  meansOfIdentification String?
+  identificationNumber  String?
+  identificationExpiry  DateTime?
+  countryOfResidency    String?
+  contactAddress        String?
+  status                KycStatus @default(NOT_STARTED)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model BusinessKyc {
-  id                      Int       @id @default(autoincrement())
-  userId                  Int       @unique
-  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName            String
-  companyType             String?
-  incorporationNumber     String?
-  dateOfIncorporation     DateTime?
-  countryOfIncorporation  String?
-  taxNumber               String?
-  companyAddress          String?
-  zipOrPostcode           String?
-  stateOrProvince         String?
-  city                    String?
-  businessDescription     String?
-  companyWebsite          String?
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                     Int       @id @default(autoincrement())
+  userId                 Int       @unique
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName           String
+  companyType            String?
+  incorporationNumber    String?
+  dateOfIncorporation    DateTime?
+  countryOfIncorporation String?
+  taxNumber              String?
+  companyAddress         String?
+  zipOrPostcode          String?
+  stateOrProvince        String?
+  city                   String?
+  businessDescription    String?
+  companyWebsite         String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 }
 
 model KycDocument {
-  id          Int             @id @default(autoincrement())
-  userId      Int
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        KycDocumentType
-  url         String
-  uploadedAt  DateTime        @default(now())
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       KycDocumentType
+  url        String
+  uploadedAt DateTime        @default(now())
 }
 
 model Pep {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   userId      Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   position    String
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum ProductType {
@@ -268,36 +289,36 @@ enum ProductType {
 }
 
 model Product {
-  id                          Int                          @id @default(autoincrement())
+  id                          Int                        @id @default(autoincrement())
   storeId                     Int
-  store                       Store                        @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  type                        ProductType                  @default(REGULAR)
+  store                       Store                      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type                        ProductType                @default(REGULAR)
   name                        String
   productImages               String[]
   shortDescription            String
   longDescription             String?
-  customProductUrl            String?                      @unique
+  customProductUrl            String?                    @unique
   seoDescription              String?
-  checkoutButtonCta           String?                      @default("Buy Now")
-  hideFromHomepage            Boolean                      @default(false)
+  checkoutButtonCta           String?                    @default("Buy Now")
+  hideFromHomepage            Boolean                    @default(false)
   stockQuantity               Int?
   unit                        String?
   barcode                     String?
-  minOrderQuantity            Int                          @default(1)
+  minOrderQuantity            Int                        @default(1)
   maxOrderQuantity            Int?
-  isPreOrder                  Boolean                      @default(false)
+  isPreOrder                  Boolean                    @default(false)
   sizeChartImageUrl           String?
   preOrderReleaseDate         DateTime?
-  showStrikedOutOriginalPrice Boolean                      @default(false)
+  showStrikedOutOriginalPrice Boolean                    @default(false)
   pricings                    ProductPricing[]
-  embedVideoPlatform              String?
+  embedVideoPlatform          String?
   embedVideoPath              String?
   location                    String?
-  brands                      String[]                    
+  brands                      String[]
   discoveryCategories         String[]
-  affilated                   Boolean                      @default(false)
+  affilated                   Boolean                    @default(false)
   commissionPercentage        Float?
-  autoRedirectAfterPurchase   Boolean                      @default(false)
+  autoRedirectAfterPurchase   Boolean                    @default(false)
   redirectUrl                 String?
   categories                  ProductCategory[]
   descriptionDetails          ProductDescriptionDetail[]
@@ -307,10 +328,10 @@ model Product {
   stocks                      Stock[]
   internalTransfers           InternalTransfer[]
   invoiceItems                InvoiceItem[]
-  upsellProducts              ProductUpsell[]              @relation("UpsellProduct")
-  crossSellProducts           ProductUpsell[]              @relation("CrossSellProduct")
-  createdAt                   DateTime                     @default(now())
-  updatedAt                   DateTime                     @updatedAt
+  upsellProducts              ProductUpsell[]            @relation("UpsellProduct")
+  crossSellProducts           ProductUpsell[]            @relation("CrossSellProduct")
+  createdAt                   DateTime                   @default(now())
+  updatedAt                   DateTime                   @updatedAt
 }
 
 model Category {
@@ -328,10 +349,10 @@ model Category {
 }
 
 model ProductCategory {
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  categoryId  Int
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([productId, categoryId])
 }
@@ -361,20 +382,20 @@ model ProductDescriptionDetail {
 }
 
 model ProductOption {
-  id          Int      @id @default(autoincrement())
-  productId   Int
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  optionType  String
-  values      String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  optionType String
+  values     String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model ProductUpsell {
   productId       Int
-  product         Product  @relation("UpsellProduct", fields: [productId], references: [id], onDelete: Cascade)
+  product         Product @relation("UpsellProduct", fields: [productId], references: [id], onDelete: Cascade)
   upsellProductId Int
-  upsellProduct   Product  @relation("CrossSellProduct", fields: [upsellProductId], references: [id], onDelete: Cascade)
+  upsellProduct   Product @relation("CrossSellProduct", fields: [upsellProductId], references: [id], onDelete: Cascade)
 
   @@id([productId, upsellProductId])
 }
@@ -406,28 +427,28 @@ model ProductGroup {
 }
 
 model ProductVariant {
-  id                      Int                      @id @default(autoincrement())
-  storeId                 Int
-  store                   Store                    @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  name                    String
-  hasMultipleOptions      Boolean                  @default(false)
-  options                 ProductVariantOption[]
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
+  id                 Int                    @id @default(autoincrement())
+  storeId            Int
+  store              Store                  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name               String
+  hasMultipleOptions Boolean                @default(false)
+  options            ProductVariantOption[]
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
 
   @@unique([storeId, name])
 }
 
 model ProductVariantOption {
-  id                Int            @id @default(autoincrement())
-  variantId         Int
-  variant           ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  name              String
-  isRequired        Boolean        @default(false)
-  affectsPrice      Boolean        @default(false)
-  additionalPrice   Float?         @default(0)
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id              Int            @id @default(autoincrement())
+  variantId       Int
+  variant         ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  name            String
+  isRequired      Boolean        @default(false)
+  affectsPrice    Boolean        @default(false)
+  additionalPrice Float?         @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 model Unit {
@@ -456,85 +477,85 @@ model CustomerGroup {
 }
 
 model Customer {
-  id                    Int            @id @default(autoincrement())
-  storeId               Int
-  store                 Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  firstName             String
-  lastName              String
-  email                 String?
-  password              String?
-  isVerified            Boolean        @default(false)
-  verificationCode      String?
+  id                      Int            @id @default(autoincrement())
+  storeId                 Int
+  store                   Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  firstName               String
+  lastName                String
+  email                   String?
+  password                String?
+  isVerified              Boolean        @default(false)
+  verificationCode        String?
   verificationCodeExpires DateTime?
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  refreshToken          String?
-  lastActive            DateTime?
-  phone                 String?
-  instagramHandle       String?
-  additionalInfo        String?
-  customerGroupId       Int?
-  customerGroup         CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
-  shippingAddress       String?
-  shippingCountry       String?
-  shippingState         String?
-  shippingCity          String?
-  shippingZipCode       String?
-  billingAddress        String?
-  billingCountry        String?
-  billingState          String?
-  billingCity           String?
-  billingZipCode        String?
-  sameAsShippingAddress Boolean        @default(false)
-  sendWelcomeEmail      Boolean        @default(true)
-  subscribedToNewsletter Boolean       @default(false)
-  invoices              Invoice[]
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  resetPasswordToken      String?
+  resetPasswordExpires    DateTime?
+  refreshToken            String?
+  lastActive              DateTime?
+  phone                   String?
+  instagramHandle         String?
+  additionalInfo          String?
+  customerGroupId         Int?
+  customerGroup           CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
+  shippingAddress         String?
+  shippingCountry         String?
+  shippingState           String?
+  shippingCity            String?
+  shippingZipCode         String?
+  billingAddress          String?
+  billingCountry          String?
+  billingState            String?
+  billingCity             String?
+  billingZipCode          String?
+  sameAsShippingAddress   Boolean        @default(false)
+  sendWelcomeEmail        Boolean        @default(true)
+  subscribedToNewsletter  Boolean        @default(false)
+  invoices                Invoice[]
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
 
   @@unique([storeId, email])
 }
 
 model Warehouse {
-  id              Int                @id @default(autoincrement())
-  storeId         Int
-  store           Store              @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  name            String
-  address         String?
-  city            String?
-  state           String?
-  country         String?
-  zipCode         String?
-  phone           String?
-  isActive        Boolean            @default(true)
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  stocks          Stock[]
-  stockLots       StockLot[]
-  adjustments     StockAdjustment[]
-  transfersFrom   InternalTransfer[] @relation("TransfersFrom")
-  transfersTo     InternalTransfer[] @relation("TransfersTo")
-  invoices        Invoice[]
+  id            Int                @id @default(autoincrement())
+  storeId       Int
+  store         Store              @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name          String
+  address       String?
+  city          String?
+  state         String?
+  country       String?
+  zipCode       String?
+  phone         String?
+  isActive      Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  stocks        Stock[]
+  stockLots     StockLot[]
+  adjustments   StockAdjustment[]
+  transfersFrom InternalTransfer[] @relation("TransfersFrom")
+  transfersTo   InternalTransfer[] @relation("TransfersTo")
+  invoices      Invoice[]
 
   @@unique([storeId, name])
 }
 
 model Supplier {
-  id            Int              @id @default(autoincrement())
-  storeId       Int
-  store         Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  name          String
-  supplierId    String?
-  imageUrl      String?
-  notes         String?
-  isActive      Boolean          @default(true)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  stockLots     StockLot[]
-  emails        SupplierEmail[]
-  phones        SupplierPhone[]
-  addresses     SupplierAddress[]
-  invoices      Invoice[]
+  id         Int               @id @default(autoincrement())
+  storeId    Int
+  store      Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name       String
+  supplierId String?
+  imageUrl   String?
+  notes      String?
+  isActive   Boolean           @default(true)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  stockLots  StockLot[]
+  emails     SupplierEmail[]
+  phones     SupplierPhone[]
+  addresses  SupplierAddress[]
+  invoices   Invoice[]
 
   @@unique([storeId, name])
 }
@@ -583,26 +604,26 @@ enum PurchaseStatus {
 }
 
 model StockLot {
-  id                Int            @id @default(autoincrement())
-  storeId           Int
-  store             Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  warehouseId       Int
-  warehouse         Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  supplierId        Int
-  supplier          Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  productId         Int
-  product           Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
-  lotReferenceNo    String         @unique
-  purchaseDate      DateTime
-  quantity          Int
-  purchasePrice     Float
-  otherCharges      Float?         @default(0)
-  discount          Float?         @default(0)
-  status            PurchaseStatus @default(PENDING)
-  notes             String?
-  createdBy         String?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id             Int            @id @default(autoincrement())
+  storeId        Int
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  warehouseId    Int
+  warehouse      Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  supplierId     Int
+  supplier       Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  productId      Int
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  lotReferenceNo String         @unique
+  purchaseDate   DateTime
+  quantity       Int
+  purchasePrice  Float
+  otherCharges   Float?         @default(0)
+  discount       Float?         @default(0)
+  status         PurchaseStatus @default(PENDING)
+  notes          String?
+  createdBy      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 enum AdjustmentType {
@@ -615,36 +636,36 @@ enum AdjustmentType {
 }
 
 model StockAdjustment {
-  id              Int            @id @default(autoincrement())
-  storeId         Int
-  store           Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  warehouseId     Int
-  warehouse       Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  productId       Int
-  product         Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
-  referenceNo     String?
-  adjustmentDate  DateTime
-  quantity        Int
-  type            AdjustmentType @default(OTHER)
-  notes           String?
-  createdBy       String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             Int            @id @default(autoincrement())
+  storeId        Int
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  warehouseId    Int
+  warehouse      Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  productId      Int
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  referenceNo    String?
+  adjustmentDate DateTime
+  quantity       Int
+  type           AdjustmentType @default(OTHER)
+  notes          String?
+  createdBy      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Stock {
-  id          Int       @id @default(autoincrement())
-  storeId     Int
-  store       Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  warehouseId Int
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  quantity    Int       @default(0)
+  id               Int       @id @default(autoincrement())
+  storeId          Int
+  store            Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  productId        Int
+  product          Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  warehouseId      Int
+  warehouse        Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  quantity         Int       @default(0)
   avgPurchasePrice Float?
-  sellingPrice Float?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  sellingPrice     Float?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@unique([productId, warehouseId])
 }
@@ -657,24 +678,24 @@ enum TransferStatus {
 }
 
 model InternalTransfer {
-  id                Int            @id @default(autoincrement())
-  storeId           Int
-  store             Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  fromWarehouseId   Int
-  fromWarehouse     Warehouse      @relation("TransfersFrom", fields: [fromWarehouseId], references: [id], onDelete: Cascade)
-  toWarehouseId     Int
-  toWarehouse       Warehouse      @relation("TransfersTo", fields: [toWarehouseId], references: [id], onDelete: Cascade)
-  productId         Int
-  product           Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
-  referenceNo       String?
-  transferDate      DateTime
-  quantity          Int
-  costForTransfer   Float?         @default(0)
-  status            TransferStatus @default(PENDING)
-  notes             String?
-  createdBy         String?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id              Int            @id @default(autoincrement())
+  storeId         Int
+  store           Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  fromWarehouseId Int
+  fromWarehouse   Warehouse      @relation("TransfersFrom", fields: [fromWarehouseId], references: [id], onDelete: Cascade)
+  toWarehouseId   Int
+  toWarehouse     Warehouse      @relation("TransfersTo", fields: [toWarehouseId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  referenceNo     String?
+  transferDate    DateTime
+  quantity        Int
+  costForTransfer Float?         @default(0)
+  status          TransferStatus @default(PENDING)
+  notes           String?
+  createdBy       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 enum InvoiceStatus {
@@ -695,44 +716,44 @@ enum PaymentMethod {
 }
 
 model Invoice {
-  id              Int           @id @default(autoincrement())
-  storeId         Int
-  store           Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  invoiceNumber   String        @unique
-  warehouseId     Int
-  warehouse       Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  customerId      Int?
-  customer        Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  supplierId      Int?
-  supplier        Supplier?     @relation(fields: [supplierId], references: [id], onDelete: SetNull)
-  billerName      String
-  invoiceDate     DateTime
-  dueDate         DateTime?
-  totalAmount     Float
-  paidAmount      Float         @default(0)
-  dueAmount       Float
-  taxAmount       Float?        @default(0)
-  discountAmount  Float?        @default(0)
-  paymentMethod   PaymentMethod?
-  paymentNote     String?
-  status          InvoiceStatus @default(PENDING)
-  notes           String?
-  createdBy       String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  items           InvoiceItem[]
+  id             Int            @id @default(autoincrement())
+  storeId        Int
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  invoiceNumber  String         @unique
+  warehouseId    Int
+  warehouse      Warehouse      @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  customerId     Int?
+  customer       Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  supplierId     Int?
+  supplier       Supplier?      @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  billerName     String
+  invoiceDate    DateTime
+  dueDate        DateTime?
+  totalAmount    Float
+  paidAmount     Float          @default(0)
+  dueAmount      Float
+  taxAmount      Float?         @default(0)
+  discountAmount Float?         @default(0)
+  paymentMethod  PaymentMethod?
+  paymentNote    String?
+  status         InvoiceStatus  @default(PENDING)
+  notes          String?
+  createdBy      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  items          InvoiceItem[]
 }
 
 model InvoiceItem {
-  id          Int      @id @default(autoincrement())
-  invoiceId   Int
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  productId   Int
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity    Int
-  unitPrice   Float
-  totalPrice  Float
-  taxRate     Float?   @default(0)
-  taxAmount   Float?   @default(0)
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  invoiceId  Int
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+  taxRate    Float?   @default(0)
+  taxAmount  Float?   @default(0)
+  createdAt  DateTime @default(now())
 }
