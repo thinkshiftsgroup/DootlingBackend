@@ -132,7 +132,10 @@ export const login = async (email: string, password: string) => {
   if (!email || !email.trim()) throw new Error("Email is required");
   if (!password || !password.trim()) throw new Error("Password is required");
 
-  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  const user = await prisma.user.findUnique({ 
+    where: { email: email.toLowerCase() },
+    include: { stores: true }
+  });
   if (!user) throw new Error("Invalid credentials");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -145,7 +148,24 @@ export const login = async (email: string, password: string) => {
 
   await prisma.user.update({ where: { id: user.id }, data: { refreshToken, lastActive: new Date() } });
 
-  return { accessToken, refreshToken, user: { id: user.id, email: user.email, fullName: user.fullName, username: user.username } };
+  const hasStore = user.stores.length > 0;
+  const storeInfo = hasStore ? {
+    storeId: user.stores[0].id,
+    storeUrl: user.stores[0].storeUrl
+  } : null;
+
+  return { 
+    accessToken, 
+    refreshToken, 
+    user: { 
+      id: user.id, 
+      email: user.email, 
+      fullName: user.fullName, 
+      username: user.username 
+    },
+    hasStore,
+    store: storeInfo
+  };
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {

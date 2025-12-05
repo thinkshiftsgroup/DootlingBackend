@@ -317,6 +317,23 @@ paths:
                         type: string
                       username:
                         type: string
+                  hasStore:
+                    type: boolean
+                    description: Indicates if the user has a store
+                    example: true
+                  store:
+                    type: object
+                    nullable: true
+                    description: Store information (null if user has no store)
+                    properties:
+                      storeId:
+                        type: integer
+                        description: The unique identifier of the store
+                        example: 1
+                      storeUrl:
+                        type: string
+                        description: The URL of the store
+                        example: "mystore.example.com"
         "400":
           description: Bad request - invalid credentials or email not verified
           content:
